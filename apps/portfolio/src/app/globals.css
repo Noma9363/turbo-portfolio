@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+/* packages/ui 컴포넌트에서 사용하는 클래스도 스캔하도록 지시 */
+@source "../../../packages/ui/src";
+
+@theme {
+  /* Dark Minimal Color Palette */
+  --color-background: #09090b;
+  --color-foreground: #fafafa;
+
+  --color-card: #0f0f11;
+  --color-card-foreground: #fafafa;
+
+  --color-muted: #18181b;
+  --color-muted-foreground: #71717a;
+
+  --color-border: #27272a;
+  --color-input: #18181b;
+  --color-ring: #52525b;
+
+  --color-primary: #fafafa;
+  --color-primary-foreground: #09090b;
+
+  --color-secondary: #18181b;
+  --color-secondary-foreground: #fafafa;
+
+  --color-accent: #18181b;
+  --color-accent-foreground: #fafafa;
+
+  --color-destructive: #7f1d1d;
+  --color-destructive-foreground: #fafafa;
+
+  /* Border Radius */
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    border-color: var(--color-border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* 스크롤바 스타일 */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-background);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 3px;
+  }
+}
