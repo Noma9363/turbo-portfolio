@@ -47,6 +47,7 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-geist), var(--font-noto-sans-kr), sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -62,4 +63,14 @@
     background: var(--color-border);
     border-radius: 3px;
   }
+}
+
+/* 커스텀 유틸리티 */
+
+
+@utility font-heading-extra{
+  font-family: var(--font-geist), var(--font-noto-sans-kr);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
 }
