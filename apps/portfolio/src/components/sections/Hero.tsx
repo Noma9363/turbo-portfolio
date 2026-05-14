@@ -65,29 +65,29 @@ export function Hero() {
         {/* 메인 헤드라인 */}
         <motion.h1
           variants={item}
-          className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-none mb-6"
+          className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-none mb-6 text-left"
         >
-          <span className="bg-gradient-to-br from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
-            Hi, I&apos;m
+          <span className="font-heading-extra bg-gradient-to-br from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
+            Hello.
           </span>
           <br />
-          <span className="bg-gradient-to-br from-white to-zinc-300 bg-clip-text text-transparent">
-            Your Name
+          <span className="text-3xl sm:text-4xl md:text-5xl bg-gradient-to-br from-white to-zinc-300 bg-clip-text text-transparent">
+            I&apos;m joy.han
           </span>
         </motion.h1>
 
         {/* 직함 */}
         <motion.p
           variants={item}
-          className="text-xl sm:text-2xl text-muted-foreground font-light mb-6"
+          className="text-left text-xl sm:text-2xl text-muted-foreground font-light mb-6"
         >
-          Full Stack Developer
+          FrontEnd Developer
         </motion.p>
 
         {/* 설명 */}
         <motion.p
           variants={item}
-          className="text-base sm:text-lg text-muted-foreground max-w-xl mx-auto mb-10 leading-relaxed"
+          className="text-base text-left sm:text-lg text-muted-foreground max-w-xl mx-auto mb-10 leading-relaxed"
         >
           I craft clean, performant web experiences with modern technologies.
           Focused on building products that are both beautiful and functional.
