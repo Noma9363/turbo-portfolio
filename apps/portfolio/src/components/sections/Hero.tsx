@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Button } from "@repo/ui";
 import { ArrowDown, Github, Linkedin } from "lucide-react";
+import { Container } from "@/components/Container";
 
 /*
  * Framer Motion 애니메이션 variant 정의.
@@ -41,18 +42,19 @@ export function Hero() {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex flex-col items-center justify-center px-6"
+      className="relative min-h-screen flex flex-col items-start justify-center"
     >
       {/* 배경 그라디언트 (미묘한 글로우 효과) */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-zinc-800/20 blur-[120px]" />
       </div>
 
+      <Container className="relative z-10">
       <motion.div
         variants={container}
         initial="hidden"
         animate="visible"
-        className="relative z-10 max-w-3xl mx-auto text-center"
+        className="max-w-3xl text-start"
       >
         {/* 서브 레이블 */}
         <motion.div variants={item}>
@@ -87,7 +89,7 @@ export function Hero() {
         {/* 설명 */}
         <motion.p
           variants={item}
-          className="text-base sm:text-lg text-muted-foreground max-w-xl mx-auto mb-10 leading-relaxed"
+          className="text-base sm:text-lg text-muted-foreground max-w-xl mb-10 leading-relaxed"
         >
           I craft clean, performant web experiences with modern technologies.
           Focused on building products that are both beautiful and functional.
@@ -96,7 +98,7 @@ export function Hero() {
         {/* CTA 버튼 */}
         <motion.div
           variants={item}
-          className="flex flex-wrap items-center justify-center gap-3 mb-12"
+          className="flex flex-wrap items-center justify-start gap-3 mb-12"
         >
           <Button size="lg" onClick={scrollToProjects}>
             View Projects
@@ -109,7 +111,7 @@ export function Hero() {
         {/* 소셜 링크 */}
         <motion.div
           variants={item}
-          className="flex items-center justify-center gap-4"
+          className="flex items-center justify-start gap-4"
         >
           <a
             href="https://github.com"
@@ -129,6 +131,7 @@ export function Hero() {
           </a>
         </motion.div>
       </motion.div>
+      </Container>
 
       {/* 스크롤 유도 아이콘 */}
       <motion.div

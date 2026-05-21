@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Badge } from "@repo/ui";
+import { Container } from "@/components/Container";
 
 const skills = [
   "TypeScript",
@@ -34,8 +35,8 @@ const fadeUp = {
 
 export function About() {
   return (
-    <section id="about" className="py-32 px-6">
-      <div className="max-w-5xl mx-auto">
+    <section id="about" className="py-32">
+      <Container>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
           {/* 텍스트 영역 */}
           <motion.div
@@ -128,7 +129,7 @@ export function About() {
             </div>
           </motion.div>
         </div>
-      </div>
+      </Container>
     </section>
   );
 }
