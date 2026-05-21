@@ -60,7 +60,7 @@ export function Hero() {
         <motion.div variants={item}>
           <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-border bg-muted text-muted-foreground text-xs font-medium tracking-wider uppercase mb-8">
             <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-            Available for work
+            Ver 0.0.1
           </span>
         </motion.div>
 
@@ -69,12 +69,14 @@ export function Hero() {
           variants={item}
           className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-none mb-6"
         >
-          <span className="bg-gradient-to-br from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
-            Hi, I&apos;m
+          <span className="bg-gradient-to-br from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent
+            scroll-m-20 text-start text-9xl font-extrabold tracking-tight text-balance
+          ">
+            Hello,
           </span>
           <br />
           <span className="bg-gradient-to-br from-white to-zinc-300 bg-clip-text text-transparent">
-            Your Name
+            I&apos;m Joy Han
           </span>
         </motion.h1>
 
@@ -83,7 +85,7 @@ export function Hero() {
           variants={item}
           className="text-xl sm:text-2xl text-muted-foreground font-light mb-6"
         >
-          Full Stack Developer
+          Front End Developer
         </motion.p>
 
         {/* 설명 */}
@@ -91,8 +93,8 @@ export function Hero() {
           variants={item}
           className="text-base sm:text-lg text-muted-foreground max-w-xl mb-10 leading-relaxed"
         >
-          I craft clean, performant web experiences with modern technologies.
-          Focused on building products that are both beautiful and functional.
+          협업 효율을 고민하는 개발자입니다. 프로젝트 구조 설계부터 코드 컨벤션,<br/>
+          디렉토리 관리까지 — 함께 일하기 좋은 코드를 추구합니다.
         </motion.p>
 
         {/* CTA 버튼 */}
@@ -100,7 +102,7 @@ export function Hero() {
           variants={item}
           className="flex flex-wrap items-center justify-start gap-3 mb-12"
         >
-          <Button size="lg" onClick={scrollToProjects}>
+          <Button size="lg" variant="outline" onClick={scrollToProjects}>
             View Projects
           </Button>
           <Button size="lg" variant="outline" onClick={scrollToContact}>
