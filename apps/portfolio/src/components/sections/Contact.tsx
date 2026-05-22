@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Button } from "@repo/ui";
 import { Mail, Github, Linkedin, Twitter, ArrowRight } from "lucide-react";
+import { Container } from "@/components/Container";
 
 const socialLinks = [
   {
@@ -33,8 +34,8 @@ const socialLinks = [
 
 export function Contact() {
   return (
-    <section id="contact" className="py-32 px-6">
-      <div className="max-w-5xl mx-auto">
+    <section id="contact" className="py-32">
+      <Container>
         <div className="max-w-2xl">
           {/* 섹션 헤더 */}
           <motion.div
@@ -137,7 +138,7 @@ export function Contact() {
             Turborepo & Tailwind CSS.
           </p>
         </motion.div>
-      </div>
+      </Container>
     </section>
   );
 }
