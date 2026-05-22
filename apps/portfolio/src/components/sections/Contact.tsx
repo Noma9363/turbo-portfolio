@@ -129,7 +129,7 @@ export function Contact() {
           className="mt-24 pt-8 border-t border-border"
         >
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} Your Name. Built with Next.js,
+            © {new Date().getFullYear()} Joy Han. Built with Next.js,
             Turborepo & Tailwind CSS.
           </p>
         </motion.div>
