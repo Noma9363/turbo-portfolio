@@ -2,20 +2,18 @@
 
 import { motion } from "framer-motion";
 import { Badge } from "@repo/ui";
+import { Container } from "@/components/Container";
+import {SectionLabel} from "@/components/SectionLabel";
 
 const skills = [
   "TypeScript",
+  "JavaScript",
   "React",
   "Next.js",
-  "Node.js",
-  "PostgreSQL",
-  "Prisma",
   "TailwindCSS",
-  "Docker",
-  "Git",
-  "REST API",
-  "GraphQL",
-  "AWS",
+  "Shadcn/ui",
+  "Turborepo"
+
 ];
 
 /*
@@ -34,8 +32,8 @@ const fadeUp = {
 
 export function About() {
   return (
-    <section id="about" className="py-32 px-6">
-      <div className="max-w-5xl mx-auto">
+    <section id="about" className="py-32">
+      <Container>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
           {/* 텍스트 영역 */}
           <motion.div
@@ -44,25 +42,22 @@ export function About() {
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
           >
-            <p className="text-xs font-medium tracking-widest uppercase text-muted-foreground mb-4">
+            <SectionLabel>
               About Me
-            </p>
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-6">
-              Turning ideas into
+            </SectionLabel>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight leading-snug mb-6">
+              아이디어를 코드로,
               <br />
-              <span className="text-muted-foreground">digital reality</span>
+              <span className="text-muted-foreground">코드를 시스템으로</span>
             </h2>
-            <div className="space-y-4 text-muted-foreground leading-relaxed">
+            <div className="space-y-4 text-muted-foreground leading-relaxed max-w-prose">
               <p>
-                I&apos;m a passionate full-stack developer with a love for
-                building clean, accessible web applications. I care deeply about
-                user experience and the details that make software feel
-                polished.
+                React · Next.js로 웹 서비스를 만들고 있습니다.
+                컴포넌트를 설계할 때 재사용성과 확장성을 먼저 고민하고,
+                모노레포 환경에서 공유 UI 라이브러리를 직접 구성한 경험이 있습니다.
               </p>
               <p>
-                When I&apos;m not coding, I enjoy exploring new technologies,
-                contributing to open source, and sharing what I learn with the
-                community.
+                단순히 동작하는 것보다, 다음에도 쓸 수 있는 것을 만드는 것을 중요하게 생각합니다.
               </p>
             </div>
           </motion.div>
@@ -82,9 +77,9 @@ export function About() {
               },
             }}
           >
-            <p className="text-xs font-medium tracking-widest uppercase text-muted-foreground mb-4">
+            <SectionLabel>
               Tech Stack
-            </p>
+            </SectionLabel>
             <div className="flex flex-wrap gap-2">
               {skills.map((skill) => (
                 <motion.div
@@ -105,30 +100,9 @@ export function About() {
               ))}
             </div>
 
-            {/* 간단한 통계 */}
-            <div className="grid grid-cols-3 gap-4 mt-10">
-              {[
-                { value: "3+", label: "Years Experience" },
-                { value: "20+", label: "Projects Built" },
-                { value: "10+", label: "Happy Clients" },
-              ].map((stat) => (
-                <motion.div
-                  key={stat.label}
-                  variants={fadeUp}
-                  className="p-4 rounded-xl border border-border bg-card text-center"
-                >
-                  <div className="text-2xl font-bold text-foreground">
-                    {stat.value}
-                  </div>
-                  <div className="text-xs text-muted-foreground mt-1">
-                    {stat.label}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
           </motion.div>
         </div>
-      </div>
+      </Container>
     </section>
   );
 }

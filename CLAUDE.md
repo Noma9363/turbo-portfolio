@@ -8,7 +8,7 @@ Turborepo 기반 모노레포 포트폴리오. Next.js 15 + Tailwind CSS v4 + Fr
 - **앱**: Next.js 15 (App Router), React 19
 - **스타일**: Tailwind CSS v4 (`@tailwindcss/postcss`)
 - **애니메이션**: Framer Motion v11
-- **컴포넌트**: Shadcn/ui 스타일 (자체 구현, Radix UI + CVA 기반)
+- **컴포넌트**: Shadcn/ui 스타일 (Radix UI + CVA 기반)
 - **UI 개발**: Storybook 8 (`@storybook/react-vite`)
 - **언어**: TypeScript 5
 - **패키지 매니저**: pnpm 10
@@ -22,18 +22,21 @@ turbo-portfolio/
 │       ├── postcss.config.mjs      # @tailwindcss/postcss
 │       └── src/
 │           ├── app/
-│           │   ├── layout.tsx      # 루트 레이아웃, Inter 폰트
+│           │   ├── layout.tsx      # 루트 레이아웃, Geist + Noto Sans KR 폰트
 │           │   ├── page.tsx        # 원페이지 (/ 경로)
-│           │   └── globals.css     # Tailwind v4 + 다크 테마 변수 (@theme)
+│           │   └── globals.css     # Tailwind v4 + 다크 테마 변수 (@theme) + @utility
 │           └── components/
-│               ├── Navigation.tsx          # 고정 네비게이션 (스크롤 감지)
+│               ├── Navigation.tsx          # 고정 네비게이션 (모바일: 풀너비 / 데스크탑: 중앙 pill)
+│               ├── Container.tsx           # 최대 너비(1276px) 레이아웃 래퍼
+│               ├── SectionLabel.tsx        # 섹션 상단 라벨 (uppercase, border-b)
 │               └── sections/
 │                   ├── Hero.tsx            # 히어로 섹션 (stagger 애니메이션)
-│                   ├── About.tsx           # 소개 + 스킬 배지
+│                   ├── About.tsx           # 소개 + 스킬 배지 (한국어 컨텐츠)
 │                   ├── Projects.tsx        # 프로젝트 카드 그리드
 │                   └── Contact.tsx         # 연락처 + 소셜 링크
 ├── packages/
 │   ├── ui/                         # 공유 컴포넌트 라이브러리
+│   │   ├── components.json         # shadcn CLI 설정
 │   │   ├── .storybook/
 │   │   │   ├── main.ts             # Storybook 설정 (Vite + @tailwindcss/vite)
 │   │   │   └── preview.ts          # 다크 배경, styles.css 임포트
@@ -41,12 +44,12 @@ turbo-portfolio/
 │   │       ├── index.ts            # 공개 exports
 │   │       ├── styles.css          # Tailwind v4 + 다크 테마 (Storybook용)
 │   │       ├── lib/utils.ts        # cn() 유틸 (clsx + tailwind-merge)
-│   │       ├── components/
-│   │       │   ├── Button.tsx      # CVA 기반 Button (variant: default/outline/ghost/link/secondary)
-│   │       │   ├── Card.tsx        # Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter
-│   │       │   └── Badge.tsx       # CVA 기반 Badge (variant: default/secondary/outline/muted)
-│   │       └── stories/
-│   │           └── Button.stories.tsx
+│   │       └── components/
+│   │           ├── ui/             # shadcn 원본 컴포넌트 (모든 앱 공통 단일 컴포넌트)
+│   │           │   ├── Button.tsx  # CVA 기반 Button (variant: default/outline/ghost/link/secondary)
+│   │           │   ├── Card.tsx    # Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter
+│   │           │   └── Badge.tsx   # CVA 기반 Badge (variant: default/secondary/outline/muted)
+│   │           └── blocks/         # 복합 컴포넌트 (ui 조합, 여러 앱 공유)
 │   └── typescript-config/          # 공유 tsconfig
 │       ├── base.json
 │       └── nextjs.json
@@ -59,6 +62,23 @@ turbo-portfolio/
 - `@repo/ui` — 공유 UI 컴포넌트
 - `@repo/typescript-config` — 공유 TypeScript 설정
 - `portfolio` — Next.js 앱
+
+## 컴포넌트 관리 원칙
+- `packages/ui/src/components/ui/` — shadcn 원본 + 최소 커스텀, 모든 앱 공통 단일 컴포넌트
+- `packages/ui/src/components/blocks/` — 여러 ui 컴포넌트를 조합한 복합 컴포넌트, 여러 앱 공유
+- `apps/portfolio/src/components/` — portfolio 앱 전용 컴포넌트 (다른 앱에서 쓰지 않는 것)
+- shadcn 컴포넌트 추가: `packages/ui` 에서 `pnpm dlx shadcn@latest add <component>`
+
+## 폰트
+- **영문**: Geist (`--font-geist`)
+- **한글**: Noto Sans KR (`--font-noto-sans-kr`, 자동 폴백)
+- `body`: `font-family: var(--font-geist), var(--font-noto-sans-kr), sans-serif`
+
+## 커스텀 타이포그래피 유틸리티
+`apps/portfolio/src/app/globals.css` 의 `@utility` 블록에서 정의:
+- `font-heading-extra` — Geist 800, tracking -0.02em, line-height 1
+- 새 유틸리티 추가 시 `@utility` 사용 (`@theme` 은 CSS 변수/토큰 전용)
+- 레이아웃/정렬 클래스(`text-left`, `scroll-m-20`, `text-9xl`)는 유틸리티에 포함하지 않음
 
 ## 주요 명령어
 ```bash
@@ -73,6 +93,7 @@ pnpm build            # Next.js 빌드
 
 # packages/ui 에서
 pnpm storybook        # Storybook 개발 서버
+pnpm dlx shadcn@latest add <component>   # shadcn 컴포넌트 추가
 ```
 
 ## 컬러 테마 (다크 미니멀 - Zinc 기반)
@@ -82,6 +103,28 @@ pnpm storybook        # Storybook 개발 서버
 - `--color-card`: `#0f0f11`
 - `--color-border`: `#27272a`
 - `--color-muted-foreground`: `#71717a`
+
+## 멀티 앱 테마 전략
+- 컴포넌트 로직은 `packages/ui` 에서 공유
+- 테마(색상, 폰트, radius)는 각 앱의 `globals.css` `@theme` 에서 독립 관리
+- 새 앱 추가 시: `@repo/ui` 의존성 추가 후 `globals.css` 에 `@theme` 변수만 재정의
+
+## 브랜치 전략
+```
+main
+└── develop
+    ├── feat/ui-restructure   # packages/ui 구조, 공통 설정 (머지 완료)
+    ├── feat/hero             # Hero 섹션 + Container 컴포넌트 (머지 완료)
+    ├── feat/about            # About 섹션 + SectionLabel 컴포넌트 (머지 완료)
+    └── feat/<section>        # 각 섹션별 브랜치
+```
+- `packages/ui` 변경은 `feat/ui-*` 브랜치에서 작업
+- 각 섹션 작업은 `develop` 에서 분기한 `feat/<section>` 브랜치에서 작업
+- 완료 후 `develop` 으로 머지 → 검증 후 `main` 으로 PR
+
+## Navigation 구조
+- **모바일** (`md` 미만): 풀 너비 상단 바, 로고 + 링크, 스크롤 시 배경 생김
+- **데스크탑/태블릿** (`md` 이상): `fixed top-4 left-1/2 -translate-x-1/2` 중앙 pill, 항상 backdrop blur
 
 ## 중요 설정 사항
 - `apps/portfolio/next.config.ts`: `transpilePackages: ['@repo/ui']` — 모노레포에서 UI 패키지 TypeScript 직접 컴파일

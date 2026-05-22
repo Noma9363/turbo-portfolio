@@ -3,6 +3,8 @@
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, Badge, Button } from "@repo/ui";
 import { Github, ExternalLink } from "lucide-react";
+import { Container } from "@/components/Container";
+import {SectionLabel} from "@/components/SectionLabel";
 
 const projects = [
   {
@@ -45,8 +47,8 @@ const projects = [
 
 export function Projects() {
   return (
-    <section id="projects" className="py-32 px-6 bg-muted/10">
-      <div className="max-w-5xl mx-auto">
+    <section id="projects" className="py-32 bg-muted/10">
+      <Container>
         {/* 섹션 헤더 */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -55,11 +57,11 @@ export function Projects() {
           transition={{ duration: 0.7 }}
           className="mb-16"
         >
-          <p className="text-xs font-medium tracking-widest uppercase text-muted-foreground mb-4">
+          <SectionLabel>
             Work
-          </p>
+          </SectionLabel>
           <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
-            Featured Projects
+            핵심 프로젝트
           </h2>
         </motion.div>
 
@@ -160,7 +162,7 @@ export function Projects() {
             </a>
           </Button>
         </motion.div>
-      </div>
+      </Container>
     </section>
   );
 }
