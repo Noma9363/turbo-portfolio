@@ -15,7 +15,7 @@ const notoSansKR = Noto_Sans_KR({
 
 export const metadata: Metadata = {
   title: "Portfolio",
-  description: "Full Stack Developer Portfolio",
+  description: "Front-end Developer Portfolio",
 };
 
 export default function RootLayout({
