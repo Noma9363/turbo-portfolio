@@ -27,6 +27,9 @@
   --color-destructive: #7f1d1d;
   --color-destructive-foreground: #fafafa;
 
+  --color-claude: #D97757;
+  --color-claude-foreground: #fafafa;
+
   /* Border Radius */
   --radius: 0.5rem;
   --radius-sm: 0.25rem;
