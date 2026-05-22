@@ -50,7 +50,7 @@ export function About() {
               <br />
               <span className="text-muted-foreground">코드를 시스템으로</span>
             </h2>
-            <div className="space-y-4 text-muted-foreground leading-relaxed">
+            <div className="space-y-4 text-muted-foreground leading-relaxed max-w-prose">
               <p>
                 React · Next.js로 웹 서비스를 만들고 있습니다.
                 컴포넌트를 설계할 때 재사용성과 확장성을 먼저 고민하고,
