@@ -22,6 +22,8 @@ interface TaskStore {
   addTask: (text: string) => void;
   toggleTask: (id: string) => void;
   deleteTask: (id: string) => void;
+
+  editCategory:(oldName: string, newName: string)=>void;
 }
 
 export const useTaskStore = create<TaskStore>()(
@@ -75,11 +77,24 @@ export const useTaskStore = create<TaskStore>()(
             t.id === id ? { ...t, completed: !t.completed } : t
           ),
         })),
-
       deleteTask: (id) =>
         set((state) => ({
           tasks: state.tasks.filter((t) => t.id !== id),
         })),
+      editCategory: (oldName, newName) => {
+        const { categories, tasks } = get();
+        const trimmed = newName.trim();
+        // 빈 문자열 및 이미 존재하는 이름으로의 변경 방지
+        if (!trimmed || categories.includes(trimmed)) return;
+
+        set({
+          // categories 배열을 순회하면서 oldName과 일치하는 항목만 trimmed로 교체
+          categories: categories.map((c) => c === oldName ? trimmed : c),
+          // tasks 배열을 순회하면서 category 속성이 oldName인 항목의 category만 trimmed로 교체
+          // ...t 로 나머지 속성(id, text, completed 등)은 그대로 유지
+          tasks: tasks.map((t) => t.category === oldName ? { ...t, category: trimmed } : t),
+        });
+      },
     }),
     {
       // localStorage 저장 키
