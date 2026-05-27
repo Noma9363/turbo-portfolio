@@ -6,6 +6,7 @@ import { TodoItem } from "./TodoItem";
 export function TodoList() {
   const { tasks, activeCategory } = useTaskStore();
 
+  // 현재 선택된 카테고리 기준으로 필터링 후 완료/미완료 분리
   const filtered = tasks.filter((t) => t.category === activeCategory);
   const pending = filtered.filter((t) => !t.completed);
   const completed = filtered.filter((t) => t.completed);

@@ -11,6 +11,7 @@ export function TodoItem({ task }: TodoItemProps) {
   const { toggleTask, deleteTask } = useTaskStore();
 
   return (
+    // group: 호버 시 자식 요소(삭제 버튼)를 group-hover로 제어
     <li className="group flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-muted transition-colors">
       {/* 체크박스 */}
       <button

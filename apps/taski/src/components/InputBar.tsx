@@ -10,6 +10,7 @@ export function InputBar() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    // 빈 문자열 제출 방지
     if (!value.trim()) return;
     addTask(value);
     setValue("");

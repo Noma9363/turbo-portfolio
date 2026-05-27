@@ -11,6 +11,7 @@ export function Sidebar() {
   const [isAdding, setIsAdding] = useState(false);
   const [inputValue, setInputValue] = useState("");
 
+  // 미완료 항목만 카운트 (완료된 항목은 뱃지에서 제외)
   const countByCategory = (category: string) =>
     tasks.filter((t) => t.category === category && !t.completed).length;
 
@@ -22,6 +23,7 @@ export function Sidebar() {
     setIsAdding(false);
   };
 
+  // Enter: 확인 / Escape: 입력 취소
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") handleAddConfirm();
     if (e.key === "Escape") {
@@ -44,6 +46,7 @@ export function Sidebar() {
           <div key={category} className="group relative flex items-center">
             <button
               onClick={() => setActiveCategory(category)}
+              // pr-8: 우측 삭제 버튼 공간 확보
               className={`flex items-center justify-between w-full px-3 py-2 rounded-lg text-sm transition-colors cursor-pointer pr-8 ${
                 isActive
                   ? "bg-primary text-primary-foreground font-medium"
