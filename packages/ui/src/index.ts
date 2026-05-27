@@ -14,3 +14,21 @@ export { Badge, badgeVariants } from "./components/ui/Badge";
 export type { BadgeProps } from "./components/ui/Badge";
 
 export { cn } from "./lib/utils";
+
+export {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+  DropdownMenuGroup,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuRadioItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuPortal,
+  DropdownMenuShortcut,
+} from "./components/ui/dropdown-menu";
