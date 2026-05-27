@@ -1,6 +1,7 @@
 "use client";
 
 import { Trash2 } from "lucide-react";
+import { Button } from "@repo/ui";
 import { Task, useTaskStore } from "@/store/taskStore";
 
 interface TodoItemProps {
@@ -13,7 +14,7 @@ export function TodoItem({ task }: TodoItemProps) {
   return (
     // group: 호버 시 자식 요소(삭제 버튼)를 group-hover로 제어
     <li className="group flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-muted transition-colors">
-      {/* 체크박스 */}
+      {/* 체크박스 - 원형 커스텀 UI로 Button 컴포넌트 미적용 */}
       <button
         onClick={() => toggleTask(task.id)}
         className={`shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors cursor-pointer ${
@@ -47,12 +48,13 @@ export function TodoItem({ task }: TodoItemProps) {
       </span>
 
       {/* 삭제 버튼 */}
-      <button
+      <Button
+        variant="ghost"
         onClick={() => deleteTask(task.id)}
-        className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive-foreground transition-all cursor-pointer p-1 rounded"
+        className="opacity-0 group-hover:opacity-100 h-7 w-7 p-0 text-muted-foreground hover:text-destructive-foreground"
       >
         <Trash2 size={14} />
-      </button>
+      </Button>
     </li>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Plus } from "lucide-react";
+import { Button } from "@repo/ui";
 import { useTaskStore } from "@/store/taskStore";
 
 export function InputBar() {
@@ -26,13 +27,14 @@ export function InputBar() {
           placeholder={`${activeCategory} 할 일 추가...`}
           className="flex-1 bg-muted text-foreground text-sm px-4 py-2.5 rounded-lg outline-none placeholder:text-muted-foreground focus:ring-1 focus:ring-ring transition-shadow"
         />
-        <button
+        <Button
           type="submit"
+          variant="default"
           disabled={!value.trim()}
-          className="shrink-0 w-9 h-9 flex items-center justify-center rounded-lg bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed transition-opacity cursor-pointer"
+          className="shrink-0 h-9 w-9 p-0"
         >
           <Plus size={18} />
-        </button>
+        </Button>
       </form>
     </div>
   );

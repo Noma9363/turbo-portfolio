@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Plus, Trash2, X, Check } from "lucide-react";
+import { Button } from "@repo/ui";
 import { useTaskStore } from "@/store/taskStore";
 
 export function Sidebar() {
@@ -44,14 +45,11 @@ export function Sidebar() {
 
         return (
           <div key={category} className="group relative flex items-center">
-            <button
+            <Button
+              variant={isActive ? "default" : "ghost"}
               onClick={() => setActiveCategory(category)}
               // pr-8: 우측 삭제 버튼 공간 확보
-              className={`flex items-center justify-between w-full px-3 py-2 rounded-lg text-sm transition-colors cursor-pointer pr-8 ${
-                isActive
-                  ? "bg-primary text-primary-foreground font-medium"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
-              }`}
+              className="w-full justify-between text-sm font-normal pr-8 h-auto py-2"
             >
               <span>{category}</span>
               {count > 0 && (
@@ -65,16 +63,17 @@ export function Sidebar() {
                   {count}
                 </span>
               )}
-            </button>
+            </Button>
 
             {/* 삭제 버튼 - 카테고리가 2개 이상일 때만 표시 */}
             {categories.length > 1 && (
-              <button
+              <Button
+                variant="ghost"
                 onClick={() => deleteCategory(category)}
-                className="absolute right-2 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive-foreground transition-all cursor-pointer p-0.5 rounded"
+                className="absolute right-1 opacity-0 group-hover:opacity-100 h-6 w-6 p-0 text-muted-foreground hover:text-destructive-foreground"
               >
                 <Trash2 size={12} />
-              </button>
+              </Button>
             )}
           </div>
         );
@@ -92,27 +91,30 @@ export function Sidebar() {
             placeholder="카테고리 이름"
             className="flex-1 bg-muted text-foreground text-sm px-2 py-1.5 rounded-lg outline-none placeholder:text-muted-foreground focus:ring-1 focus:ring-ring min-w-0"
           />
-          <button
+          <Button
+            variant="default"
             onClick={handleAddConfirm}
-            className="shrink-0 p-1.5 rounded-lg bg-primary text-primary-foreground hover:opacity-90 cursor-pointer"
+            className="shrink-0 h-7 w-7 p-0"
           >
             <Check size={12} />
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="ghost"
             onClick={() => { setInputValue(""); setIsAdding(false); }}
-            className="shrink-0 p-1.5 rounded-lg text-muted-foreground hover:bg-muted cursor-pointer"
+            className="shrink-0 h-7 w-7 p-0 text-muted-foreground"
           >
             <X size={12} />
-          </button>
+          </Button>
         </div>
       ) : (
-        <button
+        <Button
+          variant="ghost"
           onClick={() => setIsAdding(true)}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer mt-1"
+          className="justify-start gap-2 text-sm text-muted-foreground mt-1 h-auto py-2"
         >
           <Plus size={14} />
           <span>카테고리 추가</span>
-        </button>
+        </Button>
       )}
     </aside>
   );
