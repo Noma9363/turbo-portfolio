@@ -34,13 +34,43 @@ export interface Task {
 // ─── 기본 카테고리 ────────────────────────────────────────────
 // UUID 대신 고정 id 사용 — localStorage 초기화 시 매번 다른 id 생성 방지
 const DEFAULT_CATEGORIES: Category[] = [
-  { id: "default-work", name: "업무", type: "checklist" },
-  { id: "default-study", name: "학습", type: "checklist" },
-  { id: "default-routine", name: "루틴", type: "checklist" },
+  { id: "default-portfolio", name: "포트폴리오",  type: "section"    },
+  { id: "default-work",      name: "업무",        type: "checklist"  },
+  { id: "default-study",     name: "학습",        type: "checklist"  },
+  { id: "default-routine",   name: "루틴",        type: "checklist"  },
 ];
 
-// TypeScript: DEFAULT_CATEGORIES[0]은 항상 존재하므로 상수로 분리
-const DEFAULT_ACTIVE_ID = "default-work";
+// 섹션 뷰 데모가 첫 화면에 보이도록 포트폴리오 카테고리를 기본 활성화
+const DEFAULT_ACTIVE_ID = "default-portfolio";
+
+// ─── 기본 태스크 (데모용) ─────────────────────────────────────
+// 고정 id — localStorage 초기화 시 중복 생성 방지
+const DEFAULT_TASKS: Task[] = [
+  // ── 포트폴리오 / section ──────────────────────────────────
+  // todo
+  { id: "task-p1", text: "반응형 레이아웃 최적화",       categoryId: "default-portfolio", completed: false, status: "todo",        priority: 3,        createdAt: 1 },
+  { id: "task-p2", text: "Contact 섹션 이메일 연동",     categoryId: "default-portfolio", completed: false, status: "todo",        priority: 4,        createdAt: 2 },
+  { id: "task-p3", text: "다크 모드 색상 변수 정리",     categoryId: "default-portfolio", completed: false, status: "todo",        priority: 2,        createdAt: 3 },
+  // in-progress
+  { id: "task-p4", text: "taski 앱 Vercel 배포",        categoryId: "default-portfolio", completed: false, status: "in-progress", priority: "urgent", createdAt: 4 },
+  { id: "task-p5", text: "포트폴리오 README 작성",       categoryId: "default-portfolio", completed: false, status: "in-progress", priority: 3,        createdAt: 5 },
+  // done
+  { id: "task-p6", text: "드래그앤드롭 구현",            categoryId: "default-portfolio", completed: true,  status: "done",        priority: 4,        createdAt: 6 },
+  { id: "task-p7", text: "카테고리 타입 시스템 구현",    categoryId: "default-portfolio", completed: true,  status: "done",        priority: 3,        createdAt: 7 },
+  { id: "task-p8", text: "Zustand 스토어 설계",          categoryId: "default-portfolio", completed: true,  status: "done",        priority: 2,        createdAt: 8 },
+
+  // ── 업무 / checklist ─────────────────────────────────────
+  { id: "task-w1", text: "주간 보고서 작성",             categoryId: "default-work",      completed: false, status: "todo",                            createdAt: 9  },
+  { id: "task-w2", text: "코드 리뷰 진행",               categoryId: "default-work",      completed: true,  status: "done",                            createdAt: 10 },
+
+  // ── 학습 / checklist ─────────────────────────────────────
+  { id: "task-s1", text: "TypeScript 제네릭 복습",       categoryId: "default-study",     completed: false, status: "todo",                            createdAt: 11 },
+  { id: "task-s2", text: "@dnd-kit 공식 문서 읽기",      categoryId: "default-study",     completed: true,  status: "done",                            createdAt: 12 },
+
+  // ── 루틴 / checklist ─────────────────────────────────────
+  { id: "task-r1", text: "운동 30분",                   categoryId: "default-routine",   completed: false, status: "todo",                            createdAt: 13 },
+  { id: "task-r2", text: "독서 20분",                   categoryId: "default-routine",   completed: false, status: "todo",                            createdAt: 14 },
+];
 
 // ─── 스토어 인터페이스 ────────────────────────────────────────
 
@@ -78,7 +108,7 @@ interface TaskStore {
 export const useTaskStore = create<TaskStore>()(
   persist(
     (set, get) => ({
-      tasks: [],
+      tasks: DEFAULT_TASKS,
       categories: DEFAULT_CATEGORIES,
       activeCategory: DEFAULT_ACTIVE_ID,
 
@@ -211,9 +241,8 @@ export const useTaskStore = create<TaskStore>()(
     }),
     {
       name: "taski-storage",
-      // version 추가: 기존 localStorage 데이터(구 string[] 형식)와 충돌 방지
-      // version이 다르면 저장된 데이터를 버리고 초기값으로 시작
-      version: 2,
+      // version 3: 데모 기본 데이터 추가 — 구 버전 localStorage는 자동 폐기
+      version: 3,
     }
   )
 );
