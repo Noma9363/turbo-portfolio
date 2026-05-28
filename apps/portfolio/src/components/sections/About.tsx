@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Badge } from "@repo/ui";
+import { Download } from "lucide-react";
+import { Badge, Button } from "@repo/ui";
 import { Container } from "@/components/Container";
 import {SectionLabel} from "@/components/SectionLabel";
 
@@ -59,6 +60,23 @@ export function About() {
               <p>
                 단순히 동작하는 것보다, 다음에도 쓸 수 있는 것을 만드는 것을 중요하게 생각합니다.
               </p>
+              <p>
+                요즘은 GSAP을 활용한 인터랙티브 애니메이션과
+                D3 기반 데이터 시각화에 관심이 있습니다.
+                직접 써보면서 모바일 렌더링 이슈나
+                pin 남용으로 인한 성능 저하도 경험했고,
+                그 과정에서 최적화에 대해 고민하게 됐습니다.
+              </p>
+            </div>
+
+            {/* 이력서 다운로드 — 파일 준비 후 href 교체 */}
+            <div className="mt-8">
+              <Button asChild variant="outline" size="sm" className="gap-2">
+                <a href="/resume.pdf" download>
+                  <Download size={14} />
+                  이력서 다운로드
+                </a>
+              </Button>
             </div>
           </motion.div>
 
