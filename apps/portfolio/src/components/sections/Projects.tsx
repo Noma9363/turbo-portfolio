@@ -8,12 +8,13 @@ import {SectionLabel} from "@/components/SectionLabel";
 
 const projects = [
   {
-    title: "Project Alpha",
+    title: "TASKI TODO",
     description:
-      "A modern SaaS platform with real-time collaboration features. Built for teams to manage workflows and communicate efficiently.",
-    tags: ["Next.js", "TypeScript", "Prisma", "PostgreSQL", "Tailwind"],
-    github: "https://github.com",
-    live: "https://example.com",
+      "카테고리별로 흩어진 할 일을 하나의 앱에서 관리하기 위해 만든 스케줄러.\n" +
+        "Todo · Section · Kanban 세 가지 뷰를 지원합니다.",
+    tags: ["Next.js", "TypeScript", "Tailwind", "DnD-Kit", "Zustand", "Framer Motion"],
+    github: "https://github.com/Noma9363/turbo-portfolio/tree/main/apps/taski",
+    live: "https://turbo-portfolio-taski.vercel.app",
     featured: true,
   },
   {
