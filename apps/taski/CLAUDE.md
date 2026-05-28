@@ -10,6 +10,7 @@ Next.js 15 + Tailwind CSS v4 + Zustand 기반의 다크 미니멀 테마.
 - **스타일**: Tailwind CSS v4 (`@tailwindcss/postcss`)
 - **상태 관리**: Zustand v5 (`persist` 미들웨어로 localStorage 자동 저장)
 - **공유 컴포넌트**: `@repo/ui` (Button, ButtonGroup, DropdownMenu 등 — shadcn 기반)
+- **DnD**: `@dnd-kit/core` + `@dnd-kit/sortable` + `@dnd-kit/utilities`
 - **언어**: TypeScript 5
 - **포트**: `localhost:3001`
 
@@ -36,7 +37,7 @@ apps/taski/
     │   ├── SectionTodoList.tsx     # 섹션 뷰 래퍼 (selectedIds state 보유)
     │   ├── SectionView.tsx         # 섹션 뷰 (접기/펼치기 + 우선도 드롭다운)
     │   ├── SectionAddInput.tsx     # 섹션 뷰 툴바 (일정 추가 / 상태 변경 / 삭제)
-    │   ├── KanbanView.tsx          # (예정) 칸반 뷰
+    │   ├── KanbanView.tsx          # 칸반 뷰 (3컬럼 + DnD)
     │   │
     │   ├── TodoItem.tsx            # 체크리스트 단일 아이템
     │   └── InputBar.tsx            # 하단 입력바 (checklist 타입일 때만 렌더)
@@ -99,6 +100,7 @@ interface Task {
 | `moveTask(id, status)` | status 변경 + completed 동기화 |
 | `setPriority(id, priority?)` | 우선도 설정. undefined 전달 시 해제 |
 | `deleteTask(id)` | 할 일 삭제 |
+| `reorderTasks(activeId, overId)` | DnD 순서 변경 — flat 배열에서 splice로 위치 교환 |
 
 ### localStorage
 `persist` 미들웨어로 `taski-storage` 키에 자동 저장. `version: 2` — 구 형식(string[]) 충돌 방지.
@@ -174,6 +176,49 @@ const toggle = (status: TaskStatus) => {
 };
 // Set 안에 있으면 접힌 것, 없으면 펼쳐진 것
 ```
+
+## DnD 패턴 (`@dnd-kit`)
+
+### 공통 구조
+```tsx
+// 모든 뷰 동일 패턴
+<DndContext sensors={sensors} collisionDetection={...} onDragStart onDragOver onDragEnd>
+  <SortableContext items={ids} strategy={verticalListSortingStrategy}>
+    {items.map(item => <SortableItem key={item.id} ... />)}
+  </SortableContext>
+  <DragOverlay>{activeItem && <SimplePreview />}</DragOverlay>
+</DndContext>
+```
+
+### PointerSensor 설정
+```ts
+// 5px 이동 후 드래그 시작 — 클릭(체크박스, 버튼)과 드래그 오작동 방지
+useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
+```
+
+### 멀티 컨테이너 DnD (SectionView / KanbanView)
+```ts
+// onDragOver — 낙관적 업데이트: 다른 섹션/컬럼으로 넘어가면 즉시 moveTask 호출
+const overStatus = STATUSES.includes(overId) ? overId : tasks.find(t => t.id === overId)?.status;
+if (overStatus && draggingTask.status !== overStatus) moveTask(activeId, overStatus);
+
+// onDragEnd — 같은 컨테이너 내 reorder만 처리 (cross-container는 onDragOver에서 완료)
+if (updatedActiveTask.status === overTask.status) reorderTasks(activeId, overId);
+```
+
+### DroppableSection / KanbanColumn
+```tsx
+// 빈 섹션/컬럼도 드롭 타깃이 되도록 useDroppable 적용 + min-h 확보
+function DroppableSection({ status, children }) {
+  const { setNodeRef } = useDroppable({ id: status }); // id = TaskStatus 문자열
+  return <div ref={setNodeRef} className="min-h-[32px]">{children}</div>;
+}
+```
+
+### DragOverlay
+- `SortableContext` 밖에서 렌더 → `useSortable` 사용 불가
+- 컴포넌트 재사용 대신 간단한 `<div>` 프리뷰로 대체
+- 드래그 중 원본 아이템은 `isDragging ? "opacity-40" : ""` 처리
 
 ## 컬러 테마 (`globals.css @theme`)
 | 변수 | 값 | 용도 |
