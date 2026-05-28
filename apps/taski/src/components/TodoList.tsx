@@ -1,15 +1,21 @@
 "use client";
 
 import { useTaskStore } from "@/store/taskStore";
-import { TodoItem } from "./TodoItem";
+import {SectionView} from "@/components/SectionView";
+import {KanbanView} from "@/components/KanbanView";
+import {ChecklistView} from "@/components/ChecklistView";
 
 export function TodoList() {
-  const { tasks, activeCategory } = useTaskStore();
+  const { tasks, activeCategory, categories } = useTaskStore();
 
   // 현재 선택된 카테고리 기준으로 필터링 후 완료/미완료 분리
-  const filtered = tasks.filter((t) => t.category === activeCategory);
+  // activeCategory는 Category.id — category 이름이 아닌 id로 비교
+  const filtered = tasks.filter((t) => t.categoryId === activeCategory);
   const pending = filtered.filter((t) => !t.completed);
   const completed = filtered.filter((t) => t.completed);
+
+  // 카테고리 분기
+  const currentCategory = categories.find(c => c.id === activeCategory); // 활성화된 카테고리의 타입 추출
 
   if (filtered.length === 0) {
     return (
@@ -21,24 +27,10 @@ export function TodoList() {
     );
   }
 
-  return (
-    <ul className="flex-1 overflow-y-auto px-2 py-2 flex flex-col gap-0.5">
-      {pending.map((task) => (
-        <TodoItem key={task.id} task={task} />
-      ))}
-
-      {completed.length > 0 && (
-        <>
-          <li className="px-4 pt-4 pb-1">
-            <span className="text-xs text-muted-foreground uppercase tracking-widest">
-              완료 {completed.length}
-            </span>
-          </li>
-          {completed.map((task) => (
-            <TodoItem key={task.id} task={task} />
-          ))}
-        </>
-      )}
-    </ul>
-  );
+  // 타입에 따라 컴포넌트 렌더
+  switch (currentCategory?.type){
+    case "section": return <SectionView tasks={filtered} />
+    case "kanban" : return <KanbanView tasks={filtered} />
+    default: return <ChecklistView pending={pending} completed={completed} />
+  }
 }

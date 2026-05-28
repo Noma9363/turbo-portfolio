@@ -1,3 +1,5 @@
+"use client";
+
 import {Button} from "@repo/ui";
 import {Check, X} from "lucide-react";
 

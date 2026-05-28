@@ -7,7 +7,10 @@ import { useTaskStore } from "@/store/taskStore";
 
 export function InputBar() {
   const [value, setValue] = useState("");
-  const { addTask, activeCategory } = useTaskStore();
+  const { addTask, activeCategory, categories } = useTaskStore();
+
+  // activeCategory는 id — placeholder에 표시할 이름을 categories에서 찾아옴
+  const activeName = categories.find((c) => c.id === activeCategory)?.name ?? "";
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,7 +27,7 @@ export function InputBar() {
           type="text"
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          placeholder={`${activeCategory} 할 일 추가...`}
+          placeholder={`${activeName} 할 일 추가...`}
           className="flex-1 bg-muted text-foreground text-sm px-4 py-2.5 rounded-lg outline-none placeholder:text-muted-foreground focus:ring-1 focus:ring-ring transition-shadow"
         />
         <Button
