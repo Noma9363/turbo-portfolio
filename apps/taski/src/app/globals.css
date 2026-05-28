@@ -23,8 +23,12 @@
   --color-secondary: #18181b;
   --color-secondary-foreground: #fafafa;
 
-  --color-accent: #18181b;
+  /* popover보다 밝게 설정해 드롭다운 아이템 호버 시 구분 가능 */
+  --color-accent: #27272a;
   --color-accent-foreground: #fafafa;
+
+  --color-popover: #18181b;
+  --color-popover-foreground: #fafafa;
 
   --color-destructive: #7f1d1d;
   --color-destructive-foreground: #fafafa;

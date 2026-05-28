@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Plus, X, Check, MoreVertical } from "lucide-react";
 import { Button } from "@repo/ui";
 import { useTaskStore } from "@/store/taskStore";
+import {ActionButton} from "@/components/ActionButton";
+import {SideBarEditInput} from "@/components/SidebarEditInput";
 
 export function Sidebar() {
   const { tasks, categories, activeCategory, setActiveCategory, addCategory, deleteCategory, editCategory } =
@@ -80,36 +82,20 @@ export function Sidebar() {
         // 현재 map의 category가 편집 중인 항목이면 인라인 입력창으로 교체
         if (editingCategory === category) {
           return (
-            <div key={category} className="flex items-center gap-1 px-1">
-              <input
-                autoFocus
-                type="text"
-                value={inputEditValue}
-                onChange={(e) => setInputEditValue(e.target.value)}
-                onKeyDown={handleEditKeyDown}
-                className="flex-1 bg-muted text-foreground text-sm px-2 py-1.5 rounded-lg outline-none placeholder:text-muted-foreground focus:ring-1 focus:ring-ring min-w-0"
+              <SideBarEditInput
+                  key={category}
+                  inputEditValue={inputEditValue}
+                  onChange={(e) => setInputEditValue(e.target.value)}
+                  onKeyDown={handleEditKeyDown}
+                  onConfirm={handleEditConfirm}
+                  onCancel={()=>{setInputEditValue(""); setEditingCategory(null);}}
               />
-              <Button
-                variant="default"
-                onClick={handleEditConfirm}
-                className="shrink-0 h-7 w-7 p-0"
-              >
-                <Check size={12} />
-              </Button>
-              <Button
-                variant="ghost"
-                onClick={() => { setInputEditValue(""); setEditingCategory(null); }}
-                className="shrink-0 h-7 w-7 p-0 text-muted-foreground"
-              >
-                <X size={12} />
-              </Button>
-            </div>
           );
         }
 
         // 일반 상태 - 카테고리 탭 + 호버 시 편집 버튼 노출
         return (
-          <div key={category} className="group relative flex items-center">
+          <div key={category} className="group/category relative flex items-center">
             <Button
               variant={isActive ? "default" : "ghost"}
               onClick={() => setActiveCategory(category)}
@@ -119,7 +105,7 @@ export function Sidebar() {
               <span>{category}</span>
               {count > 0 && (
                 <span
-                  className={`text-xs px-1.5 py-0.5 rounded-full ${
+                  className={`text-xs aspect-square min-w-[1.25rem] flex items-center justify-center rounded-full ${
                     isActive
                       ? "bg-primary-foreground/20 text-primary-foreground"
                       : "bg-muted text-muted-foreground"
@@ -131,13 +117,15 @@ export function Sidebar() {
             </Button>
 
             {/* 편집 버튼 - 호버 시 노출, 클릭 시 해당 category를 편집 모드로 전환 */}
-            <Button
-              variant="ghost"
-              onClick={() => handleEditStart(category)}
-              className="absolute right-1 opacity-0 group-hover:opacity-100 h-6 w-6 p-0 text-muted-foreground"
-            >
-              <MoreVertical size={12} />
-            </Button>
+            {/* 활성 시 배경이 흰색이므로 아이콘도 어두운 색으로, 비활성 시 muted 색 */}
+            <ActionButton
+              onEdit={() => handleEditStart(category)}
+              onDelete={() => deleteCategory(category)}
+              className={isActive
+                ? "text-primary-foreground/60 hover:text-primary-foreground"
+                : "text-muted-foreground hover:text-foreground"
+              }
+            />
           </div>
         );
       })}
