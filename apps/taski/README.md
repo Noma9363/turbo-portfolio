@@ -2,7 +2,7 @@
 
 > Turborepo 모노레포(`turbo-portfolio`) 내 일정 관리 앱
 
-다크 미니멀 테마의 할 일 관리 앱. 카테고리 타입(체크리스트 / 섹션 / 칸반)에 따라 다른 레이아웃을 렌더링하며, 드래그앤드롭으로 순서 및 상태를 변경할 수 있다.
+다크 미니멀 테마의 할 일 관리 앱입니다. 카테고리 타입(체크리스트 / 섹션 / 칸반)에 따라 다른 레이아웃을 렌더링하며, 드래그앤드롭으로 순서 및 상태를 변경할 수 있습니다.
 
 **Demo**: _추가 예정_
 
@@ -32,7 +32,7 @@ _추가 예정_
 ### 카테고리
 - 추가 / 이름 편집 / 삭제 (최소 1개 유지)
 - 타입 선택: **체크리스트** · **섹션** · **칸반**
-- id 기반 참조 — 이름 변경 시 태스크 데이터 영향 없음
+- id 기반 참조 — 이름 변경 시 태스크 데이터에 영향이 없습니다
 
 ### 체크리스트 뷰
 - 완료 / 미완료 섹션 분리
@@ -98,9 +98,9 @@ apps/taski/src/
 
 ### 1. `packages/ui`에 shadcn 컴포넌트 설치 후 경로 오류
 
-shadcn CLI는 컴포넌트 설치 시 `@/lib/utils`와 `@/components/ui/...` 같은 절대 경로 alias를 사용한다. `apps/`가 아닌 `packages/ui`에 설치하면 이 alias가 존재하지 않아 런타임 오류가 발생한다.
+shadcn CLI는 컴포넌트 설치 시 `@/lib/utils`와 `@/components/ui/...` 같은 절대 경로 alias를 사용합니다. `apps/`가 아닌 `packages/ui`에 설치하면 이 alias가 존재하지 않아 런타임 오류가 발생합니다.
 
-**해결**: 설치 후 수동으로 상대 경로로 교체.
+**해결**: 설치 후 수동으로 상대 경로로 교체합니다.
 
 ```ts
 // ❌ 설치 직후
@@ -114,9 +114,9 @@ import { Separator } from "./separator"
 
 ### 2. shadcn CLI가 기존 `button.tsx` 덮어쓰기 시도
 
-`button-group` 설치 시 의존성으로 `button.tsx`도 함께 설치하려 해 커스텀 Button이 덮어써질 뻔했다.
+`button-group` 설치 시 의존성으로 `button.tsx`도 함께 설치하려 해 커스텀 Button이 덮어써질 뻔했습니다.
 
-**해결**: CLI의 덮어쓰기 프롬프트에서 `N` 입력으로 스킵.
+**해결**: CLI의 덮어쓰기 프롬프트에서 `N` 입력으로 스킵합니다.
 
 ```bash
 echo "N" | pnpm dlx shadcn@latest add button-group
@@ -124,17 +124,17 @@ echo "N" | pnpm dlx shadcn@latest add button-group
 
 ### 3. `"use client"` 누락으로 서버 컴포넌트 오류
 
-Zustand나 이벤트 핸들러를 사용하는 컴포넌트에 `"use client"` 선언이 빠지면 Next.js App Router에서 빌드 오류가 발생한다.
+Zustand나 이벤트 핸들러를 사용하는 컴포넌트에 `"use client"` 선언이 빠지면 Next.js App Router에서 빌드 오류가 발생합니다.
 
-**기준**: `useState`, `useEffect`, Zustand hook, 이벤트 핸들러(`onClick` 등) 중 하나라도 사용하면 `"use client"` 필요.
+**기준**: `useState`, `useEffect`, Zustand hook, 이벤트 핸들러(`onClick` 등) 중 하나라도 사용하면 `"use client"` 선언이 필요합니다.
 
 누락됐던 파일: `ActionButton.tsx`, `SidebarEditInput.tsx`
 
 ### 4. Zustand `persist` + localStorage 버전 충돌
 
-Category 타입을 `string`에서 `{ id, name, type }` 객체로 변경했을 때, 기존 localStorage 데이터 형식이 달라 파싱 오류가 발생했다.
+Category 타입을 `string`에서 `{ id, name, type }` 객체로 변경했을 때, 기존 localStorage 데이터 형식이 달라 파싱 오류가 발생했습니다.
 
-**해결**: `version: 2` 로 올려 구 형식 데이터를 자동 폐기.
+**해결**: `version: 2`로 올려 구 형식 데이터를 자동 폐기합니다.
 
 ```ts
 persist(fn, { name: "taski-storage", version: 2 })
@@ -142,9 +142,9 @@ persist(fn, { name: "taski-storage", version: 2 })
 
 ### 5. `DragOverlay` 내부에서 `useSortable` 사용 불가
 
-`DragOverlay`는 `SortableContext` 외부에 렌더되므로, 내부에서 `useSortable`을 쓰는 컴포넌트를 그대로 재사용하면 오류가 발생한다.
+`DragOverlay`는 `SortableContext` 외부에 렌더되므로, 내부에서 `useSortable`을 쓰는 컴포넌트를 그대로 재사용하면 오류가 발생합니다.
 
-**해결**: DragOverlay 내부는 `useSortable` 없는 간단한 `<div>` 프리뷰로 대체.
+**해결**: DragOverlay 내부는 `useSortable` 없는 간단한 `<div>` 프리뷰로 대체합니다.
 
 ```tsx
 <DragOverlay>
@@ -159,9 +159,9 @@ persist(fn, { name: "taski-storage", version: 2 })
 
 ### 6. 드래그 시 클릭 이벤트(체크박스) 오작동
 
-`PointerSensor` 기본 설정은 포인터가 닿는 순간 드래그를 시작해, 체크박스 클릭이 드래그로 인식되는 문제가 있었다.
+`PointerSensor` 기본 설정은 포인터가 닿는 순간 드래그를 시작해, 체크박스 클릭이 드래그로 인식되는 문제가 있었습니다.
 
-**해결**: `activationConstraint`로 5px 이상 이동 시에만 드래그 시작.
+**해결**: `activationConstraint`로 5px 이상 이동 시에만 드래그를 시작하도록 설정합니다.
 
 ```ts
 useSensor(PointerSensor, {
@@ -171,9 +171,9 @@ useSensor(PointerSensor, {
 
 ### 7. TypeScript strict — 배열 첫 번째 요소 `possibly undefined`
 
-`DEFAULT_CATEGORIES[0].id`를 직접 참조하면 TypeScript strict 모드에서 `possibly undefined` 오류가 발생했다.
+`DEFAULT_CATEGORIES[0].id`를 직접 참조하면 TypeScript strict 모드에서 `possibly undefined` 오류가 발생했습니다.
 
-**해결**: 고정 id를 상수로 분리.
+**해결**: 고정 id를 상수로 분리합니다.
 
 ```ts
 // ❌
@@ -195,4 +195,4 @@ taski-storage (localStorage)
 └── activeCategory: string (Category.id)
 ```
 
-`version: 2` — 구 형식 데이터와의 충돌 방지. 버전이 다르면 초기값으로 리셋.
+`version: 2` — 구 형식 데이터와의 충돌을 방지합니다. 버전이 다르면 저장된 데이터를 폐기하고 초기값으로 시작합니다.
