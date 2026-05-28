@@ -28,21 +28,21 @@ apps/taski/
     ├── components/
     │   ├── Sidebar.tsx             # 카테고리 목록, 추가/편집/삭제
     │   ├── SidebarEditInput.tsx    # 카테고리 인라인 편집 입력창
-    │   ├── SidebarItem.tsx         # (예정) 카테고리 단일 아이템
+    │   ├── SidebarItem.tsx         # 카테고리 단일 아이템 (빈 컴포넌트)
     │   ├── ActionButton.tsx        # MoreVertical → DropdownMenu
     │   ├── CategoryAddInput.tsx    # 카테고리 추가 + 타입 선택 (체크/섹션/칸반)
     │   │
     │   ├── TodoList.tsx            # 카테고리 타입별 switch 분기 라우터
-    │   ├── ChecklistView.tsx       # 체크리스트 뷰 (완료/미완료 섹션)
+    │   ├── ChecklistView.tsx       # 체크리스트 뷰 (완료/미완료 섹션) + DnD
     │   ├── SectionTodoList.tsx     # 섹션 뷰 래퍼 (selectedIds state 보유)
-    │   ├── SectionView.tsx         # 섹션 뷰 (접기/펼치기 + 우선도 드롭다운)
+    │   ├── SectionView.tsx         # 섹션 뷰 (접기/펼치기 + 우선도 드롭다운) + DnD
     │   ├── SectionAddInput.tsx     # 섹션 뷰 툴바 (일정 추가 / 상태 변경 / 삭제)
-    │   ├── KanbanView.tsx          # 칸반 뷰 (3컬럼 + DnD)
+    │   ├── KanbanView.tsx          # 칸반 뷰 (3컬럼 레이아웃) + DnD
     │   │
-    │   ├── TodoItem.tsx            # 체크리스트 단일 아이템
+    │   ├── TodoItem.tsx            # 체크리스트 단일 아이템 (useSortable 포함)
     │   └── InputBar.tsx            # 하단 입력바 (checklist 타입일 때만 렌더)
     └── store/
-        └── taskStore.ts            # Zustand 스토어 (persist, version: 2)
+        └── taskStore.ts            # Zustand 스토어 (persist, version: 3)
 ```
 
 ## 주요 명령어
@@ -84,9 +84,9 @@ interface Task {
 ### 상태
 | 상태 | 타입 | 설명 |
 |------|------|------|
-| `tasks` | `Task[]` | 전체 할 일 목록 |
-| `categories` | `Category[]` | 카테고리 목록 (기본: 업무/학습/루틴, type: checklist) |
-| `activeCategory` | `string` | 현재 선택된 Category.id |
+| `tasks` | `Task[]` | 전체 할 일 목록 (데모 기본 데이터 포함) |
+| `categories` | `Category[]` | 카테고리 목록 (기본: 포트폴리오/업무/학습/루틴) |
+| `activeCategory` | `string` | 현재 선택된 Category.id (기본: "default-portfolio") |
 
 ### 액션
 | 액션 | 설명 |
@@ -103,17 +103,32 @@ interface Task {
 | `reorderTasks(activeId, overId)` | DnD 순서 변경 — flat 배열에서 splice로 위치 교환 |
 
 ### localStorage
-`persist` 미들웨어로 `taski-storage` 키에 자동 저장. `version: 2` — 구 형식(string[]) 충돌 방지.
+`persist` 미들웨어로 `taski-storage` 키에 자동 저장.
+`version: 3` — 버전이 다르면 저장된 데이터를 버리고 초기값(데모 데이터)으로 시작.
+
+### 기본 데이터 (version: 3)
+```
+포트폴리오 (section) — 첫 화면
+  할 일:    반응형 레이아웃 최적화(3), Contact 이메일 연동(4), 다크모드 색상 정리(2)
+  진행 중:  taski Vercel 배포(urgent), 포트폴리오 README 작성(3)
+  완료:     드래그앤드롭 구현(4), 카테고리 타입 시스템(3), Zustand 스토어 설계(2)
+업무 (checklist): 주간 보고서 작성, 코드 리뷰 진행(완료)
+학습 (checklist): TypeScript 제네릭 복습, @dnd-kit 문서(완료)
+루틴 (checklist): 운동 30분, 독서 20분
+```
 
 ## 컴포넌트 아키텍처
 
 ### TodoList 분기 패턴
 ```tsx
 // TodoList.tsx — 타입별 switch 분기 (라우터 역할)
+// section/kanban: 태스크 없어도 툴바 보여야 하므로 빈 상태 얼리 리턴 제외
 switch (currentCategory?.type) {
   case "section": return <SectionTodoList tasks={filtered} />
   case "kanban":  return <KanbanView tasks={filtered} />
-  default:        return <ChecklistView pending={pending} completed={completed} />
+  default:
+    if (filtered.length === 0) return <EmptyMessage />  // checklist만 빈 상태 처리
+    return <ChecklistView pending={pending} completed={completed} />
 }
 ```
 
@@ -255,3 +270,8 @@ function DroppableSection({ status, children }) {
 | `ButtonGroupSeparator` | 버튼 그룹 구분선 |
 | `ButtonGroupText` | 버튼 그룹 텍스트 |
 | `Card`, `Badge` | 공통 UI |
+
+## 버그 수정 기록
+| 증상 | 원인 | 수정 |
+|------|------|------|
+| 섹션/칸반 카테고리 신규 생성 시 툴바(SectionAddInput) 미표시 | `TodoList`에서 `filtered.length === 0` 얼리 리턴이 switch 전에 위치 | 빈 상태 처리를 checklist case 안으로 이동 |
