@@ -1,7 +1,7 @@
 "use client";
 
 import { useTaskStore } from "@/store/taskStore";
-import {SectionView} from "@/components/SectionView";
+import {SectionTodoList} from "@/components/SectionTodoList";
 import {KanbanView} from "@/components/KanbanView";
 import {ChecklistView} from "@/components/ChecklistView";
 
@@ -29,7 +29,7 @@ export function TodoList() {
 
   // 타입에 따라 컴포넌트 렌더
   switch (currentCategory?.type){
-    case "section": return <SectionView tasks={filtered} />
+    case "section": return <SectionTodoList tasks={filtered} />
     case "kanban" : return <KanbanView tasks={filtered} />
     default: return <ChecklistView pending={pending} completed={completed} />
   }

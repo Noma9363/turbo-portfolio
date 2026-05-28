@@ -1,38 +1,47 @@
 # taski
 
 ## 앱 개요
-Turborepo 모노레포(`turbo-portfolio`) 내 `apps/taski` 에 위치한 일정 관리 투두리스트 앱.
+Turborepo 모노레포(`turbo-portfolio`) 내 `apps/taski` 에 위치한 일정 관리 앱.
 Next.js 15 + Tailwind CSS v4 + Zustand 기반의 다크 미니멀 테마.
+카테고리 타입(체크리스트/섹션/칸반)에 따라 다른 레이아웃 렌더링.
 
 ## 기술 스택
 - **프레임워크**: Next.js 15 (App Router), React 19
 - **스타일**: Tailwind CSS v4 (`@tailwindcss/postcss`)
 - **상태 관리**: Zustand v5 (`persist` 미들웨어로 localStorage 자동 저장)
-- **공유 컴포넌트**: `@repo/ui` (Button, DropdownMenu 등 — shadcn 기반)
+- **공유 컴포넌트**: `@repo/ui` (Button, ButtonGroup, DropdownMenu 등 — shadcn 기반)
 - **언어**: TypeScript 5
 - **포트**: `localhost:3001`
 
 ## 프로젝트 구조
 ```
 apps/taski/
-├── next.config.ts          # transpilePackages: ['@repo/ui']
-├── postcss.config.mjs      # @tailwindcss/postcss
-├── tsconfig.json           # @repo/typescript-config/nextjs.json 상속
+├── next.config.ts
+├── postcss.config.mjs
+├── tsconfig.json
 └── src/
     ├── app/
-    │   ├── layout.tsx          # 루트 레이아웃 (Geist + Noto Sans KR)
-    │   ├── page.tsx            # 진입점 — Sidebar + TodoList + InputBar 조합
-    │   └── globals.css         # Tailwind v4 + 다크 테마 변수 (@theme)
+    │   ├── layout.tsx
+    │   ├── page.tsx            # Sidebar + TodoList + InputBar (Server Component)
+    │   └── globals.css
     ├── components/
-    │   ├── Sidebar.tsx         # 카테고리 탭 목록, 추가/편집/삭제 UI
-    │   ├── SidebarEditInput.tsx # 카테고리 인라인 편집 입력창 (분리된 컴포넌트)
-    │   ├── SidebarItem.tsx     # 카테고리 탭 단일 아이템
-    │   ├── ActionButton.tsx    # MoreVertical → DropdownMenu (이름 변경 / 삭제)
-    │   ├── TodoList.tsx        # 카테고리 필터링 + 완료/미완료 섹션 분리
-    │   ├── TodoItem.tsx        # 할 일 단일 아이템 (체크박스 + 삭제)
-    │   └── InputBar.tsx        # 하단 고정 할 일 입력바
+    │   ├── Sidebar.tsx             # 카테고리 목록, 추가/편집/삭제
+    │   ├── SidebarEditInput.tsx    # 카테고리 인라인 편집 입력창
+    │   ├── SidebarItem.tsx         # (예정) 카테고리 단일 아이템
+    │   ├── ActionButton.tsx        # MoreVertical → DropdownMenu
+    │   ├── CategoryAddInput.tsx    # 카테고리 추가 + 타입 선택 (체크/섹션/칸반)
+    │   │
+    │   ├── TodoList.tsx            # 카테고리 타입별 switch 분기 라우터
+    │   ├── ChecklistView.tsx       # 체크리스트 뷰 (완료/미완료 섹션)
+    │   ├── SectionTodoList.tsx     # 섹션 뷰 래퍼 (selectedIds state 보유)
+    │   ├── SectionView.tsx         # 섹션 뷰 (접기/펼치기 + 우선도 드롭다운)
+    │   ├── SectionAddInput.tsx     # 섹션 뷰 툴바 (일정 추가 / 상태 변경 / 삭제)
+    │   ├── KanbanView.tsx          # (예정) 칸반 뷰
+    │   │
+    │   ├── TodoItem.tsx            # 체크리스트 단일 아이템
+    │   └── InputBar.tsx            # 하단 입력바 (checklist 타입일 때만 렌더)
     └── store/
-        └── taskStore.ts        # Zustand 스토어 (persist)
+        └── taskStore.ts            # Zustand 스토어 (persist, version: 2)
 ```
 
 ## 주요 명령어
@@ -47,26 +56,124 @@ pnpm build            # Next.js 빌드
 
 ## Zustand 스토어 구조 (`taskStore.ts`)
 
+### 타입
+```ts
+type CategoryType = "checklist" | "section" | "kanban"
+
+interface Category {
+  id: string        // crypto.randomUUID() — 이름 변경에 영향 없음
+  name: string
+  type: CategoryType
+}
+
+type TaskStatus   = "todo" | "in-progress" | "done"
+type TaskPriority = 1 | 2 | 3 | 4 | 5 | "urgent"
+
+interface Task {
+  id: string
+  text: string
+  categoryId: string    // Category.id 참조
+  completed: boolean    // checklist용
+  status: TaskStatus    // section/kanban용 (기본값 "todo")
+  priority?: TaskPriority  // 우선도 (선택, 미설정 시 undefined)
+  createdAt: number
+}
+```
+
 ### 상태
 | 상태 | 타입 | 설명 |
 |------|------|------|
 | `tasks` | `Task[]` | 전체 할 일 목록 |
-| `categories` | `string[]` | 카테고리 목록 (기본: 업무/학습/루틴) |
-| `activeCategory` | `string` | 현재 선택된 카테고리 |
+| `categories` | `Category[]` | 카테고리 목록 (기본: 업무/학습/루틴, type: checklist) |
+| `activeCategory` | `string` | 현재 선택된 Category.id |
 
 ### 액션
 | 액션 | 설명 |
 |------|------|
-| `setActiveCategory` | 카테고리 탭 전환 |
-| `addCategory(name)` | 카테고리 추가 (중복/빈 값 방지) |
-| `deleteCategory(name)` | 카테고리 삭제 + 해당 할 일 함께 삭제, 최소 1개 유지 |
-| `editCategory(oldName, newName)` | 카테고리 이름 변경 + 연결된 tasks category 동기화 |
-| `addTask(text)` | 현재 활성 카테고리로 할 일 추가 |
-| `toggleTask(id)` | 완료 ↔ 미완료 토글 |
+| `setActiveCategory(id)` | 카테고리 탭 전환 |
+| `addCategory(name, type)` | 카테고리 추가 (중복/빈 값 방지) |
+| `deleteCategory(id)` | 카테고리 삭제 + 해당 tasks 삭제, 최소 1개 유지 |
+| `editCategory(id, newName)` | 이름 변경 (tasks는 id 참조라 수정 불필요) |
+| `addTask(text, status?)` | 현재 카테고리로 추가. status 생략 시 "todo" |
+| `toggleTask(id)` | completed 토글 + status 동기화 (done ↔ todo) |
+| `moveTask(id, status)` | status 변경 + completed 동기화 |
+| `setPriority(id, priority?)` | 우선도 설정. undefined 전달 시 해제 |
 | `deleteTask(id)` | 할 일 삭제 |
 
 ### localStorage
-`persist` 미들웨어로 `taski-storage` 키에 자동 저장. 새로고침해도 데이터 유지.
+`persist` 미들웨어로 `taski-storage` 키에 자동 저장. `version: 2` — 구 형식(string[]) 충돌 방지.
+
+## 컴포넌트 아키텍처
+
+### TodoList 분기 패턴
+```tsx
+// TodoList.tsx — 타입별 switch 분기 (라우터 역할)
+switch (currentCategory?.type) {
+  case "section": return <SectionTodoList tasks={filtered} />
+  case "kanban":  return <KanbanView tasks={filtered} />
+  default:        return <ChecklistView pending={pending} completed={completed} />
+}
+```
+
+### SectionTodoList 구조 (선택 상태 관리)
+```
+SectionTodoList.tsx          selectedIds: string[] 보유
+  ├── SectionAddInput        selectedIds + onBulkDelete + onBulkMove
+  └── SectionView            selectedIds + onToggleSelect
+```
+- `selectedIds`는 UI 상태 → 스토어가 아닌 SectionTodoList 로컬 state
+- bulk 삭제/변경은 기존 `deleteTask`, `moveTask`를 순회 호출
+
+### InputBar 조건부 렌더
+```tsx
+// checklist가 아니면 null 반환 (얼리 리턴 패턴)
+if (activeCategoryType !== "checklist") return null;
+```
+
+### CategoryAddInput 타입 선택
+```tsx
+// 내부 selectedType state 관리
+const [selectedType, setSelectedType] = useState<CategoryType>("checklist");
+
+// CATEGORY_TYPES 배열로 관리 — 타입 추가 시 배열만 수정
+const CATEGORY_TYPES = [
+  { type: "checklist", label: "체크",  icon: <CheckSquare /> },
+  { type: "section",   label: "섹션",  icon: <AlignLeft />  },
+  { type: "kanban",    label: "칸반",  icon: <LayoutGrid /> },
+]
+
+// onConfirm: (type: CategoryType) → 부모에서 addCategory(name, type) 호출
+```
+
+### SectionView 우선도 드롭다운
+```tsx
+// 우선도별 색상 매핑
+const PRIORITY_OPTIONS = [
+  { value: 1,        label: "1",   color: "text-zinc-400"        },
+  { value: 2,        label: "2",   color: "text-blue-400"        },
+  { value: 3,        label: "3",   color: "text-yellow-400"      },
+  { value: 4,        label: "4",   color: "text-orange-400"      },
+  { value: 5,        label: "5",   color: "text-red-400"         },
+  { value: "urgent", label: "급함", color: "text-red-500 font-bold" },
+]
+```
+- 트리거: `—` (미설정) / 숫자 (1~5) / `급` (urgent)
+- "해제" 옵션으로 우선도 제거 (`setPriority(id, undefined)`)
+
+### SectionView 접기/펼치기 패턴
+```ts
+// Set으로 관리 — 섹션 추가 시 state 수정 불필요
+const [collapsed, setCollapsed] = useState<Set<TaskStatus>>(new Set());
+
+const toggle = (status: TaskStatus) => {
+  setCollapsed((prev) => {
+    const next = new Set(prev);
+    next.has(status) ? next.delete(status) : next.add(status);
+    return next;
+  });
+};
+// Set 안에 있으면 접힌 것, 없으면 펼쳐진 것
+```
 
 ## 컬러 테마 (`globals.css @theme`)
 | 변수 | 값 | 용도 |
@@ -77,74 +184,29 @@ pnpm build            # Next.js 빌드
 | `--color-muted` | `#18181b` | 입력창, 호버 배경 |
 | `--color-muted-foreground` | `#71717a` | 보조 텍스트 |
 | `--color-border` | `#27272a` | 구분선 |
-| `--color-accent` | `#27272a` | 드롭다운 아이템 호버 (popover보다 밝게 설정) |
+| `--color-accent` | `#27272a` | 드롭다운 아이템 호버 (`--color-popover`보다 밝아야 함) |
 | `--color-popover` | `#18181b` | 드롭다운 배경 |
 
 ## 중요 설정
-- `next.config.ts`: `transpilePackages: ['@repo/ui']` — 모노레포 UI 패키지 직접 컴파일
+- `next.config.ts`: `transpilePackages: ['@repo/ui']`
 - `globals.css`: `@source "../../../../packages/ui/src/**/*.{ts,tsx}"` — packages/ui 클래스 스캔
-- `--color-accent` 은 `--color-popover` 보다 밝아야 드롭다운 아이템 호버가 보임
+- shadcn 컴포넌트 설치 후 `@/lib/utils` → 상대 경로로 수동 수정 필요 (`../../lib/utils`)
+- `--color-accent` > `--color-popover` — 드롭다운 호버 가시성
 
-## 컴포넌트 패턴
-
-### 카테고리 편집 흐름
-```
-MoreVertical(ActionButton) 클릭 → "이름 변경" 선택
-  → handleEditStart(category)
-    → setEditingCategory(category)   // 어떤 카테고리인지 저장
-    → setInputEditValue(category)    // 기존 이름 입력창에 미리 채움
-  → map 순회 시 editingCategory === category 인 항목 → SidebarEditInput 렌더
-  → handleEditConfirm()
-    → editCategory(editingCategory, inputEditValue)  // oldName, newName
-    → setEditingCategory(null)       // 편집 종료
-```
-
-### group/category 패턴 (Tailwind v4 named group)
+## named group 패턴 (Tailwind v4)
 ```tsx
-// 부모 - named group 선언
 <div className="group/category relative flex items-center">
-
-// 자식(ActionButton 내부) - named group-hover 사용
-<Button className="opacity-0 group-hover/category:opacity-100 hover:opacity-100 data-[state=open]:opacity-100">
+  <Button className="opacity-0 group-hover/category:opacity-100 hover:opacity-100 data-[state=open]:opacity-100">
 ```
-- Tailwind v4에서 중첩 그룹 충돌 방지를 위해 named group 사용
-- `hover:opacity-100` — 버튼 자체에 직접 호버 시에도 유지
-- `data-[state=open]:opacity-100` — 드롭다운 열린 동안 포털로 마우스 이동해도 유지
+- `group/category`: named group — 중첩 그룹 충돌 방지
+- `data-[state=open]:opacity-100` — Radix 포털로 마우스 이동해도 유지
 
-### ActionButton 색상 제어
-활성 카테고리(흰 배경)와 비활성(다크 배경)에서 아이콘 색상이 달라야 하므로
-`className` prop으로 부모(Sidebar)에서 색상 주입:
-```tsx
-<ActionButton
-  onEdit={() => handleEditStart(category)}
-  onDelete={() => deleteCategory(category)}
-  className={isActive
-    ? "text-primary-foreground/60 hover:text-primary-foreground"
-    : "text-muted-foreground hover:text-foreground"
-  }
-/>
-```
-
-### ActionButton 구조 (shadcn 미니멀 스타일)
-```tsx
-<DropdownMenuContent align="end" className="w-36">
-  <DropdownMenuItem onClick={onEdit}>이름 변경</DropdownMenuItem>
-  <DropdownMenuItem onClick={onDelete} className="text-red-500 focus:text-red-500">
-    삭제
-  </DropdownMenuItem>
-</DropdownMenuContent>
-```
-- `align="end"` — 트리거 오른쪽 기준 정렬
-- 삭제 항목 `text-red-500` — 위험 액션 시각적 구분
-- Separator 없음 — 항목 2개로 불필요
-
-### editCategory 스토어 로직
-```ts
-editCategory: (oldName, newName) => {
-  // categories 배열: oldName과 일치하는 항목만 newName으로 교체
-  categories: categories.map((c) => c === oldName ? trimmed : c),
-  // tasks 배열: category 속성이 oldName인 항목의 category만 교체
-  // ...t 로 나머지 속성(id, text, completed 등)은 그대로 유지
-  tasks: tasks.map((t) => t.category === oldName ? { ...t, category: trimmed } : t),
-}
-```
+## @repo/ui 컴포넌트 목록
+| 컴포넌트 | 설명 |
+|----------|------|
+| `Button` | CVA 기반, variant: default/outline/ghost/link/secondary, size: default/sm/lg/icon |
+| `DropdownMenu` | Radix 기반 드롭다운 |
+| `ButtonGroup` | 버튼 그룹 컨테이너 (orientation: horizontal/vertical) |
+| `ButtonGroupSeparator` | 버튼 그룹 구분선 |
+| `ButtonGroupText` | 버튼 그룹 텍스트 |
+| `Card`, `Badge` | 공통 UI |

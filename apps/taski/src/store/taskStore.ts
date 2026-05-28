@@ -18,12 +18,16 @@ export interface Category {
 // 프로젝트형 전용 진행 상태
 export type TaskStatus = "todo" | "in-progress" | "done";
 
+// 태스크 우선도 — 숫자 1(낮음)~5(높음) + "urgent"(급함)
+export type TaskPriority = 1 | 2 | 3 | 4 | 5 | "urgent";
+
 export interface Task {
   id: string;
   text: string;
   categoryId: string;  // Category.id 참조 (이름 대신 id — 이름 변경에 영향 없음)
   completed: boolean;  // checklist 타입용: 완료 여부
   status: TaskStatus;  // project 타입용: 진행 단계 (기본값 "todo")
+  priority?: TaskPriority; // 우선도 — 미설정 시 undefined (선택 항목)
   createdAt: number;
 }
 
@@ -61,6 +65,9 @@ interface TaskStore {
 
   // 프로젝트 전용: todo → in-progress → done 이동
   moveTask: (id: string, status: TaskStatus) => void;
+
+  // 우선도 설정 — section/kanban 타입에서 사용
+  setPriority: (id: string, priority: TaskPriority | undefined) => void;
 }
 
 // ─── 스토어 ──────────────────────────────────────────────────
@@ -155,6 +162,16 @@ export const useTaskStore = create<TaskStore>()(
                   status: !t.completed ? "done" : "todo",
                 }
               : t
+          ),
+        })),
+
+      // ── 우선도 ────────────────────────────────────────────────
+
+      // undefined 전달 시 우선도 해제
+      setPriority: (id, priority) =>
+        set((state) => ({
+          tasks: state.tasks.map((t) =>
+            t.id === id ? { ...t, priority } : t
           ),
         })),
 

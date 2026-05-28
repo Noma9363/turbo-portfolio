@@ -12,6 +12,8 @@ export function InputBar() {
   // activeCategory는 id — placeholder에 표시할 이름을 categories에서 찾아옴
   const activeName = categories.find((c) => c.id === activeCategory)?.name ?? "";
 
+  const activeCategoryType = categories.find(c => c.id === activeCategory)?.type;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // 빈 문자열 제출 방지
@@ -19,6 +21,8 @@ export function InputBar() {
     addTask(value);
     setValue("");
   };
+
+  if (activeCategoryType !== "checklist") return null;
 
   return (
     <div className="border-t border-border p-4">
@@ -41,4 +45,6 @@ export function InputBar() {
       </form>
     </div>
   );
+
+
 }
