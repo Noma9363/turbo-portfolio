@@ -68,6 +68,9 @@ interface TaskStore {
 
   // 우선도 설정 — section/kanban 타입에서 사용
   setPriority: (id: string, priority: TaskPriority | undefined) => void;
+
+  // 순서 변경 — DnD로 activeId를 overId 위치로 이동
+  reorderTasks: (activeId: string, overId: string) => void;
 }
 
 // ─── 스토어 ──────────────────────────────────────────────────
@@ -191,6 +194,20 @@ export const useTaskStore = create<TaskStore>()(
               : t
           ),
         })),
+
+      // ── DnD 순서 변경 ─────────────────────────────────────
+      // flat 배열에서 activeId를 overId 위치로 splice
+      // 각 뷰는 status로 필터링하므로 배열 내 상대 순서가 표시 순서가 됨
+      reorderTasks: (activeId, overId) =>
+        set((state) => {
+          const items = [...state.tasks];
+          const oldIndex = items.findIndex((t) => t.id === activeId);
+          const newIndex = items.findIndex((t) => t.id === overId);
+          if (oldIndex === -1 || newIndex === -1) return {};
+          // splice로 oldIndex 제거 후 newIndex에 삽입
+          items.splice(newIndex, 0, items.splice(oldIndex, 1)[0]!);
+          return { tasks: items };
+        }),
     }),
     {
       name: "taski-storage",

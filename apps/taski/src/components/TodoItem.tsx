@@ -1,8 +1,10 @@
 "use client";
 
-import { Trash2 } from "lucide-react";
+import { GripVertical, Trash2 } from "lucide-react";
 import { Button } from "@repo/ui";
 import { Task, useTaskStore } from "@/store/taskStore";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 interface TodoItemProps {
   task: Task;
@@ -11,10 +13,40 @@ interface TodoItemProps {
 export function TodoItem({ task }: TodoItemProps) {
   const { toggleTask, deleteTask } = useTaskStore();
 
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: task.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
   return (
-    // group: 호버 시 자식 요소(삭제 버튼)를 group-hover로 제어
-    <li className="group flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-muted transition-colors">
-      {/* 체크박스 - 원형 커스텀 UI로 Button 컴포넌트 미적용 */}
+    <li
+      ref={setNodeRef}
+      style={style}
+      className={`group flex items-center gap-2 px-4 py-3 rounded-lg hover:bg-muted transition-colors ${
+        isDragging ? "opacity-40" : ""
+      }`}
+    >
+      {/* 드래그 핸들 — 호버 시 노출 */}
+      <button
+        {...attributes}
+        {...listeners}
+        className="shrink-0 cursor-grab active:cursor-grabbing text-muted-foreground opacity-0 group-hover:opacity-60 hover:opacity-100 transition-opacity"
+        tabIndex={-1}
+        aria-label="드래그하여 순서 변경"
+      >
+        <GripVertical size={14} />
+      </button>
+
+      {/* 체크박스 - 원형 커스텀 UI */}
       <button
         onClick={() => toggleTask(task.id)}
         className={`shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors cursor-pointer ${
