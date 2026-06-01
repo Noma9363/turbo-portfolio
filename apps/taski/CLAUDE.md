@@ -9,10 +9,19 @@ Next.js 15 + Tailwind CSS v4 + Zustand 기반의 다크 미니멀 테마.
 - **프레임워크**: Next.js 15 (App Router), React 19
 - **스타일**: Tailwind CSS v4 (`@tailwindcss/postcss`)
 - **상태 관리**: Zustand v5 (`persist` 미들웨어로 localStorage 자동 저장)
-- **공유 컴포넌트**: `@repo/ui` (Button, ButtonGroup, DropdownMenu 등 — shadcn 기반)
+- **공유 컴포넌트**: `@repo/ui` (shadcn/ui 기반 — 신규 컴포넌트는 shadcn 우선)
 - **DnD**: `@dnd-kit/core` + `@dnd-kit/sortable` + `@dnd-kit/utilities`
 - **언어**: TypeScript 5
 - **포트**: `localhost:3001`
+
+## 컴포넌트 방향
+**shadcn/ui 컴포넌트를 우선 사용한다.**
+새 UI 컴포넌트가 필요할 때 `packages/ui` 에 shadcn CLI로 설치 후 `index.ts` 에 export 추가.
+```bash
+# packages/ui 에서 실행
+pnpm dlx shadcn@latest add <component>
+```
+설치 후 `@/lib/utils` → `../../lib/utils`, `@/components/ui/button` → `./Button` 등 상대 경로로 수동 수정 필요.
 
 ## 프로젝트 구조
 ```
@@ -28,7 +37,7 @@ apps/taski/
     ├── components/
     │   ├── Sidebar.tsx             # 카테고리 목록, 추가/편집/삭제
     │   ├── SidebarEditInput.tsx    # 카테고리 인라인 편집 입력창
-    │   ├── SidebarItem.tsx         # 카테고리 단일 아이템 (빈 컴포넌트)
+    │   ├── SidebarItem.tsx         # 카테고리 단일 아이템
     │   ├── ActionButton.tsx        # MoreVertical → DropdownMenu
     │   ├── CategoryAddInput.tsx    # 카테고리 추가 + 타입 선택 (체크/섹션/칸반)
     │   │
@@ -37,7 +46,9 @@ apps/taski/
     │   ├── SectionTodoList.tsx     # 섹션 뷰 래퍼 (selectedIds state 보유)
     │   ├── SectionView.tsx         # 섹션 뷰 (접기/펼치기 + 우선도 드롭다운) + DnD
     │   ├── SectionAddInput.tsx     # 섹션 뷰 툴바 (일정 추가 / 상태 변경 / 삭제)
-    │   ├── KanbanView.tsx          # 칸반 뷰 (3컬럼 레이아웃) + DnD
+    │   ├── KanbanView.tsx          # 칸반 보드 (4컬럼 레이아웃) + DnD
+    │   ├── KanbanAddModal.tsx      # 칸반 태스크 추가 모달 (shadcn Dialog)
+    │   ├── KanbanDetailModal.tsx   # 칸반 태스크 상세/편집 모달 (shadcn Dialog)
     │   │
     │   ├── TodoItem.tsx            # 체크리스트 단일 아이템 (useSortable 포함)
     │   └── InputBar.tsx            # 하단 입력바 (checklist 타입일 때만 렌더)
@@ -67,17 +78,25 @@ interface Category {
   type: CategoryType
 }
 
-type TaskStatus   = "todo" | "in-progress" | "done"
+type TaskStatus   = "todo" | "in-progress" | "done" | "canceled"
 type TaskPriority = 1 | 2 | 3 | 4 | 5 | "urgent"
 
 interface Task {
   id: string
-  text: string
+  text: string          // 기존 뷰(checklist/section)에서 카드 텍스트로 사용
   categoryId: string    // Category.id 참조
-  completed: boolean    // checklist용
+  completed: boolean    // checklist용 (done/canceled → true)
   status: TaskStatus    // section/kanban용 (기본값 "todo")
-  priority?: TaskPriority  // 우선도 (선택, 미설정 시 undefined)
+  priority?: TaskPriority  // 우선도 (선택)
   createdAt: number
+
+  // 칸반 상세 필드 (선택 — KanbanDetailModal에서 편집)
+  title?: string        // 제목 (text와 별도 — text는 기존 뷰에서 그대로 사용)
+  summary?: string      // 짧은 설명
+  content?: string      // 본문
+  dueDate?: number      // 마감일 (timestamp)
+  assignee?: string     // 담당자
+  labels?: string[]     // 레이블 태그 배열 (쉼표 구분 입력)
 }
 ```
 
@@ -97,8 +116,9 @@ interface Task {
 | `editCategory(id, newName)` | 이름 변경 (tasks는 id 참조라 수정 불필요) |
 | `addTask(text, status?)` | 현재 카테고리로 추가. status 생략 시 "todo" |
 | `toggleTask(id)` | completed 토글 + status 동기화 (done ↔ todo) |
-| `moveTask(id, status)` | status 변경 + completed 동기화 |
+| `moveTask(id, status)` | status 변경 + completed 동기화 (`done` \| `canceled` → true) |
 | `setPriority(id, priority?)` | 우선도 설정. undefined 전달 시 해제 |
+| `updateTask(id, patch)` | 칸반 상세 필드 부분 업데이트 (title/summary/content/dueDate/assignee/labels) |
 | `deleteTask(id)` | 할 일 삭제 |
 | `reorderTasks(activeId, overId)` | DnD 순서 변경 — flat 배열에서 splice로 위치 교환 |
 
@@ -106,23 +126,10 @@ interface Task {
 `persist` 미들웨어로 `taski-storage` 키에 자동 저장.
 `version: 3` — 버전이 다르면 저장된 데이터를 버리고 초기값(데모 데이터)으로 시작.
 
-### 기본 데이터 (version: 3)
-```
-포트폴리오 (section) — 첫 화면
-  할 일:    반응형 레이아웃 최적화(3), Contact 이메일 연동(4), 다크모드 색상 정리(2)
-  진행 중:  taski Vercel 배포(urgent), 포트폴리오 README 작성(3)
-  완료:     드래그앤드롭 구현(4), 카테고리 타입 시스템(3), Zustand 스토어 설계(2)
-업무 (checklist): 주간 보고서 작성, 코드 리뷰 진행(완료)
-학습 (checklist): TypeScript 제네릭 복습, @dnd-kit 문서(완료)
-루틴 (checklist): 운동 30분, 독서 20분
-```
-
 ## 컴포넌트 아키텍처
 
 ### TodoList 분기 패턴
 ```tsx
-// TodoList.tsx — 타입별 switch 분기 (라우터 역할)
-// section/kanban: 태스크 없어도 툴바 보여야 하므로 빈 상태 얼리 리턴 제외
 switch (currentCategory?.type) {
   case "section": return <SectionTodoList tasks={filtered} />
   case "kanban":  return <KanbanView tasks={filtered} />
@@ -132,71 +139,52 @@ switch (currentCategory?.type) {
 }
 ```
 
-### SectionTodoList 구조 (선택 상태 관리)
+### KanbanView 구조
 ```
-SectionTodoList.tsx          selectedIds: string[] 보유
-  ├── SectionAddInput        selectedIds + onBulkDelete + onBulkMove
-  └── SectionView            selectedIds + onToggleSelect
-```
-- `selectedIds`는 UI 상태 → 스토어가 아닌 SectionTodoList 로컬 state
-- bulk 삭제/변경은 기존 `deleteTask`, `moveTask`를 순회 호출
-
-### InputBar 조건부 렌더
-```tsx
-// checklist가 아니면 null 반환 (얼리 리턴 패턴)
-if (activeCategoryType !== "checklist") return null;
+KanbanView
+  ├── 상단 툴바 (+ 일정 추가 → "todo" 상태로 KanbanAddModal 열기)
+  ├── DndContext (pointerWithin + closestCenter 조합)
+  │   └── KanbanColumn × 4 (todo / in-progress / done / canceled)
+  │       ├── 컬럼 헤더 (레이블 + 카드 수)
+  │       ├── + 추가 버튼 → 해당 status로 KanbanAddModal 열기
+  │       └── SortableContext → KanbanCard[]
+  ├── KanbanAddModal   (modalStatus !== null 일 때 표시)
+  └── KanbanDetailModal (detailTask !== null 일 때 표시)
 ```
 
-### CategoryAddInput 타입 선택
-```tsx
-// 내부 selectedType state 관리
-const [selectedType, setSelectedType] = useState<CategoryType>("checklist");
-
-// CATEGORY_TYPES 배열로 관리 — 타입 추가 시 배열만 수정
-const CATEGORY_TYPES = [
-  { type: "checklist", label: "체크",  icon: <CheckSquare /> },
-  { type: "section",   label: "섹션",  icon: <AlignLeft />  },
-  { type: "kanban",    label: "칸반",  icon: <LayoutGrid /> },
-]
-
-// onConfirm: (type: CategoryType) → 부모에서 addCategory(name, type) 호출
-```
-
-### SectionView 우선도 드롭다운
-```tsx
-// 우선도별 색상 매핑
-const PRIORITY_OPTIONS = [
-  { value: 1,        label: "1",   color: "text-zinc-400"        },
-  { value: 2,        label: "2",   color: "text-blue-400"        },
-  { value: 3,        label: "3",   color: "text-yellow-400"      },
-  { value: 4,        label: "4",   color: "text-orange-400"      },
-  { value: 5,        label: "5",   color: "text-red-400"         },
-  { value: "urgent", label: "급함", color: "text-red-500 font-bold" },
-]
-```
-- 트리거: `—` (미설정) / 숫자 (1~5) / `급` (urgent)
-- "해제" 옵션으로 우선도 제거 (`setPriority(id, undefined)`)
-
-### SectionView 접기/펼치기 패턴
+### KanbanDetailModal — liveTask 패턴
+칸반 카드 클릭 시 `detailTask` state(스냅샷)를 설정하지만,
+모달 내부에서는 Zustand 셀렉터로 **스토어를 직접 구독**해 항상 최신 데이터를 사용.
 ```ts
-// Set으로 관리 — 섹션 추가 시 state 수정 불필요
-const [collapsed, setCollapsed] = useState<Set<TaskStatus>>(new Set());
+// 스냅샷(task)이 아닌 스토어에서 live 데이터 구독
+const liveTask = useTaskStore(state => state.tasks.find(t => t.id === task?.id))
+```
+→ `setPriority`, `moveTask` 등 스토어 변경이 즉시 모달 UI에 반영됨.
 
-const toggle = (status: TaskStatus) => {
-  setCollapsed((prev) => {
-    const next = new Set(prev);
-    next.has(status) ? next.delete(status) : next.add(status);
-    return next;
-  });
-};
-// Set 안에 있으면 접힌 것, 없으면 펼쳐진 것
+### KanbanDetailModal 속성 버튼
+| 버튼 | 동작 |
+|------|------|
+| `StatusButton` | DropdownMenu → `moveTask` |
+| `PriorityButton` | DropdownMenu → `setPriority` |
+| `DueDateButton` | Popover + `Calendar` → `updateTask({ dueDate })` |
+| `AssigneeButton` | 인라인 input → `updateTask({ assignee })` |
+| `LabelsButton` | 인라인 input (쉼표 구분) → `updateTask({ labels })` |
+
+모든 필드는 `onBlur` 시 자동저장 (`updateTask` 호출).
+
+### canceled 상태 스타일
+```tsx
+// 카드/아이템 전체 opacity + 텍스트 취소선
+isDragging ? "opacity-40" : task.status === "canceled" ? "opacity-50" : ""
+task.status === "done" || task.status === "canceled"
+  ? "line-through text-muted-foreground"
+  : "text-foreground"
 ```
 
 ## DnD 패턴 (`@dnd-kit`)
 
 ### 공통 구조
 ```tsx
-// 모든 뷰 동일 패턴
 <DndContext sensors={sensors} collisionDetection={...} onDragStart onDragOver onDragEnd>
   <SortableContext items={ids} strategy={verticalListSortingStrategy}>
     {items.map(item => <SortableItem key={item.id} ... />)}
@@ -221,57 +209,42 @@ if (overStatus && draggingTask.status !== overStatus) moveTask(activeId, overSta
 if (updatedActiveTask.status === overTask.status) reorderTasks(activeId, overId);
 ```
 
-### DroppableSection / KanbanColumn
-```tsx
-// 빈 섹션/컬럼도 드롭 타깃이 되도록 useDroppable 적용 + min-h 확보
-function DroppableSection({ status, children }) {
-  const { setNodeRef } = useDroppable({ id: status }); // id = TaskStatus 문자열
-  return <div ref={setNodeRef} className="min-h-[32px]">{children}</div>;
-}
+### KanbanView 충돌 감지
+```ts
+// pointerWithin 우선 — 빈 컬럼 드롭 감지에 유리
+// closestCenter 폴백 — 컬럼 경계 밖 드래그 시 대비
+collisionDetection={(args) => {
+  const over = pointerWithin(args);
+  return over.length ? over : closestCenter(args);
+}}
 ```
-
-### DragOverlay
-- `SortableContext` 밖에서 렌더 → `useSortable` 사용 불가
-- 컴포넌트 재사용 대신 간단한 `<div>` 프리뷰로 대체
-- 드래그 중 원본 아이템은 `isDragging ? "opacity-40" : ""` 처리
-
-## 컬러 테마 (`globals.css @theme`)
-| 변수 | 값 | 용도 |
-|------|----|------|
-| `--color-background` | `#09090b` | 앱 배경 |
-| `--color-foreground` | `#fafafa` | 기본 텍스트 |
-| `--color-card` | `#0f0f11` | 카드 배경 |
-| `--color-muted` | `#18181b` | 입력창, 호버 배경 |
-| `--color-muted-foreground` | `#71717a` | 보조 텍스트 |
-| `--color-border` | `#27272a` | 구분선 |
-| `--color-accent` | `#27272a` | 드롭다운 아이템 호버 (`--color-popover`보다 밝아야 함) |
-| `--color-popover` | `#18181b` | 드롭다운 배경 |
-
-## 중요 설정
-- `next.config.ts`: `transpilePackages: ['@repo/ui']`
-- `globals.css`: `@source "../../../../packages/ui/src/**/*.{ts,tsx}"` — packages/ui 클래스 스캔
-- shadcn 컴포넌트 설치 후 `@/lib/utils` → 상대 경로로 수동 수정 필요 (`../../lib/utils`)
-- `--color-accent` > `--color-popover` — 드롭다운 호버 가시성
-
-## named group 패턴 (Tailwind v4)
-```tsx
-<div className="group/category relative flex items-center">
-  <Button className="opacity-0 group-hover/category:opacity-100 hover:opacity-100 data-[state=open]:opacity-100">
-```
-- `group/category`: named group — 중첩 그룹 충돌 방지
-- `data-[state=open]:opacity-100` — Radix 포털로 마우스 이동해도 유지
+**KanbanColumn의 `setNodeRef`는 컬럼 최상위 div에 연결** — 빈 컬럼도 전체 영역이 드롭 타깃이 됨.
 
 ## @repo/ui 컴포넌트 목록
 | 컴포넌트 | 설명 |
 |----------|------|
 | `Button` | CVA 기반, variant: default/outline/ghost/link/secondary, size: default/sm/lg/icon |
 | `DropdownMenu` | Radix 기반 드롭다운 |
-| `ButtonGroup` | 버튼 그룹 컨테이너 (orientation: horizontal/vertical) |
-| `ButtonGroupSeparator` | 버튼 그룹 구분선 |
-| `ButtonGroupText` | 버튼 그룹 텍스트 |
+| `ButtonGroup` | 버튼 그룹 컨테이너 |
 | `Card`, `Badge` | 공통 UI |
+| `Dialog` | shadcn Dialog (모달) |
+| `Popover` | shadcn Popover |
+| `Calendar` | shadcn Calendar (`react-day-picker` v9 기반) |
+
+## 중요 설정
+- `next.config.ts`: `transpilePackages: ['@repo/ui']`
+- `globals.css`: `@source "../../../../packages/ui/src/**/*.{ts,tsx}"` — packages/ui 클래스 스캔
+- `globals.css`: `@import "react-day-picker/style.css"` — Calendar 레이아웃 기반 CSS (Tailwind 이후 import)
+- `globals.css`: `.rdp-*` 오버라이드 — react-day-picker 라이트 테마 색상 덮어쓰기 (`@layer` 밖에 선언해야 우선순위 유지)
+- shadcn 컴포넌트 설치 후 `@/` 경로 → 상대 경로 수동 수정 (`../../lib/utils`, `./Button` 등)
+- `--color-accent` > `--color-popover` — 드롭다운 호버 가시성
 
 ## 버그 수정 기록
 | 증상 | 원인 | 수정 |
 |------|------|------|
-| 섹션/칸반 카테고리 신규 생성 시 툴바(SectionAddInput) 미표시 | `TodoList`에서 `filtered.length === 0` 얼리 리턴이 switch 전에 위치 | 빈 상태 처리를 checklist case 안으로 이동 |
+| 섹션/칸반 카테고리 신규 생성 시 툴바 미표시 | `filtered.length === 0` 얼리 리턴이 switch 전에 위치 | 빈 상태 처리를 checklist case 안으로 이동 |
+| 칸반 모달 속성 버튼 변경 후 UI 미반영 | `task` prop이 스냅샷 — 스토어 변경을 반영 못함 | `liveTask` 패턴으로 Zustand 직접 구독 |
+| 빈 칸반 컬럼으로 DnD 불가 | `setNodeRef`가 카드 목록 영역에만 있어 `closestCorners`가 타깃 감지 실패 | `setNodeRef` 컬럼 최상위 div로 이동 + `pointerWithin` 충돌 감지 사용 |
+| Calendar hydration mismatch | `toLocaleDateString()` 서버(UTC)/클라이언트(로컬) 결과 불일치 | `"en-CA"` 로케일 고정 (`YYYY-MM-DD` 형식) |
+| Calendar 스타일 미적용 | `react-day-picker/style.css` 미import로 레이아웃 CSS 누락 | `globals.css`에 import 추가 |
+| Calendar 선택일이 원형으로 표시 | `react-day-picker/style.css`가 `@layer base`보다 우선순위 높아 border-radius 충돌 | `.rdp-*` 오버라이드를 `@layer` 밖에 선언 |

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { GripVertical, Trash2 } from "lucide-react";
+import { GripVertical, Plus, Trash2 } from "lucide-react";
 import {
   DndContext,
   DragEndEvent,
@@ -9,7 +9,8 @@ import {
   DragOverlay,
   DragStartEvent,
   PointerSensor,
-  closestCorners,
+  closestCenter,
+  pointerWithin,
   useDroppable,
   useSensor,
   useSensors,
@@ -24,6 +25,8 @@ import {
   DropdownMenuTrigger,
 } from "@repo/ui";
 import { Task, TaskPriority, TaskStatus, useTaskStore } from "@/store/taskStore";
+import { KanbanAddModal } from "@/components/KanbanAddModal";
+import { KanbanDetailModal } from "@/components/KanbanDetailModal";
 
 // ─── 우선도 (SectionView와 동일 정의) ────────────────────────
 const PRIORITY_OPTIONS: { value: TaskPriority; label: string; color: string }[] = [
@@ -45,12 +48,13 @@ const COLUMNS: { status: TaskStatus; label: string }[] = [
   { status: "todo",        label: "할 일"  },
   { status: "in-progress", label: "진행 중" },
   { status: "done",        label: "완료"   },
+  { status: "canceled", label: "취소됨" }
 ];
 
 const COLUMN_STATUSES = COLUMNS.map((c) => c.status);
 
 // ─── 정렬 가능한 칸반 카드 ────────────────────────────────────
-function KanbanCard({ task }: { task: Task }) {
+function KanbanCard({ task, onOpenDetail }: { task: Task; onOpenDetail: (task: Task) => void }) {
   const { deleteTask, setPriority } = useTaskStore();
 
   const {
@@ -71,8 +75,9 @@ function KanbanCard({ task }: { task: Task }) {
     <div
       ref={setNodeRef}
       style={style}
-      className={`group p-3 rounded-lg bg-muted border border-border hover:border-zinc-600 transition-colors cursor-default ${
-        isDragging ? "opacity-40" : ""
+      onClick={() => onOpenDetail(task)}
+      className={`group p-3 rounded-lg bg-muted border border-border hover:border-zinc-600 transition-colors cursor-pointer ${
+        isDragging ? "opacity-40" : task.status === "canceled" ? "opacity-50" : ""
       }`}
     >
       {/* 카드 헤더 — 드래그 핸들 + 우선도 + 삭제 */}
@@ -134,7 +139,7 @@ function KanbanCard({ task }: { task: Task }) {
       {/* 카드 텍스트 */}
       <p
         className={`text-sm leading-snug ${
-          task.status === "done"
+          task.status === "done" || task.status === "canceled"
             ? "line-through text-muted-foreground"
             : "text-foreground"
         }`}
@@ -150,13 +155,15 @@ interface KanbanColumnProps {
   status: TaskStatus;
   label: string;
   tasks: Task[];
+  onAdd: (status: TaskStatus) => void;
+  onOpenDetail: (task: Task) => void;
 }
 
-function KanbanColumn({ status, label, tasks }: KanbanColumnProps) {
+function KanbanColumn({ status, label, tasks, onAdd, onOpenDetail }: KanbanColumnProps) {
   const { setNodeRef } = useDroppable({ id: status });
 
   return (
-    <div className="flex flex-col flex-1 min-w-0">
+    <div ref={setNodeRef} className="flex flex-col flex-1 min-w-0">
       {/* 컬럼 헤더 */}
       <div className="flex items-center gap-2 px-1 py-2 mb-3">
         <span className="text-xs font-medium text-muted-foreground uppercase tracking-widest">
@@ -165,11 +172,20 @@ function KanbanColumn({ status, label, tasks }: KanbanColumnProps) {
         <span className="text-xs text-muted-foreground">{tasks.length}</span>
       </div>
 
-      {/* 카드 목록 — 빈 컬럼도 드롭 타깃이 되도록 min-h 확보 */}
+      {/* 컬럼별 + 버튼 */}
+      <button
+        onClick={() => onAdd(status)}
+        className="mb-3 flex items-center gap-1 px-1 py-1.5 rounded-md text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors w-full"
+      >
+        <Plus size={12} />
+        추가
+      </button>
+
+      {/* 카드 목록 */}
       <SortableContext items={tasks.map((t) => t.id)} strategy={verticalListSortingStrategy}>
-        <div ref={setNodeRef} className="flex flex-col gap-2 flex-1 min-h-[60px]">
+        <div className="flex flex-col gap-2 flex-1 min-h-[60px]">
           {tasks.map((task) => (
-            <KanbanCard key={task.id} task={task} />
+            <KanbanCard key={task.id} task={task} onOpenDetail={onOpenDetail} />
           ))}
         </div>
       </SortableContext>
@@ -181,6 +197,8 @@ function KanbanColumn({ status, label, tasks }: KanbanColumnProps) {
 export function KanbanView({ tasks }: { tasks: Task[] }) {
   const { moveTask, reorderTasks } = useTaskStore();
   const [activeTask, setActiveTask] = useState<Task | null>(null);
+  const [modalStatus, setModalStatus] = useState<TaskStatus | null>(null);
+  const [detailTask, setDetailTask] = useState<Task | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
@@ -229,35 +247,66 @@ export function KanbanView({ tasks }: { tasks: Task[] }) {
   };
 
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCorners}
-      onDragStart={handleDragStart}
-      onDragOver={handleDragOver}
-      onDragEnd={handleDragEnd}
-    >
-      {/* 3컬럼 가로 레이아웃 */}
-      <div className="flex-1 overflow-hidden px-4 py-4">
-        <div className="h-full flex gap-4 overflow-x-auto">
-          {COLUMNS.map(({ status, label }) => (
-            <KanbanColumn
-              key={status}
-              status={status}
-              label={label}
-              tasks={tasks.filter((t) => t.status === status)}
-            />
-          ))}
-        </div>
+    <>
+      {/* 상단 툴바 — 새 태스크(todo) 추가 */}
+      <div className="px-4 py-2 border-b border-border">
+        <button
+          onClick={() => setModalStatus("todo")}
+          className="flex items-center gap-1 px-2 py-1.5 rounded-md text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+        >
+          <Plus size={12} />
+          일정 추가
+        </button>
       </div>
 
-      {/* 드래그 오버레이 */}
-      <DragOverlay>
-        {activeTask && (
-          <div className="p-3 rounded-lg bg-card border border-border shadow-xl opacity-95 w-56">
-            <p className="text-sm text-foreground">{activeTask.text}</p>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={(args) => {
+          const over = pointerWithin(args);
+          return over.length ? over : closestCenter(args);
+        }}
+        onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
+        onDragEnd={handleDragEnd}
+      >
+        {/* 컬럼 가로 레이아웃 */}
+        <div className="flex-1 overflow-hidden px-4 py-4">
+          <div className="h-full flex gap-4 overflow-x-auto">
+            {COLUMNS.map(({ status, label }) => (
+              <KanbanColumn
+                key={status}
+                status={status}
+                label={label}
+                tasks={tasks.filter((t) => t.status === status)}
+                onAdd={setModalStatus}
+                onOpenDetail={setDetailTask}
+              />
+            ))}
           </div>
-        )}
-      </DragOverlay>
-    </DndContext>
+        </div>
+
+        {/* 드래그 오버레이 */}
+        <DragOverlay>
+          {activeTask && (
+            <div className="p-3 rounded-lg bg-card border border-border shadow-xl opacity-95 w-56">
+              <p className="text-sm text-foreground">{activeTask.text}</p>
+            </div>
+          )}
+        </DragOverlay>
+      </DndContext>
+
+      {/* 태스크 추가 모달 */}
+      <KanbanAddModal
+        open={modalStatus !== null}
+        defaultStatus={modalStatus ?? "todo"}
+        onClose={() => setModalStatus(null)}
+      />
+
+      {/* 태스크 상세 모달 */}
+      <KanbanDetailModal
+        task={detailTask}
+        onClose={() => setDetailTask(null)}
+      />
+    </>
   );
 }

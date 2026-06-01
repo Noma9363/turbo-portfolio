@@ -48,6 +48,14 @@ export function SectionAddInput({ selectedIds, onBulkDelete, onBulkMove }: Secti
                         size="sm"
                         variant="outline"
                         disabled={!hasSelection}
+                        onClick={() => onBulkMove("canceled")}
+                    >
+                        취소
+                    </Button>
+                    <Button
+                        size="sm"
+                        variant="outline"
+                        disabled={!hasSelection}
                         onClick={() => onBulkMove("done")}
                     >
                         완료
