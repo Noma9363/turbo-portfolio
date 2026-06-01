@@ -39,3 +39,20 @@ export {
   ButtonGroupText,
   buttonGroupVariants,
 } from "./components/ui/button-group";
+
+export {
+  Dialog,
+  DialogPortal,
+  DialogOverlay,
+  DialogClose,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogDescription,
+} from "./components/ui/dialog";
+
+export { Calendar, CalendarDayButton } from "./components/ui/calendar";
+
+export { Popover, PopoverTrigger, PopoverContent } from "./components/ui/popover";

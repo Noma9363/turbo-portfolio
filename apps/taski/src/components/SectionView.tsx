@@ -45,6 +45,7 @@ const SECTIONS: { status: TaskStatus; label: string }[] = [
   { status: "todo",        label: "할 일"  },
   { status: "in-progress", label: "진행 중" },
   { status: "done",        label: "완료"   },
+  { status: "canceled",    label: "취소됨" },
 ];
 
 const SECTION_STATUSES = SECTIONS.map((s) => s.status);
@@ -78,7 +79,7 @@ function SortableSectionItem({ task, selectedIds, onToggleSelect }: SortableSect
       ref={setNodeRef}
       style={style}
       className={`group flex items-center gap-3 px-2 py-3 rounded-lg hover:bg-muted transition-colors ${
-        isDragging ? "opacity-40" : ""
+        isDragging ? "opacity-40" : task.status === "canceled" ? "opacity-50" : ""
       }`}
     >
       {/* 드래그 핸들 */}
@@ -135,7 +136,7 @@ function SortableSectionItem({ task, selectedIds, onToggleSelect }: SortableSect
       {/* 텍스트 */}
       <span
         className={`flex-1 text-sm transition-colors ${
-          task.status === "done"
+          task.status === "done" || task.status === "canceled"
             ? "line-through text-muted-foreground"
             : "text-foreground"
         }`}
