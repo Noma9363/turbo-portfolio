@@ -90,11 +90,10 @@ function KanbanCard({ task, onOpenDetail }: { task: Task; onOpenDetail: (task: T
         />
 
         {/* 우선도 드롭다운 */}
+        <div onClick={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()}>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
-              onPointerDown={(e) => e.stopPropagation()}
-              onClick={(e) => e.stopPropagation()}
               className={`w-5 h-5 flex items-center justify-center text-xs font-medium rounded transition-colors hover:bg-background cursor-pointer ${getPriorityColor(task.priority)}`}
             >
               {task.priority === undefined
@@ -122,6 +121,7 @@ function KanbanCard({ task, onOpenDetail }: { task: Task; onOpenDetail: (task: T
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        </div>
 
         <div className="flex-1" />
 
