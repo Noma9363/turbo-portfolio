@@ -16,7 +16,7 @@ export interface Category {
 }
 
 // 프로젝트형 전용 진행 상태
-export type TaskStatus = "todo" | "in-progress" | "done";
+export type TaskStatus = "todo" | "in-progress" | "done" | "canceled";
 
 // 태스크 우선도 — 숫자 1(낮음)~5(높음) + "urgent"(급함)
 export type TaskPriority = 1 | 2 | 3 | 4 | 5 | "urgent";
@@ -29,6 +29,14 @@ export interface Task {
   status: TaskStatus;  // project 타입용: 진행 단계 (기본값 "todo")
   priority?: TaskPriority; // 우선도 — 미설정 시 undefined (선택 항목)
   createdAt: number;
+
+  // 칸반 상세 필드 (선택)
+  title?: string;       // 제목 — text와 별도 (text는 기존 뷰에서 그대로 사용)
+  summary?: string;     // 짧은 설명
+  content?: string;     // 본문
+  dueDate?: number;     // 마감일 (timestamp)
+  assignee?: string;    // 담당자
+  labels?: string[];    // 레이블 태그 배열
 }
 
 // ─── 기본 카테고리 ────────────────────────────────────────────
@@ -98,6 +106,9 @@ interface TaskStore {
 
   // 우선도 설정 — section/kanban 타입에서 사용
   setPriority: (id: string, priority: TaskPriority | undefined) => void;
+
+  // 상세 필드 업데이트 — 칸반 상세 뷰에서 사용
+  updateTask: (id: string, patch: Partial<Pick<Task, "title" | "summary" | "content" | "dueDate" | "assignee" | "labels">>) => void;
 
   // 순서 변경 — DnD로 activeId를 overId 위치로 이동
   reorderTasks: (activeId: string, overId: string) => void;
@@ -219,10 +230,15 @@ export const useTaskStore = create<TaskStore>()(
               ? {
                   ...t,
                   status,
-                  completed: status === "done",
+                  completed: status === "done" || status === "canceled",
                 }
               : t
           ),
+        })),
+
+      updateTask: (id, patch) =>
+        set((state) => ({
+          tasks: state.tasks.map((t) => (t.id === id ? { ...t, ...patch } : t)),
         })),
 
       // ── DnD 순서 변경 ─────────────────────────────────────
