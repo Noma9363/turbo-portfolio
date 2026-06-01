@@ -25,7 +25,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko" className={`${geist.variable} ${notoSansKR.variable}`}>
-      <body className="font-[var(--font-geist)] antialiased">{children}</body>
+      <body className="font-[var(--font-geist)] antialiased select-none">{children}</body>
     </html>
   );
 }
