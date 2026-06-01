@@ -76,26 +76,24 @@ function KanbanCard({ task, onOpenDetail }: { task: Task; onOpenDetail: (task: T
       ref={setNodeRef}
       style={style}
       onClick={() => onOpenDetail(task)}
-      className={`group p-3 rounded-lg bg-muted border border-border hover:border-zinc-600 transition-colors cursor-pointer ${
+      {...attributes}
+      {...listeners}
+      className={`group p-3 rounded-lg bg-muted border border-border hover:border-zinc-600 transition-colors cursor-grab active:cursor-grabbing ${
         isDragging ? "opacity-40" : task.status === "canceled" ? "opacity-50" : ""
       }`}
     >
       {/* 카드 헤더 — 드래그 핸들 + 우선도 + 삭제 */}
       <div className="flex items-center gap-1 mb-2">
-        <button
-          {...attributes}
-          {...listeners}
-          className="cursor-grab active:cursor-grabbing text-muted-foreground opacity-0 group-hover:opacity-60 hover:opacity-100 transition-opacity"
-          tabIndex={-1}
-          aria-label="드래그하여 이동"
-        >
-          <GripVertical size={12} />
-        </button>
+        <GripVertical
+          size={12}
+          className="text-muted-foreground opacity-0 group-hover:opacity-60 transition-opacity shrink-0"
+        />
 
         {/* 우선도 드롭다운 */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
+              onPointerDown={(e) => e.stopPropagation()}
               className={`w-5 h-5 flex items-center justify-center text-xs font-medium rounded transition-colors hover:bg-background cursor-pointer ${getPriorityColor(task.priority)}`}
             >
               {task.priority === undefined
@@ -130,6 +128,7 @@ function KanbanCard({ task, onOpenDetail }: { task: Task; onOpenDetail: (task: T
         <Button
           variant="ghost"
           onClick={() => deleteTask(task.id)}
+          onPointerDown={(e) => e.stopPropagation()}
           className="opacity-0 group-hover:opacity-100 h-6 w-6 p-0 text-muted-foreground hover:text-destructive-foreground"
         >
           <Trash2 size={12} />
