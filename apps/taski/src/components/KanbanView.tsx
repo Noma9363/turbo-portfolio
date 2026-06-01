@@ -94,6 +94,7 @@ function KanbanCard({ task, onOpenDetail }: { task: Task; onOpenDetail: (task: T
           <DropdownMenuTrigger asChild>
             <button
               onPointerDown={(e) => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
               className={`w-5 h-5 flex items-center justify-center text-xs font-medium rounded transition-colors hover:bg-background cursor-pointer ${getPriorityColor(task.priority)}`}
             >
               {task.priority === undefined
@@ -127,7 +128,7 @@ function KanbanCard({ task, onOpenDetail }: { task: Task; onOpenDetail: (task: T
         {/* 삭제 버튼 */}
         <Button
           variant="ghost"
-          onClick={() => deleteTask(task.id)}
+          onClick={(e) => { e.stopPropagation(); deleteTask(task.id); }}
           onPointerDown={(e) => e.stopPropagation()}
           className="opacity-0 group-hover:opacity-100 h-6 w-6 p-0 text-muted-foreground hover:text-destructive-foreground"
         >
