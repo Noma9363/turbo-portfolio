@@ -247,7 +247,7 @@ export function KanbanView({ tasks }: { tasks: Task[] }) {
   };
 
   return (
-    <>
+    <div className={activeTask ? "select-none" : undefined}>
       {/* 상단 툴바 — 새 태스크(todo) 추가 */}
       <div className="px-4 py-2 border-b border-border">
         <button
@@ -307,6 +307,6 @@ export function KanbanView({ tasks }: { tasks: Task[] }) {
         task={detailTask}
         onClose={() => setDetailTask(null)}
       />
-    </>
+    </div>
   );
 }
