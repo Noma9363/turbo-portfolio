@@ -8,7 +8,7 @@ import {ActionButton} from "@/components/ActionButton";
 import {SideBarEditInput} from "@/components/SidebarEditInput";
 import {CategoryAddInput} from "@/components/CategoryAddInput";
 
-export function Sidebar() {
+export function Sidebar({ onClose }: { onClose?: () => void }) {
     const {
         tasks, categories, activeCategory, setActiveCategory, addCategory, deleteCategory, editCategory
     } = useTaskStore();
@@ -64,8 +64,8 @@ export function Sidebar() {
         }
     };
 
-    return (<aside className="w-56 shrink-0 border-r border-border flex flex-col gap-1 p-4">
-        <p className="text-xs text-muted-foreground font-medium px-3 mb-2 uppercase tracking-widest">
+    return (<aside className="w-full shrink-0 border-r border-border flex flex-col gap-1 p-4">
+        <p className="text-xs text-muted-foreground font-medium px-3 mb-3 uppercase tracking-widest">
             카테고리
         </p>
 
@@ -92,7 +92,7 @@ export function Sidebar() {
             return (<div key={category.id} className="group/category relative flex items-center">
                 <Button
                     variant={isActive ? "default" : "ghost"}
-                    onClick={() => setActiveCategory(category.id)}
+                    onClick={() => { setActiveCategory(category.id); onClose?.(); }}
                     // pr-8: 우측 편집 버튼 공간 확보
                     className="w-full justify-between text-sm font-normal pr-8 h-auto py-2"
                 >
