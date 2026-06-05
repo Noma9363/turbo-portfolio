@@ -78,30 +78,29 @@ function SortableSectionItem({ task, selectedIds, onToggleSelect }: SortableSect
     <li
       ref={setNodeRef}
       style={style}
-      className={`group flex items-center gap-3 px-2 py-3 rounded-lg hover:bg-muted transition-colors ${
+      {...attributes}
+      {...listeners}
+      className={`group flex items-center gap-3 px-2 py-3 rounded-lg hover:bg-muted transition-colors cursor-grab active:cursor-grabbing ${
         isDragging ? "opacity-40" : task.status === "canceled" ? "opacity-50" : ""
       }`}
     >
-      {/* 드래그 핸들 */}
-      <button
-        {...attributes}
-        {...listeners}
-        className="shrink-0 cursor-grab active:cursor-grabbing text-muted-foreground opacity-0 group-hover:opacity-60 hover:opacity-100 transition-opacity"
-        tabIndex={-1}
-        aria-label="드래그하여 이동"
-      >
-        <GripVertical size={14} />
-      </button>
+      {/* 드래그 핸들 — 시각적 힌트만, 실제 리스너는 li에 있음 */}
+      <GripVertical
+        size={14}
+        className="shrink-0 text-muted-foreground opacity-0 group-hover:opacity-60 transition-opacity"
+      />
 
       {/* 체크박스 — bulk 액션 대상 선택 */}
       <input
         type="checkbox"
         checked={selectedIds.includes(task.id)}
         onChange={() => onToggleSelect(task.id)}
+        onPointerDown={e => e.stopPropagation()}
         className="shrink-0 w-3.5 h-3.5 accent-primary cursor-pointer transition-opacity"
       />
 
       {/* 우선도 드롭다운 */}
+      <div onPointerDown={e => e.stopPropagation()}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
@@ -132,6 +131,7 @@ function SortableSectionItem({ task, selectedIds, onToggleSelect }: SortableSect
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+      </div>
 
       {/* 텍스트 */}
       <span
@@ -148,6 +148,7 @@ function SortableSectionItem({ task, selectedIds, onToggleSelect }: SortableSect
       <Button
         variant="ghost"
         onClick={() => deleteTask(task.id)}
+        onPointerDown={e => e.stopPropagation()}
         className="opacity-0 group-hover:opacity-100 h-7 w-7 p-0 text-muted-foreground hover:text-destructive-foreground"
       >
         <Trash2 size={14} />
