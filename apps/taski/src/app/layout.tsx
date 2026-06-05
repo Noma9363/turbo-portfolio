@@ -14,8 +14,8 @@ const notoSansKR = Noto_Sans_KR({
 });
 
 export const metadata: Metadata = {
-  title: "Portfolio",
-  description: "Front-end Developer Portfolio",
+  title: "Taski",
+  description: "일정 관리 투두리스트",
 };
 
 export default function RootLayout({
@@ -25,7 +25,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko" className={`${geist.variable} ${notoSansKR.variable}`}>
-      <body className="font-[var(--font-geist)] antialiased">{children}</body>
+      <body className="font-[var(--font-geist)] antialiased select-none">{children}</body>
     </html>
   );
 }

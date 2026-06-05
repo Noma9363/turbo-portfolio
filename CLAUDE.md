@@ -27,11 +27,13 @@ turbo-portfolio/
 │           │   └── globals.css     # Tailwind v4 + 다크 테마 변수 (@theme) + @utility
 │           └── components/
 │               ├── Navigation.tsx          # 고정 네비게이션 (모바일: 풀너비 / 데스크탑: 중앙 pill)
+│               ├── Container.tsx           # 최대 너비(1276px) 레이아웃 래퍼
+│               ├── SectionLabel.tsx        # 섹션 상단 라벨 (uppercase, border-b)
 │               └── sections/
 │                   ├── Hero.tsx            # 히어로 섹션 (stagger 애니메이션)
-│                   ├── About.tsx           # 소개 + 스킬 배지
+│                   ├── About.tsx           # 소개 + 스킬 배지 (한국어 컨텐츠, max-w-prose)
 │                   ├── Projects.tsx        # 프로젝트 카드 그리드
-│                   └── Contact.tsx         # 연락처 + 소셜 링크
+│                   └── Contact.tsx         # 연락처 + 소셜 링크 (한국어, 실제 연락처)
 ├── packages/
 │   ├── ui/                         # 공유 컴포넌트 라이브러리
 │   │   ├── components.json         # shadcn CLI 설정
@@ -107,18 +109,25 @@ pnpm dlx shadcn@latest add <component>   # shadcn 컴포넌트 추가
 - 테마(색상, 폰트, radius)는 각 앱의 `globals.css` `@theme` 에서 독립 관리
 - 새 앱 추가 시: `@repo/ui` 의존성 추가 후 `globals.css` 에 `@theme` 변수만 재정의
 
+## 배포
+- **플랫폼**: Vercel
+- **Production URL**: https://turbo-portfolio-portfolio.vercel.app/
+- **Production 브랜치**: `main` — PR 머지 시 자동 배포
+
 ## 브랜치 전략
 ```
-main
+main  ← develop PR 머지로 배포 (v1 완료)
 └── develop
-    ├── feat/ui-restructure   # packages/ui 구조, 공통 설정
-    ├── feat/section-hero     # Hero 섹션
-    ├── feat/section-about    # About 섹션
-    └── feat/section-...      # 각 섹션별 브랜치
+    ├── feat/ui-restructure   # packages/ui 구조, 공통 설정 (머지 완료)
+    ├── feat/hero             # Hero 섹션 + Container 컴포넌트 (머지 완료)
+    ├── feat/about            # About 섹션 + SectionLabel 컴포넌트 (머지 완료)
+    ├── feat/projects         # Projects 섹션 (머지 완료)
+    ├── feat/contact          # Contact 섹션 한국어 현지화 (머지 완료)
+    └── feat/<next>           # 다음 작업 브랜치
 ```
 - `packages/ui` 변경은 `feat/ui-*` 브랜치에서 작업
-- 각 섹션 작업은 `develop` 에서 분기한 `feat/section-*` 브랜치에서 작업
-- 완료 후 `develop` 으로 PR → 검증 후 `main` 으로 PR
+- 각 섹션 작업은 `develop` 에서 분기한 `feat/<section>` 브랜치에서 작업
+- 완료 후 `develop` 으로 머지 → 검증 후 `main` 으로 PR → Vercel 자동 배포
 
 ## Navigation 구조
 - **모바일** (`md` 미만): 풀 너비 상단 바, 로고 + 링크, 스크롤 시 배경 생김

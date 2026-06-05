@@ -3,15 +3,18 @@
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, Badge, Button } from "@repo/ui";
 import { Github, ExternalLink } from "lucide-react";
+import { Container } from "@/components/Container";
+import {SectionLabel} from "@/components/SectionLabel";
 
 const projects = [
   {
-    title: "Project Alpha",
+    title: "TASKI TODO",
     description:
-      "A modern SaaS platform with real-time collaboration features. Built for teams to manage workflows and communicate efficiently.",
-    tags: ["Next.js", "TypeScript", "Prisma", "PostgreSQL", "Tailwind"],
-    github: "https://github.com",
-    live: "https://example.com",
+      "카테고리별로 흩어진 할 일을 하나의 앱에서 관리하기 위해 만든 스케줄러.\n" +
+        "Todo · Section · Kanban 세 가지 뷰를 지원합니다.",
+    tags: ["Next.js", "TypeScript", "Tailwind", "DnD-Kit", "Zustand", "Framer Motion"],
+    github: "https://github.com/Noma9363/turbo-portfolio/tree/main/apps/taski",
+    live: "https://turbo-portfolio-taski.vercel.app",
     featured: true,
   },
   {
@@ -45,8 +48,8 @@ const projects = [
 
 export function Projects() {
   return (
-    <section id="projects" className="py-32 px-6 bg-muted/10">
-      <div className="max-w-5xl mx-auto">
+    <section id="projects" className="py-32 bg-muted/10">
+      <Container>
         {/* 섹션 헤더 */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -55,11 +58,11 @@ export function Projects() {
           transition={{ duration: 0.7 }}
           className="mb-16"
         >
-          <p className="text-xs font-medium tracking-widest uppercase text-muted-foreground mb-4">
+          <SectionLabel>
             Work
-          </p>
+          </SectionLabel>
           <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
-            Featured Projects
+            핵심 프로젝트
           </h2>
         </motion.div>
 
@@ -160,7 +163,7 @@ export function Projects() {
             </a>
           </Button>
         </motion.div>
-      </div>
+      </Container>
     </section>
   );
 }
