@@ -31,24 +31,22 @@ export function TodoItem({ task }: TodoItemProps) {
     <li
       ref={setNodeRef}
       style={style}
-      className={`group flex items-center gap-2 px-4 py-3 rounded-lg hover:bg-muted transition-colors ${
+      {...attributes}
+      {...listeners}
+      className={`group flex items-center gap-2 px-4 py-3 rounded-lg hover:bg-muted transition-colors cursor-grab active:cursor-grabbing ${
         isDragging ? "opacity-40" : ""
       }`}
     >
-      {/* 드래그 핸들 — 호버 시 노출 */}
-      <button
-        {...attributes}
-        {...listeners}
-        className="shrink-0 cursor-grab active:cursor-grabbing text-muted-foreground opacity-0 group-hover:opacity-60 hover:opacity-100 transition-opacity"
-        tabIndex={-1}
-        aria-label="드래그하여 순서 변경"
-      >
-        <GripVertical size={14} />
-      </button>
+      {/* 드래그 핸들 — 시각적 힌트만, 실제 리스너는 li에 있음 */}
+      <GripVertical
+        size={14}
+        className="shrink-0 text-muted-foreground opacity-0 group-hover:opacity-60 transition-opacity"
+      />
 
       {/* 체크박스 - 원형 커스텀 UI */}
       <button
         onClick={() => toggleTask(task.id)}
+        onPointerDown={e => e.stopPropagation()}
         className={`shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors cursor-pointer ${
           task.completed
             ? "bg-primary border-primary"
@@ -83,6 +81,7 @@ export function TodoItem({ task }: TodoItemProps) {
       <Button
         variant="ghost"
         onClick={() => deleteTask(task.id)}
+        onPointerDown={e => e.stopPropagation()}
         className="opacity-0 group-hover:opacity-100 h-7 w-7 p-0 text-muted-foreground hover:text-destructive-foreground"
       >
         <Trash2 size={14} />
