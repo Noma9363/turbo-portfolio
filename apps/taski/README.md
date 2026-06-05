@@ -22,7 +22,8 @@ _추가 예정_
 | 스타일 | Tailwind CSS v4 |
 | 상태 관리 | Zustand v5 (`persist` → localStorage) |
 | DnD | @dnd-kit/core · @dnd-kit/sortable · @dnd-kit/utilities |
-| 공유 UI | @repo/ui (shadcn 기반 — Button, DropdownMenu, ButtonGroup) |
+| 공유 UI | @repo/ui (shadcn 기반 — Button, DropdownMenu, ButtonGroup, Sheet, Tooltip, Input, Skeleton) |
+| 애니메이션 | tailwindcss-animate |
 | 언어 | TypeScript 5 |
 
 ---
@@ -46,9 +47,15 @@ _추가 예정_
 - 우선도 드롭다운 (1~5 + 급함)
 
 ### 칸반 뷰
-- 할 일 / 진행 중 / 완료 가로 컬럼
+- 할 일 / 진행 중 / 완료 / 취소됨 가로 컬럼
 - 드래그앤드롭으로 컬럼 간 이동 + 컬럼 내 순서 변경
 - 우선도 드롭다운 (1~5 + 급함)
+- 모바일: 컬럼 고정 너비(256px) + 가로 스크롤
+
+### 반응형
+- 모바일(`md` 미만): 햄버거 버튼 → Sheet 드로어로 Sidebar 표시 (easeOutElastic 슬라이드인)
+- 데스크탑(`md` 이상): 좌측 고정 Sidebar 유지
+- 아이템 전체 드래그 가능 — SectionView, TodoItem 모두 `li` 전체가 드래그 트리거
 
 ---
 
@@ -297,6 +304,79 @@ DnD 이벤트 중 특별한 텍스트 선택 방지 처리가 없었습니다.
 
 **결과**
 카드 어디서나 드래그할 수 있으며, 내부 버튼은 독립적으로 동작합니다.
+
+---
+
+### 11. Sheet 애니메이션이 전혀 동작하지 않음
+
+**이전**
+shadcn Sheet 컴포넌트를 설치하고 모바일 사이드바 드로어로 사용했습니다.
+
+**문제발생**
+`slide-in-from-left`, `animate-in` 등 Sheet의 애니메이션 클래스가 적용되지 않아 드로어가 애니메이션 없이 즉시 나타났습니다.
+
+**수정**
+원인은 두 가지였습니다.
+1. `tailwindcss-animate` 패키지 미설치
+2. `globals.css`에 플러그인 등록 누락
+
+```bash
+pnpm add tailwindcss-animate
+```
+```css
+/* globals.css */
+@plugin "tailwindcss-animate";
+```
+
+**결과**
+`animate-in`, `slide-in-from-left`, `fade-in-0` 등 tailwindcss-animate 클래스가 정상 동작합니다.
+
+---
+
+### 12. `DialogContent` 접근성 경고 — SheetTitle 누락
+
+**이전**
+`SheetContent` 안에 `SheetTitle` 없이 `<Sidebar />`만 렌더했습니다.
+
+**문제발생**
+Radix UI의 Sheet는 내부적으로 Dialog 기반입니다. 스크린 리더 접근성을 위해 `DialogTitle`이 필수로 요구됩니다. 콘솔에 경고가 출력됐습니다.
+
+**수정**
+`sr-only` 클래스로 시각적으로 숨긴 `SheetTitle`을 추가했습니다.
+
+```tsx
+<SheetContent side="left">
+  <SheetTitle className="sr-only">메뉴</SheetTitle>
+  <Sidebar />
+</SheetContent>
+```
+
+**결과**
+접근성 경고가 사라졌습니다. `sr-only`는 화면에는 보이지 않고 스크린 리더에만 읽힙니다.
+
+---
+
+### 13. 모바일 칸반 컬럼이 1/4 크기로 압축됨
+
+**이전**
+`KanbanColumn`에 `flex-1 min-w-0`을 적용해 4컬럼이 가용 너비를 균등 분할하도록 설정했습니다.
+
+**문제발생**
+모바일(375px)에서 각 컬럼이 약 87px로 압축됐습니다. 부모에 `overflow-x-auto`가 있었지만 컬럼이 줄어들어버려 가로 스크롤이 발생하지 않았습니다.
+
+**수정**
+모바일에서 고정 너비를 부여하고, 데스크탑에서만 `flex-1`을 적용했습니다.
+
+```tsx
+// ❌ 이전
+className="flex flex-col flex-1 min-w-0"
+
+// ✅ 수정 후
+className="flex flex-col shrink-0 w-64 md:flex-1 md:min-w-[200px]"
+```
+
+**결과**
+모바일에서 4컬럼 합계 1024px이 되어 `overflow-x-auto`로 가로 스크롤이 정상 동작합니다.
 
 ---
 
