@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "react-day-picker/style.css";
+@plugin "tailwindcss-animate";
 
 @source "../../../../packages/ui/src/**/*.{ts,tsx}";
 
@@ -72,6 +73,22 @@
     border-radius: 3px;
   }
 }
+
+@keyframes slide-in-elastic-left {
+  0%   { transform: translateX(-100%); }
+  55%  { transform: translateX(8px); }
+  70%  { transform: translateX(-5px); }
+  85%  { transform: translateX(2px); }
+  100% { transform: translateX(0); }
+}
+
+.sidebar-sheet[data-state=open] {
+  animation-name: slide-in-elastic-left;
+  animation-duration: 450ms;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+}
+
 
 /* react-day-picker 다크 테마 오버라이드
    @layer 밖에 선언해야 react-day-picker/style.css 보다 우선순위가 높음 */

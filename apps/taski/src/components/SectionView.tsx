@@ -105,12 +105,12 @@ function SortableSectionItem({ task, selectedIds, onToggleSelect }: SortableSect
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
-            className={`shrink-0 w-5 h-5 flex items-center justify-center text-xs font-medium rounded transition-colors hover:bg-muted cursor-pointer ${getPriorityColor(task.priority)}`}
+            className={`shrink-0 w-5 h-5 flex items-center justify-center text-xs font-medium rounded border-1 transition-colors hover:bg-muted cursor-pointer ${getPriorityColor(task.priority)}`}
           >
             {task.priority === undefined
               ? "—"
               : task.priority === "urgent"
-              ? "급"
+              ? "🚨"
               : task.priority}
           </button>
         </DropdownMenuTrigger>

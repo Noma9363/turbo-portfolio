@@ -239,6 +239,96 @@ collisionDetection={(args) => {
 - shadcn 컴포넌트 설치 후 `@/` 경로 → 상대 경로 수동 수정 (`../../lib/utils`, `./Button` 등)
 - `--color-accent` > `--color-popover` — 드롭다운 호버 가시성
 
+## 반응형 작업 가이드 (`feat/taski-responsive`)
+
+### 브레이크포인트 전략
+Tailwind v4 기본 브레이크포인트 사용 (`md` = 768px 기준):
+- **모바일** (`md` 미만): Sidebar 숨김 + 햄버거/드로어 패턴
+- **데스크탑** (`md` 이상): 현재 레이아웃 유지 (Sidebar 고정 + 메인 콘텐츠)
+
+### 컴포넌트별 반응형 작업 순서
+| 순서 | 컴포넌트 | 작업 내용 |
+|------|---------|---------|
+| 1 | `page.tsx` + `Sidebar.tsx` | 모바일에서 Sidebar를 드로어로 전환 (Sheet 컴포넌트 활용) |
+| 2 | `KanbanView.tsx` | 모바일: 가로 스크롤 유지 or 세로 스택 (결정 필요) |
+| 3 | DnD TouchSensor | 모바일 터치 드래그 지원 추가 |
+| 4 | 나머지 뷰 | SectionView, ChecklistView 패딩/폰트 미세 조정 |
+
+### Sidebar 드로어 패턴 (구현 완료)
+```tsx
+// page.tsx — "use client" + sidebarOpen state
+<div className="flex h-screen">
+  {/* 데스크탑 전용 사이드바 */}
+  <div className="hidden md:flex w-56">
+    <Sidebar />
+  </div>
+  {/* 모바일 전용 드로어 */}
+  <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
+    <SheetContent side="left" className="p-0 w-64 sidebar-sheet">
+      <SheetTitle className="sr-only">메뉴</SheetTitle>
+      <Sidebar onClose={() => setSidebarOpen(false)} />
+    </SheetContent>
+  </Sheet>
+  {/* 메인 콘텐츠 */}
+  <main className="flex-1 ...">
+    <header>
+      {/* 모바일 전용 햄버거 버튼 */}
+      <button className="md:hidden" onClick={() => setSidebarOpen(true)}>
+        <Menu size={32} />
+      </button>
+    </header>
+  </main>
+</div>
+```
+
+### Sidebar 컴포넌트 변경 사항
+- `onClose?: () => void` prop 추가 — 카테고리 선택 시 모바일 Sheet 자동 닫힘
+- `aside` 너비: `w-56` → `w-full` (너비는 부모 컨테이너가 제어)
+  - 데스크탑: 래퍼 `div.w-56`이 너비 결정
+  - 모바일: `SheetContent.w-64`가 너비 결정
+
+### 설치된 shadcn 컴포넌트 (packages/ui)
+- `Sheet` — 모바일 사이드바 드로어
+- `Sidebar` — 미래 리팩터용 (현재 미사용)
+- `Tooltip`, `Input`, `Skeleton`, `Separator` — Sidebar 컴포넌트 의존성
+
+### 애니메이션 설정
+- `tailwindcss-animate` 패키지 설치 + `globals.css`에 `@plugin "tailwindcss-animate"` 등록
+- 사이드바 드로어: `globals.css`의 `.sidebar-sheet` 클래스로 easeOutElastic 커스텀 keyframe 적용
+```css
+@keyframes slide-in-elastic-left {
+  0%   { transform: translateX(-100%); }
+  55%  { transform: translateX(8px); }
+  70%  { transform: translateX(-5px); }
+  85%  { transform: translateX(2px); }
+  100% { transform: translateX(0); }
+}
+```
+
+### KanbanView 모바일 처리 (결정 필요)
+- **가로 스크롤 유지**: `overflow-x-auto` — 4컬럼 구조 그대로, 손가락으로 스크롤
+- **세로 스택**: `flex-col md:flex-row` — 모바일에서 컬럼을 세로로 쌓음
+- 선택 기준: 칸반은 한눈에 보는 게 목적 → **가로 스크롤이 더 자연스러움**
+
+### DnD TouchSensor 추가
+```ts
+// 모바일 터치 드래그 지원 — PointerSensor만으로는 iOS Safari에서 오작동 가능
+import { TouchSensor } from "@dnd-kit/core"
+
+const sensors = useSensors(
+  useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+  useSensor(TouchSensor,   { activationConstraint: { delay: 200, tolerance: 5 } })
+  // delay: 200ms — 스크롤과 드래그 의도 구분
+)
+```
+**SectionView, KanbanView, ChecklistView 모두에 동일하게 적용.**
+
+### AI 협업 시 블랙박스 방지 원칙
+- 파일 하나씩 수정 — 여러 파일 동시 수정 요청 금지
+- 코드 전에 접근 방식 설명 먼저 (`코드는 아직 쓰지 마` 명시)
+- 변경 후 "왜 이 방식을 썼어?" 질문으로 이해 확인
+- 모르는 Tailwind 클래스나 패턴은 즉시 질문
+
 ## 버그 수정 기록
 | 증상 | 원인 | 수정 |
 |------|------|------|
