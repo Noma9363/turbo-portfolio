@@ -163,7 +163,7 @@ function KanbanColumn({ status, label, tasks, onAdd, onOpenDetail }: KanbanColum
   const { setNodeRef } = useDroppable({ id: status });
 
   return (
-    <div ref={setNodeRef} className="flex flex-col flex-1 min-w-0">
+    <div ref={setNodeRef} className="flex flex-col shrink-0 w-64 md:flex-1 md:min-w-[200px]">
       {/* 컬럼 헤더 */}
       <div className="flex items-center gap-2 px-1 py-2 mb-3">
         <span className="text-xs font-medium text-muted-foreground uppercase tracking-widest">

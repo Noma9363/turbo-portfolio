@@ -305,10 +305,11 @@ Tailwind v4 기본 브레이크포인트 사용 (`md` = 768px 기준):
 }
 ```
 
-### KanbanView 모바일 처리 (결정 필요)
-- **가로 스크롤 유지**: `overflow-x-auto` — 4컬럼 구조 그대로, 손가락으로 스크롤
-- **세로 스택**: `flex-col md:flex-row` — 모바일에서 컬럼을 세로로 쌓음
-- 선택 기준: 칸반은 한눈에 보는 게 목적 → **가로 스크롤이 더 자연스러움**
+### KanbanView 모바일 처리 (구현 완료)
+- 가로 스크롤 방식 채택 — 칸반은 한눈에 보는 게 목적
+- `KanbanColumn`: `flex-1 min-w-0` → `shrink-0 w-64 md:flex-1 md:min-w-[200px]`
+  - 모바일: 컬럼 고정 256px → 4컬럼 합계 1024px → `overflow-x-auto`로 가로 스크롤
+  - 데스크탑: `md:flex-1`으로 기존과 동일하게 가용 너비 균등 분할
 
 ### DnD TouchSensor 추가
 ```ts
