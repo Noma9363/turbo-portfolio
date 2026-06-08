@@ -152,3 +152,69 @@ main  ← develop PR 머지로 배포 (v1 완료)
 // stagger (Hero, 스킬 배지)
 variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
 ```
+
+---
+
+## Phase 3 — reviews 앱 (진행 중)
+
+### 개요
+- **브랜치**: `feat/audioreview`
+- **앱 경로**: `apps/reviews/` (localhost:3002)
+- **마감**: 2026-06-12 (금)
+- **브랜드**: 젠하이저(Sennheiser) 음향기기 리뷰 플랫폼
+
+### 기술 스택
+| 역할 | 기술 |
+|------|------|
+| 프레임워크 | Next.js 15 (App Router) |
+| 인증 | NextAuth v5 + Google OAuth |
+| DB | Supabase (PostgreSQL) |
+| 서버 상태 | TanStack Query v5 |
+| 스타일 | Tailwind CSS v4 |
+
+### 진행 현황
+- [x] 앱 스캐폴딩 + @repo/ui 연동
+- [x] Supabase 프로젝트 생성 및 클라이언트 연동
+- [x] NextAuth v5 Google OAuth 로그인 구현
+- [x] TanStack Query + SessionProvider 설정
+- [ ] Supabase 테이블 생성 (users, products, reviews)
+- [ ] 제품 목록 페이지 + ProductCard + URL 쿼리 필터
+- [ ] 리뷰 CRUD (TanStack Query)
+- [ ] 반응형 레이아웃 (mobile → md → lg)
+- [ ] Vercel 배포
+
+### 일정
+| 날짜 | 작업 |
+|------|------|
+| 월 6/8 | ✅ Supabase + Google OAuth 구축 |
+| 화 6/9 | Supabase 테이블 + 제품 목록 + URL 필터 |
+| 수 6/10 | 리뷰 CRUD + TanStack Query |
+| 목 6/11 | 반응형 마무리 + 빈 상태/로딩 처리 |
+| 금 6/12 | Vercel 배포 + 마무리 |
+| 일 6/14 | 버퍼 (예비일) |
+
+### 디렉토리 원칙 (taski 반성)
+- 기능 단위 폴더 분리: `components/product/`, `components/review/`, `components/auth/`
+- 훅은 `hooks/`에 모아서 관리 (`useReviews.ts`, `useFilter.ts`)
+- Supabase 쿼리 함수는 `queries/`에 분리 (컴포넌트에 직접 쓰지 않음)
+
+### 반응형 브레이크포인트
+- **시작**: 모바일(default) → `md`(768px) → `lg`(1024px) 순서
+- 모바일: 1열, 풀너비 필터 드로어
+- md: 2열 그리드, 사이드 필터
+- lg: 3열 그리드
+
+### 주의사항
+- `src/auth.ts` 루트 파일이 NextAuth v5 핵심 — 삭제 금지
+- `.env.local`은 gitignore — 다른 기기에서 새로 만들어야 함
+- 다른 기기(Windows) 세팅 시 필요한 환경변수:
+  ```
+  NEXT_PUBLIC_SUPABASE_URL
+  NEXT_PUBLIC_SUPABASE_ANON_KEY
+  NEXTAUTH_URL=http://localhost:3002
+  NEXTAUTH_SECRET
+  GOOGLE_CLIENT_ID
+  GOOGLE_CLIENT_SECRET
+  ```
+- turbopack.root 설정 필수 (모노레포 워크스페이스 감지 오류 방지)
+- 블랙박스 방지: 작은 단위로 요청 (파일 하나씩, 타입 먼저 확정 후 구현)
