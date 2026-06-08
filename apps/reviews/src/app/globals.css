@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@source "../../../../packages/ui/src/**/*.{ts,tsx}";
+@source "../../../packages/ui/src";
 
 @theme {
   /* Dark Minimal Color Palette */
