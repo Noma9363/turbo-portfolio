@@ -107,7 +107,9 @@ pnpm build            # Next.js 빌드
 - [x] Supabase 프로젝트 생성 및 클라이언트 연동
 - [x] NextAuth v5 Google OAuth 로그인 구현
 - [x] TanStack Query Provider 설정
-- [ ] Supabase 테이블 생성 + seed 데이터
+- [x] Supabase 테이블 생성 + seed 데이터 (users, products, reviews, likes + category ENUM)
+- [x] src/types/database.ts — Supabase 테이블 타입 정의
+- [x] src/queries/products.ts — getProducts, getProductsByCategory, getProductById
 - [ ] 제품 목록 페이지 + ProductCard
 - [ ] URL 쿼리 필터
 - [ ] 리뷰 CRUD
