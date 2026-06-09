@@ -51,7 +51,8 @@ apps/reviews/
     │   ├── page.tsx                  # 랜딩
     │   ├── globals.css
     │   ├── login/page.tsx            # Google 로그인
-    │   ├── reviews/                  # (다음 작업)
+    │   ├── reviews/
+    │   │   └── page.tsx              # (진행 중 — searchParams 구조 설계 중)
     │   └── api/auth/[...nextauth]/
     │       └── route.ts              # NextAuth handlers
     ├── components/
@@ -66,8 +67,11 @@ apps/reviews/
     │   └── supabase/
     │       └── client.ts             # Supabase 브라우저 클라이언트
     ├── hooks/                        # (다음 작업)
-    ├── queries/                      # (다음 작업)
-    └── types/                        # (다음 작업)
+    ├── queries/
+    │   ├── products.ts               # getProducts, getProductsByCategory, getProductById
+    │   └── reviews.ts                # getAllReviews (products join 포함)
+    └── types/
+        └── database.ts               # user, products, reviews, likes, ReviewWithProduct
 ```
 
 ## 환경변수 (.env.local)
@@ -108,9 +112,12 @@ pnpm build            # Next.js 빌드
 - [x] NextAuth v5 Google OAuth 로그인 구현
 - [x] TanStack Query Provider 설정
 - [x] Supabase 테이블 생성 + seed 데이터 (users, products, reviews, likes + category ENUM)
-- [x] src/types/database.ts — Supabase 테이블 타입 정의
 - [x] src/queries/products.ts — getProducts, getProductsByCategory, getProductById
-- [ ] 제품 목록 페이지 + ProductCard
+- [x] src/types/database.ts — ReviewWithProduct 타입 추가 (reviews + products join 대응)
+- [x] src/queries/reviews.ts — getAllReviews (products name/category join)
+- [ ] reviews/page.tsx — searchParams 구조 + 목록 렌더링 (진행 중)
+- [ ] ProductCard 컴포넌트
+- [ ] URL 쿼리 필터
 - [ ] URL 쿼리 필터
 - [ ] 리뷰 CRUD
 - [ ] 반응형 레이아웃

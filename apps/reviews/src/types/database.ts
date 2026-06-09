@@ -38,4 +38,6 @@ export interface likes {
     review_id: string;
 }
 
-
+export interface ReviewWithProduct extends reviews{
+    products: Pick<products, 'name' | 'category'>;
+}
