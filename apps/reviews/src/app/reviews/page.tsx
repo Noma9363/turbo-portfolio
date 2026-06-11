@@ -1,11 +1,22 @@
-import {categories} from '@/types/database'
+import {getAllReviews} from "@/queries/reviews";
 
 interface SearchParamsInterface {
-    search: PageInterface;
+    category?: string;
+    sort?: string;
 }
-interface PageInterface {
-    category : categories
-}
-export function Page({search}:SearchParamsInterface){
+export default async function Page({searchParams}: {searchParams: SearchParamsInterface}) {
 
+    const reviews = await getAllReviews();
+    if(!reviews || !reviews.length){
+
+        return(
+            <div>
+                ERROR Review Preserve Failed
+            </div>
+        )
+    }
+
+    return (
+        <div>reviewResult is {reviews?.length}</div>
+    )
 }
