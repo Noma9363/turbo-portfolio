@@ -115,7 +115,8 @@ pnpm build            # Next.js 빌드
 - [x] src/queries/products.ts — getProducts, getProductsByCategory, getProductById
 - [x] src/types/database.ts — ReviewWithProduct 타입 추가 (reviews + products join 대응)
 - [x] src/queries/reviews.ts — getAllReviews (products name/category join)
-- [ ] reviews/page.tsx — searchParams 구조 + 목록 렌더링 (진행 중 — 목 6/11 저녁)
+- [x] reviews/page.tsx — searchParams 구조 + 목록 렌더링 완성 (목 6/11)
+- [x] Supabase DB 수정 — FK constraint (reviews.product_id → products.id), RLS disable (products/reviews), user_id nullable
 - [ ] ProductCard 컴포넌트 (금 6/12)
 - [ ] URL 쿼리 필터 (금 6/12)
 - [ ] 리뷰 CRUD (토 6/13)
