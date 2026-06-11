@@ -160,7 +160,7 @@ variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
 ### 개요
 - **브랜치**: `feat/audioreview`
 - **앱 경로**: `apps/reviews/` (localhost:3002)
-- **마감**: 2026-06-12 (금)
+- **마감**: 2026-06-14 (일) — 일정 조정 (목/금 작업 지연)
 - **브랜드**: 젠하이저(Sennheiser) 음향기기 리뷰 플랫폼
 
 ### 기술 스택
@@ -177,21 +177,23 @@ variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
 - [x] Supabase 프로젝트 생성 및 클라이언트 연동
 - [x] NextAuth v5 Google OAuth 로그인 구현
 - [x] TanStack Query + SessionProvider 설정
-- [ ] Supabase 테이블 생성 (users, products, reviews)
-- [ ] 제품 목록 페이지 + ProductCard + URL 쿼리 필터
+- [x] Supabase 테이블 생성 + seed 데이터 (users, products, reviews, likes)
+- [x] queries/products.ts + queries/reviews.ts + types/database.ts
+- [ ] reviews/page.tsx — searchParams 구조 + 목록 렌더링 (진행 중)
+- [ ] ProductCard 컴포넌트 + URL 쿼리 필터
 - [ ] 리뷰 CRUD (TanStack Query)
-- [ ] 반응형 레이아웃 (mobile → md → lg)
+- [ ] 반응형 레이아웃 + 빈 상태/로딩 처리
 - [ ] Vercel 배포
 
-### 일정
+### 일정 (조정됨 — 목/금 작업 지연)
 | 날짜 | 작업 |
 |------|------|
 | 월 6/8 | ✅ Supabase + Google OAuth 구축 |
-| 화 6/9 | Supabase 테이블 + 제품 목록 + URL 필터 |
-| 수 6/10 | 리뷰 CRUD + TanStack Query |
-| 목 6/11 | 반응형 마무리 + 빈 상태/로딩 처리 |
-| 금 6/12 | Vercel 배포 + 마무리 |
-| 일 6/14 | 버퍼 (예비일) |
+| 화~목 6/9~11 | ✅ 테이블 + 쿼리 + 타입 (지연 완료) |
+| 목 6/11 저녁 | reviews/page.tsx — searchParams 구조 + 목록 렌더링 |
+| 금 6/12 | ProductCard + URL 쿼리 필터 |
+| 토 6/13 | 리뷰 CRUD + 반응형 레이아웃 |
+| 일 6/14 | 빈 상태/로딩 처리 + Vercel 배포 + 마무리 |
 
 ### 디렉토리 원칙 (taski 반성)
 - 기능 단위 폴더 분리: `components/product/`, `components/review/`, `components/auth/`

@@ -115,13 +115,13 @@ pnpm build            # Next.js 빌드
 - [x] src/queries/products.ts — getProducts, getProductsByCategory, getProductById
 - [x] src/types/database.ts — ReviewWithProduct 타입 추가 (reviews + products join 대응)
 - [x] src/queries/reviews.ts — getAllReviews (products name/category join)
-- [ ] reviews/page.tsx — searchParams 구조 + 목록 렌더링 (진행 중)
-- [ ] ProductCard 컴포넌트
-- [ ] URL 쿼리 필터
-- [ ] URL 쿼리 필터
-- [ ] 리뷰 CRUD
-- [ ] 반응형 레이아웃
-- [ ] Vercel 배포
+- [ ] reviews/page.tsx — searchParams 구조 + 목록 렌더링 (진행 중 — 목 6/11 저녁)
+- [ ] ProductCard 컴포넌트 (금 6/12)
+- [ ] URL 쿼리 필터 (금 6/12)
+- [ ] 리뷰 CRUD (토 6/13)
+- [ ] 반응형 레이아웃 (토 6/13)
+- [ ] 빈 상태/로딩 처리 (일 6/14)
+- [ ] Vercel 배포 (일 6/14)
 
 ---
 
