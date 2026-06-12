@@ -1,15 +1,20 @@
-import {getAllReviews} from "@/queries/reviews";
+import { FilterBar } from "@/components/product/FilterBar";
+import { ProductCard } from "@/components/product/ProductCard";
+import { getAllReviews } from "@/queries/reviews";
+import { categories, CATEGORIES } from "@/types/database";
 
 interface SearchParamsInterface {
     category?: string;
     sort?: string;
 }
-export default async function Page({searchParams}: {searchParams: SearchParamsInterface}) {
+export default async function Page({ searchParams }: { searchParams: SearchParamsInterface }) {
 
     const reviews = await getAllReviews();
-    if(!reviews || !reviews.length){
+    const category = CATEGORIES.includes(searchParams.category as categories) ? searchParams.category as categories : undefined;
 
-        return(
+    if (!reviews || !reviews.length) {
+
+        return (
             <div>
                 ERROR Review Preserve Failed
             </div>
@@ -17,6 +22,12 @@ export default async function Page({searchParams}: {searchParams: SearchParamsIn
     }
 
     return (
-        <div>reviewResult is {reviews?.length}</div>
+        <div>
+            reviewResult is {reviews?.length}
+            <FilterBar currentCategory={category} />
+            {
+                reviews.filter(f => !category || f.products.category === category).map((r => (<ProductCard key={r.id} product={r.products} />)))
+            }
+        </div>
     )
 }

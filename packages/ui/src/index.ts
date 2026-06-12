@@ -53,8 +53,6 @@ export {
   DialogDescription,
 } from "./components/ui/dialog";
 
-export { Calendar, CalendarDayButton } from "./components/ui/calendar";
-
 export { Popover, PopoverTrigger, PopoverContent } from "./components/ui/popover";
 
 export {

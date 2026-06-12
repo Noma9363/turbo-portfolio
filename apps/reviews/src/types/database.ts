@@ -9,6 +9,9 @@ export interface user {
 // 카테고리의 경우 지금 단순하게 해야할지 아니면 뎁스로 해야할지 고민중
 export type categories = "headphone" | "earphone" | "dac" | "amp";
 
+// 타입과 상수 
+export const CATEGORIES: categories[] = ["headphone", "earphone", "dac", "amp"];
+
 export interface products {
     id: string; // 상품의 고유 id
     name: string; // 상품명
@@ -39,5 +42,5 @@ export interface likes {
 }
 
 export interface ReviewWithProduct extends reviews{
-    products: Pick<products, 'name' | 'category'>;
+    products: Pick<products, 'id' | 'name' | 'category' | 'image_url' | 'description' | 'label' | 'price' >;
 }
