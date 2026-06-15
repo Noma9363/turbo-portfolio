@@ -12,7 +12,7 @@ export function FilterBar({ currentCategory }: FilterBarProps) {
     const router = useRouter();
 
     return (
-        <div>
+        <div className="flex flex-row gap-1.5">
             <Button
                 onClick={() => {
                     router.push(`/reviews`)

@@ -119,9 +119,9 @@ pnpm build            # Next.js 빌드
 - [x] Supabase DB 수정 — FK constraint (reviews.product_id → products.id), RLS disable (products/reviews), user_id nullable
 - [x] ProductCard 컴포넌트 (금 6/12)
 - [x] URL 쿼리 필터 — FilterBar + router.push + 서버 filter 연결 (금 6/12)
-- [ ] ProductCard 스타일 + 그리드 레이아웃 + 반응형 (토 6/13)
-- [ ] 리뷰 CRUD (일 6/14)
-- [ ] 빈 상태/로딩 처리 + Vercel 배포 (월 6/16)
+- [x] ProductCard 스타일 + 그리드 레이아웃 + 반응형 (월 6/16)
+- [ ] 리뷰 CRUD
+- [ ] 빈 상태/로딩 처리 + Vercel 배포
 
 ---
 

@@ -22,12 +22,15 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
     }
 
     return (
-        <div>
-            reviewResult is {reviews?.length}
+        <div className="p-4">
             <FilterBar currentCategory={category} />
-            {
-                reviews.filter(f => !category || f.products.category === category).map((r => (<ProductCard key={r.id} product={r.products} />)))
-            }
+            <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-2 gap-2">
+
+                {
+                    reviews.filter(f => !category || f.products.category === category).map((r => (<ProductCard key={r.id} product={r.products} />)))
+
+                }
+            </div>
         </div>
     )
 }
