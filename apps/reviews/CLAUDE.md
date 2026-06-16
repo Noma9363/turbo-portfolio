@@ -125,9 +125,23 @@ pnpm build            # Next.js 빌드
 - [x] ReviewForm — Field/Input/Textarea/Rating 컴포넌트 구성 + hidden input으로 FormData 전달
 - [x] ReviewFormDialog — full-screen Dialog + 뒷배경 클릭/Cancel 닫기 + open 상태 관리
 - [x] packages/ui — rating.tsx, field.tsx, label.tsx, textarea.tsx @/ 경로 수정
-- [ ] 리뷰 delete (본인 리뷰만)
-- [ ] 리뷰 상세 페이지 또는 목록 내 리뷰 카드 렌더
-- [ ] 빈 상태/로딩 처리 + Vercel 배포
+- [x] 리뷰 delete — deleteReview(id, userId) + deleteReviewAction + ReviewCard + DeleteConfirmDialog (화 6/17)
+- [x] ReviewCard — ReviewWithProduct + currentUserId prop, 본인 리뷰에만 DeleteConfirmDialog 노출
+- [x] reviews/page.tsx — auth()로 currentUserId 추출 + ReviewCard 목록 렌더 (전체 리뷰)
+- [ ] ReviewCard 스타일링 (다음 작업 — 화 6/17)
+- [ ] 빈 상태/로딩 처리
+- [ ] Vercel 배포
+
+## 다음 작업 (화 6/17)
+1. **ReviewCard 스타일링** — 아바타 자리(이니셜 fallback), rating 별표, 날짜 포맷, 카드 레이아웃
+2. **빈 상태 처리** — 리뷰 없을 때 empty state UI
+3. **로딩 처리** — Suspense or loading skeleton
+4. **Vercel 배포**
+
+### 레이아웃 결정 (6/16)
+- `/reviews` 페이지에 상품 카드 그리드 + 그 아래 전체 리뷰 목록 렌더 (별도 상세 페이지 없음)
+- 상품별 리뷰 필터링은 나중에 URL 쿼리(`?product_id=`) 방식으로 추가 예정
+- 아바타는 users join 없이 이니셜 fallback으로 처리 예정
 
 ---
 

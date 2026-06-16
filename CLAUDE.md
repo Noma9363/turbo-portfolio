@@ -179,21 +179,23 @@ variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
 - [x] TanStack Query + SessionProvider 설정
 - [x] Supabase 테이블 생성 + seed 데이터 (users, products, reviews, likes)
 - [x] queries/products.ts + queries/reviews.ts + types/database.ts
-- [ ] reviews/page.tsx — searchParams 구조 + 목록 렌더링 (진행 중)
-- [ ] ProductCard 컴포넌트 + URL 쿼리 필터
-- [ ] 리뷰 CRUD (TanStack Query)
-- [ ] 반응형 레이아웃 + 빈 상태/로딩 처리
+- [x] reviews/page.tsx — searchParams 구조 + 목록 렌더링
+- [x] ProductCard 컴포넌트 + URL 쿼리 필터 + 스타일링
+- [x] 리뷰 create — Server Action + ReviewForm + ReviewFormDialog
+- [x] 리뷰 delete — deleteReview + deleteReviewAction + ReviewCard + DeleteConfirmDialog (화 6/17)
+- [ ] ReviewCard 스타일링 (다음 — 화 6/17)
+- [ ] 빈 상태/로딩 처리
 - [ ] Vercel 배포
 
-### 일정 (조정됨 — 목/금 작업 지연)
+### 일정 (재조정 — 마감 6/20 금요일)
 | 날짜 | 작업 |
 |------|------|
 | 월 6/8 | ✅ Supabase + Google OAuth 구축 |
-| 화~목 6/9~11 | ✅ 테이블 + 쿼리 + 타입 (지연 완료) |
-| 목 6/11 저녁 | reviews/page.tsx — searchParams 구조 + 목록 렌더링 |
-| 금 6/12 | ProductCard + URL 쿼리 필터 |
-| 토 6/13 | 리뷰 CRUD + 반응형 레이아웃 |
-| 일 6/14 | 빈 상태/로딩 처리 + Vercel 배포 + 마무리 |
+| 화~목 6/9~11 | ✅ 테이블 + 쿼리 + 타입 |
+| 금~월 6/12~16 | ✅ ProductCard + FilterBar + ReviewForm + ReviewFormDialog + delete |
+| 화 6/17 | ReviewCard 스타일링 |
+| 수~목 6/18~19 | 빈 상태/로딩 처리 + 마무리 |
+| 금 6/20 | Vercel 배포 |
 
 ### 디렉토리 원칙 (taski 반성)
 - 기능 단위 폴더 분리: `components/product/`, `components/review/`, `components/auth/`

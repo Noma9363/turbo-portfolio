@@ -18,3 +18,13 @@ export const createReview = async (ipt:CreateReviewInput):Promise<reviews|null> 
     }
     return data;
 }
+
+export const deleteReview = async (id: string, user_id: string):Promise<boolean|null>=>{
+    const {error} = await supabase
+    .from('reviews')
+    .delete()
+    .eq('id', id)
+    .eq('user_id', user_id);
+    
+    return !error
+}

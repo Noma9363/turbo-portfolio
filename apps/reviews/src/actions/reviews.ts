@@ -1,7 +1,7 @@
 "use server"
 
 import {auth} from "@/auth";
-import { createReview } from "@/queries/reviews";
+import { createReview, deleteReview } from "@/queries/reviews";
 import { CreateReviewInput } from "@/types/database"
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -22,4 +22,14 @@ export const createReviewAction = async (formData : FormData) => {
     await createReview(input);
     revalidatePath('/reviews');
     redirect('/reviews');
+}
+
+export const deleteReviewAction = async (formData: FormData) => {
+    const session = await auth();
+    const user_id = session?.user?.id as string;
+    const current_id = formData.get('id') as string;
+    if(!user_id) return;
+    
+    await deleteReview(current_id, user_id);
+    revalidatePath('/reviews');
 }
