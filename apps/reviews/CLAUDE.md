@@ -1,5 +1,17 @@
 # reviews
 
+## 🔖 세션 시작 시 Claude가 읽어야 할 현황 요약
+> `/clear` 후 새 세션에서 이 블록을 먼저 읽고 핵심 상황을 파악할 것
+
+- **브랜치**: `feat/audioreview` / **포트**: `localhost:3002`
+- **현재 단계**: 리뷰 delete 완료 → 다음은 **ReviewCard 스타일링**
+- **오늘 완료 (6/16)**: deleteReview + deleteReviewAction + ReviewCard + DeleteConfirmDialog + reviews/page.tsx 연결
+- **다음 작업 (6/17)**: `ReviewCard.tsx` 스타일링 — 이니셜 아바타, rating 별표, 날짜 포맷, 카드 레이아웃
+- **마감**: 2026-06-20 (금) — Vercel 배포까지
+- **협업 원칙**: 구현 전 항상 "어떻게 만들려고 해?" 먼저 물을 것. 코드 대신 방향/키워드만. 파일 전체 작성 금지.
+
+---
+
 ## 앱 개요
 Turborepo 모노레포(`turbo-portfolio`) 내 `apps/reviews`에 위치한 젠하이저 음향기기 리뷰 플랫폼.
 Next.js 15 + Tailwind CSS v4 + NextAuth v5 + Supabase + TanStack Query 기반의 다크 미니멀 테마.
