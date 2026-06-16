@@ -71,3 +71,14 @@ export {
 export { Input } from "./components/ui/input";
 export { Skeleton } from "./components/ui/skeleton";
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "./components/ui/tooltip";
+export { Textarea } from "./components/ui/textarea";
+export { Rating, ratingVariants, type RatingProps } from "./components/ui/rating";
+export {
+  Field,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSeparator,
+  FieldSet,
+} from "./components/ui/field";

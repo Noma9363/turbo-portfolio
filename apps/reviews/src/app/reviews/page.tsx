@@ -1,5 +1,6 @@
 import { FilterBar } from "@/components/product/FilterBar";
 import { ProductCard } from "@/components/product/ProductCard";
+import { ReviewFromDialog } from "@/components/review/ReviewFormDialog";
 import { getAllReviews } from "@/queries/reviews";
 import { categories, CATEGORIES } from "@/types/database";
 
@@ -7,10 +8,10 @@ interface SearchParamsInterface {
     category?: string;
     sort?: string;
 }
-export default async function Page({ searchParams }: { searchParams: SearchParamsInterface }) {
-
+export default async function Page({ searchParams }: { searchParams: Promise<SearchParamsInterface> }) {
+    const {category: categoryParam} = await searchParams;
     const reviews = await getAllReviews();
-    const category = CATEGORIES.includes(searchParams.category as categories) ? searchParams.category as categories : undefined;
+    const category = CATEGORIES.includes(categoryParam as categories) ? categoryParam as categories : undefined;
 
     if (!reviews || !reviews.length) {
 
@@ -31,6 +32,8 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
 
                 }
             </div>
+            <ReviewFromDialog productId={reviews[0]!.product_id}/>
         </div>
+
     )
 }

@@ -103,7 +103,8 @@ pnpm build            # Next.js 빌드
 - `src/auth.ts`: NextAuth v5 루트 파일 — `handlers`, `auth`, `signIn`, `signOut` export
 - `app/api/auth/[...nextauth]/route.ts`: `export const { GET, POST } = handlers`
 - `next.config.ts`: `transpilePackages: ['@repo/ui']`, `turbopack.root` 모노레포 루트 지정
-- `globals.css`: `@source "../../../packages/ui/src"` — packages/ui 클래스 스캔
+- `globals.css`: `@source "../../../packages/ui/src/**/*.{ts,tsx}"` — packages/ui 클래스 스캔
+- `packages/ui` 새 컴포넌트 추가 시 `@/lib/utils` → `../../lib/utils`, `@/components/ui/xxx` → `./xxx` 로 경로 수정 필수
 - 모든 클라이언트 컴포넌트는 `"use client"` 선언
 
 ## 진행 현황
@@ -120,7 +121,12 @@ pnpm build            # Next.js 빌드
 - [x] ProductCard 컴포넌트 (금 6/12)
 - [x] URL 쿼리 필터 — FilterBar + router.push + 서버 filter 연결 (금 6/12)
 - [x] ProductCard 스타일 + 그리드 레이아웃 + 반응형 (월 6/16)
-- [ ] 리뷰 CRUD
+- [x] 리뷰 create — Server Action + auth() 세션 + revalidatePath (월 6/16)
+- [x] ReviewForm — Field/Input/Textarea/Rating 컴포넌트 구성 + hidden input으로 FormData 전달
+- [x] ReviewFormDialog — full-screen Dialog + 뒷배경 클릭/Cancel 닫기 + open 상태 관리
+- [x] packages/ui — rating.tsx, field.tsx, label.tsx, textarea.tsx @/ 경로 수정
+- [ ] 리뷰 delete (본인 리뷰만)
+- [ ] 리뷰 상세 페이지 또는 목록 내 리뷰 카드 렌더
 - [ ] 빈 상태/로딩 처리 + Vercel 배포
 
 ---
