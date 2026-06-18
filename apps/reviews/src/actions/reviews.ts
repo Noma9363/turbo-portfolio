@@ -20,8 +20,8 @@ export const createReviewAction = async (formData : FormData) => {
     const input:CreateReviewInput = {user_id, product_id, rating, title, body}
 
     await createReview(input);
-    revalidatePath('/reviews');
-    redirect('/reviews');
+    revalidatePath(`/reviews/${product_id}`);
+    redirect(`/reviews/${product_id}`);
 }
 
 export const deleteReviewAction = async (formData: FormData) => {

@@ -27,3 +27,4 @@ export const getProductById = async (id: string):Promise<products|null> => {
     }
     return data;
 }
+

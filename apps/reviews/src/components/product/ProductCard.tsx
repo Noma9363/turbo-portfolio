@@ -1,8 +1,10 @@
 import { products } from "@/types/database";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, Badge, cn } from "@repo/ui";
+import Link from "next/link";
 
 export function ProductCard({ product }: { product: products }) {
     return (
+        <Link href={`reviews/${product.id}`} className="block">
         <Card className={cn("bg-card rounded-xl border-border text-card-foreground hover:border-zinc-600 transition-colors duration-300")}>
             <CardHeader className="flex flex-col p-4">
                 <Badge className="w-fit px-2 mb-4">
@@ -25,5 +27,6 @@ export function ProductCard({ product }: { product: products }) {
                 }
             </CardFooter>
         </Card>
+        </Link>
     )
 }

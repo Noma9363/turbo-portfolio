@@ -1,12 +1,12 @@
 "use client";
 
 import { deleteReviewAction } from "@/actions/reviews";
-import { ReviewWithProduct } from "@/types/database";
+import { ReviewWithUser } from "@/types/database";
 import { Button, Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@repo/ui";
 import { useState } from "react";
 
 interface DeleteConfirmDialogProps {
-    review: ReviewWithProduct
+    review: ReviewWithUser
 }
 
 export function DeleteConfirmDialog({ review }: DeleteConfirmDialogProps) {

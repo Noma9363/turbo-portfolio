@@ -4,9 +4,9 @@
 > `/clear` 후 새 세션에서 이 블록을 먼저 읽고 핵심 상황을 파악할 것
 
 - **브랜치**: `feat/audioreview` / **포트**: `localhost:3002`
-- **현재 단계**: 리뷰 delete 완료 → 다음은 **ReviewCard 스타일링**
-- **오늘 완료 (6/16)**: deleteReview + deleteReviewAction + ReviewCard + DeleteConfirmDialog + reviews/page.tsx 연결
-- **다음 작업 (6/17)**: `ReviewCard.tsx` 스타일링 — 이니셜 아바타, rating 별표, 날짜 포맷, 카드 레이아웃
+- **현재 단계**: 상세 페이지 + getOrCreateUser 완료 → 다음은 **ReviewCard 스타일링 + 빈 상태 처리 + 배포**
+- **오늘 완료 (6/18)**: /reviews/[id] 상세 페이지, getReviewsByProductId, ReviewWithUser 타입, ProductCard Link, getOrCreateUser(signIn 콜백 + supabaseAdmin), RLS users 비활성화, createReviewAction redirect 수정
+- **다음 작업 (6/19)**: ReviewCard 스타일링, 빈 상태 처리, Vercel 배포
 - **마감**: 2026-06-20 (금) — Vercel 배포까지
 - **협업 원칙**: 구현 전 항상 "어떻게 만들려고 해?" 먼저 물을 것. 코드 대신 방향/키워드만. 파일 전체 작성 금지.
 
@@ -90,6 +90,7 @@ apps/reviews/
 ```
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=   # auth.ts signIn 콜백에서 getOrCreateUser 용도 (서버 전용, NEXT_PUBLIC_ 금지)
 NEXTAUTH_URL=http://localhost:3002
 NEXTAUTH_SECRET=
 GOOGLE_CLIENT_ID=
@@ -103,6 +104,13 @@ products: id, name, category, image_url, description  (seed 데이터)
 reviews:  id, user_id, product_id, rating, title, body, created_at, updated_at
 likes:    id, user_id, review_id  (선택)
 ```
+
+## Supabase MCP
+- **설정 위치**: 루트 `.mcp.json` (gitignore됨 — PAT 포함)
+- **project-ref**: `aynbwrurevrfmrfxplsd`
+- **토큰 이름**: `supabase-claude-mcp` (만료: 30일)
+- Claude Code 재시작 후 `/mcp` 로 연결 확인
+- FK 관계: `reviews.user_id → users.id`, `reviews.product_id → products.id`
 
 ## 주요 명령어
 ```bash
@@ -138,24 +146,40 @@ pnpm build            # Next.js 빌드
 - [x] ReviewFormDialog — full-screen Dialog + 뒷배경 클릭/Cancel 닫기 + open 상태 관리
 - [x] packages/ui — rating.tsx, field.tsx, label.tsx, textarea.tsx @/ 경로 수정
 - [x] 리뷰 delete — deleteReview(id, userId) + deleteReviewAction + ReviewCard + DeleteConfirmDialog (화 6/17)
-- [x] ReviewCard — ReviewWithProduct + currentUserId prop, 본인 리뷰에만 DeleteConfirmDialog 노출
-- [x] reviews/page.tsx — auth()로 currentUserId 추출 + ReviewCard 목록 렌더 (전체 리뷰)
-- [ ] ReviewCard 스타일링 (다음 작업 — 화 6/17)
+- [x] ReviewCard — ReviewWithUser 타입으로 변경 (products join 제거), currentUserId prop
+- [x] reviews/page.tsx — getProducts() 독립 fetch, null 체크 수정 (6/18)
+- [x] reviews/[id]/page.tsx — 상품 상세 페이지 신규 생성 (6/18)
+- [x] getReviewsByProductId — ReviewWithUser 반환, product_id 기준 필터 (6/18)
+- [x] ReviewWithUser 타입 추가 — reviews + users(name) join 전용 (6/18)
+- [x] ProductCard — Link로 /reviews/[id] 이동 연결 (6/18)
+- [x] auth.ts — signIn 콜백 + supabaseAdmin으로 getOrCreateUser 구현 (6/18)
+- [x] RLS — users 테이블 비활성화 (6/18)
+- [x] createReviewAction — redirect를 /reviews/${product_id}로 수정 (6/18)
+- [x] Separator — packages/ui index.ts export 추가 (6/18)
+- [ ] ReviewCard 스타일링
 - [ ] 빈 상태/로딩 처리
 - [ ] Vercel 배포
 
-## 다음 작업 (화 6/17)
-1. **ReviewCard 스타일링** — 아바타 자리(이니셜 fallback), rating 별표, 날짜 포맷, 카드 레이아웃
+## 다음 작업 (6/19)
+1. **ReviewCard 스타일링** — 아바타 이니셜, rating 별표, 날짜 포맷, 카드 레이아웃
 2. **빈 상태 처리** — 리뷰 없을 때 empty state UI
-3. **로딩 처리** — Suspense or loading skeleton
-4. **Vercel 배포**
+3. **Vercel 배포** — 환경변수 설정 포함
 
-### 레이아웃 결정 (6/16)
-- `/reviews` 페이지에 상품 카드 그리드 + 그 아래 전체 리뷰 목록 렌더 (별도 상세 페이지 없음)
-- 상품별 리뷰 필터링은 나중에 URL 쿼리(`?product_id=`) 방식으로 추가 예정
-- 아바타는 users join 없이 이니셜 fallback으로 처리 예정
+### 레이아웃 결정 (6/18)
+- `/reviews` — 상품 카드 그리드만 렌더 (products 독립 fetch)
+- `/reviews/[id]` — 상품 상세 + 평균 별점 + ReviewFormDialog + 리뷰 목록
+- 상세 페이지에서 submit 후 같은 페이지로 redirect (revalidatePath + redirect product_id 기준)
+
+### 중요 결정 (6/18)
+- `getOrCreateUser`: NextAuth `signIn` 콜백에서 `supabaseAdmin`(service_role 키)으로 upsert — anon key는 RLS 때문에 insert 불가
+- `ReviewWithUser` vs `ReviewWithProduct`: 상세 페이지에서 products는 별도 fetch하므로 ReviewCard는 users(name)만 필요
+- Tailwind v4 + shadcn Dialog 포지셔닝 버그 — `translate-x-[-50%]` 미적용 → fullscreen 방식 유지
 
 ---
+
+## 협업 스타일
+- 반말로 대화할 것
+- 짧고 간결하게
 
 ## AI 협업 원칙 (reviews — 개발 진행 중)
 

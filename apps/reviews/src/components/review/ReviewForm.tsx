@@ -5,9 +5,9 @@ import { Button, Card, Field, FieldDescription, FieldGroup, FieldLabel, FieldLeg
 import { useState } from "react";
 export interface ReviewFormProps {
     productId: string;
-    onCancle?: ()=>void;
+    onCancel?: ()=>void;
 }
-export function ReviewForm({ productId, onCancle }: ReviewFormProps) {
+export function ReviewForm({ productId, onCancel }: ReviewFormProps) {
 
     const [starCount, setStartCount] = useState(3);
 
@@ -65,7 +65,7 @@ export function ReviewForm({ productId, onCancle }: ReviewFormProps) {
                     </FieldSet>
                     <Field orientation="horizontal">
                         <Button type="submit">Submit</Button>
-                        <Button onClick={onCancle} variant="outline">Cancel</Button>
+                        <Button onClick={onCancel} variant="outline">Cancel</Button>
                     </Field>
                 </FieldGroup>
             </form>

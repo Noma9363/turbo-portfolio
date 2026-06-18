@@ -73,6 +73,7 @@ export { Skeleton } from "./components/ui/skeleton";
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "./components/ui/tooltip";
 export { Textarea } from "./components/ui/textarea";
 export { Rating, ratingVariants, type RatingProps } from "./components/ui/rating";
+export { Avatar, AvatarImage, AvatarFallback } from "./components/ui/avatar";
 export {
   Field,
   FieldDescription,
@@ -82,3 +83,5 @@ export {
   FieldSeparator,
   FieldSet,
 } from "./components/ui/field";
+
+export {Separator} from "./components/ui/separator";

@@ -43,6 +43,11 @@ export interface likes {
 
 export interface ReviewWithProduct extends reviews{
     products: Pick<products, 'id' | 'name' | 'category' | 'image_url' | 'description' | 'label' | 'price' >;
+    users: Pick<user, 'name'>;
 }
 
 export type CreateReviewInput = Omit<reviews, 'id' | 'created_at' | 'updated_at'>;
+
+export interface ReviewWithUser extends reviews{
+    users: Pick<user, 'name'>;
+}

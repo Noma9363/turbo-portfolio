@@ -1,9 +1,6 @@
-import { auth } from "@/auth";
 import { FilterBar } from "@/components/product/FilterBar";
 import { ProductCard } from "@/components/product/ProductCard";
-import { ReviewCard } from "@/components/review/ReviewCard";
-import { ReviewFromDialog } from "@/components/review/ReviewFormDialog";
-import { getAllReviews } from "@/queries/reviews";
+import { getProducts } from "@/queries/products";
 import { categories, CATEGORIES } from "@/types/database";
 
 
@@ -12,17 +9,15 @@ interface SearchParamsInterface {
     sort?: string;
 }
 export default async function Page({ searchParams }: { searchParams: Promise<SearchParamsInterface> }) {
-    const {category: categoryParam} = await searchParams;
-    const session = await auth();
-    const user_id = session?.user?.id ?? null;
-    const reviews = await getAllReviews();
+    const { category: categoryParam } = await searchParams;
+    const products = await getProducts();
     const category = CATEGORIES.includes(categoryParam as categories) ? categoryParam as categories : undefined;
-    
-    if (!reviews || !reviews.length) {
 
+
+    if (products === null) {
         return (
             <div>
-                ERROR Review Preserve Failed
+                There's No Products Presnet
             </div>
         )
     }
@@ -32,15 +27,12 @@ export default async function Page({ searchParams }: { searchParams: Promise<Sea
             <FilterBar currentCategory={category} />
             <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-2 gap-2">
                 {
-                    reviews.filter(f => !category || f.products.category === category).map((r => (<ProductCard key={r.id} product={r.products} />)))
+                    products.map((r => (<ProductCard key={r.id} product={r} />)))
                 }
             </div>
             <section className="cards">
-                {
-                    reviews.map((r => (<ReviewCard review={r} currentUserId={user_id} />)))
-                }
+                section card
             </section>
-            <ReviewFromDialog productId={reviews[0]!.product_id}/>
         </div>
     )
 }

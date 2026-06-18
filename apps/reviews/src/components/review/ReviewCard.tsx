@@ -1,17 +1,25 @@
-import { ReviewWithProduct } from "@/types/database";
-import { Badge, Card, CardContent, CardFooter, CardHeader, CardTitle } from "@repo/ui";
+"use client";
+
+import { ReviewWithUser } from "@/types/database";
+import { Avatar, AvatarFallback, Badge, Card, CardContent, CardFooter, CardHeader, CardTitle } from "@repo/ui";
 import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
 
 interface ReviewCardProps {
-    review: ReviewWithProduct;
+    review: ReviewWithUser;
     currentUserId: string | null;
 }
 
 export function ReviewCard({ review, currentUserId }: ReviewCardProps) {
+    
+    
     return (
         <Card>
             <CardHeader>
-                <Badge>user_name</Badge>
+                <Avatar>
+                    <AvatarFallback>
+                        {review.users.name as string}
+                    </AvatarFallback>
+                </Avatar>
                 <p>{review.created_at}</p>
                 <CardTitle>
                     {review.title}
