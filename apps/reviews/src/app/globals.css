@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@source "../../../packages/ui/src/**/*.{ts,tsx}";
+@source "../../../../packages/ui/src/**/*.{ts,tsx}";
 
 @theme {
   /* Dark Minimal Color Palette */
@@ -37,6 +37,9 @@
 
   /* Font */
   --font-sans: var(--font-geist), var(--font-noto-sans-kr), sans-serif;
+
+  /* Bg-Color */
+  --color-muted:#188181b;
 }
 
 @layer base {

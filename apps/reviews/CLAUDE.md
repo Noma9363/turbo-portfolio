@@ -123,7 +123,7 @@ pnpm build            # Next.js 빌드
 - `src/auth.ts`: NextAuth v5 루트 파일 — `handlers`, `auth`, `signIn`, `signOut` export
 - `app/api/auth/[...nextauth]/route.ts`: `export const { GET, POST } = handlers`
 - `next.config.ts`: `transpilePackages: ['@repo/ui']`, `turbopack.root` 모노레포 루트 지정
-- `globals.css`: `@source "../../../packages/ui/src/**/*.{ts,tsx}"` — packages/ui 클래스 스캔
+- `globals.css`: `@source "../../../../packages/ui/src/**/*.{ts,tsx}"` — packages/ui 클래스 스캔 (4단계: src/app/ → src/ → reviews/ → apps/ → 루트)
 - `packages/ui` 새 컴포넌트 추가 시 `@/lib/utils` → `../../lib/utils`, `@/components/ui/xxx` → `./xxx` 로 경로 수정 필수
 - 모든 클라이언트 컴포넌트는 `"use client"` 선언
 

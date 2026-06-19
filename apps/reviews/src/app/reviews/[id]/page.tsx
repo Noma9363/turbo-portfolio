@@ -1,10 +1,13 @@
 import { auth } from "@/auth";
 import { ReviewCard } from "@/components/review/ReviewCard";
 import { ReviewFromDialog } from "@/components/review/ReviewFormDialog";
+import { StarRating } from "@/components/review/StarRating";
+import { reviewAvg } from "@/lib/reviews";
 import { getProductById } from "@/queries/products";
 import { getReviewsByProductId } from "@/queries/reviews";
 import { Card, Separator } from "@repo/ui";
-import { Star } from "lucide-react";
+import Link from "next/link";
+import { redirect } from "next/navigation";
 
 interface Params {
     id: string;
@@ -17,15 +20,25 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     const product = await getProductById(id);
     const reviews = await getReviewsByProductId(id);
 
-    const reviewCnt = reviews?.length ?? 0;
-    const avgRating = reviewCnt > 0
-    ? reviews!.reduce((sum, r)=> sum + r.rating, 0) / reviewCnt
-    : 0;
-
     if (product === null) {
         return (
-            <div>
-                There's No Product Presnet
+            <div className="py-20 max-w-md mx-auto my-auto text-center flex flex-col gap-8">
+                <p className="flex flex-col gap-10">
+                    <span className="font-bold">404</span>
+                    <span className="text-3xl font-bold">Page not found</span>
+                </p>
+                <p>
+                    <span>
+                        해당 페이지를 찾을 수 없습니다.
+                    </span>
+                </p>
+                <p>
+                    <span className="pt-12 pb-6">
+                        <Link href='/reviews'>
+                            Return to Homepage
+                        </Link>
+                    </span>
+                </p>
             </div>
         )
     }
@@ -54,15 +67,9 @@ export default async function Page({ params }: { params: Promise<Params> }) {
                 {
                 /* rating area  get all reviews and calculate the rating then render star icon */
                 }
-                <p className="pb-4">
-                    {
-                        avgRating !== 0
-                        ? <span className="flex flex-row">{
-                            Array.from({length: Math.floor(avgRating)}).map((_, idx)=>(<Star key={idx}/>))
-                            }</span>
-                        : <span>There's No Reviews Yet</span>
-                    }
-                </p>
+                <div className="pb-4">
+                    <StarRating rating={reviewAvg(reviews)}/>
+                </div>
                 <Card className="bg-card rounded-xl border-border text-card-foreground hover:border-zinc-600 transition-colors duration-300 aspect-square overflow-hidden relative">
                     <img src={product.image_url} alt={`${product.name} name`} />
                 </Card>

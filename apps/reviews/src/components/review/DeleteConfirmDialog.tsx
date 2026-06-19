@@ -32,7 +32,7 @@ export function DeleteConfirmDialog({ review }: DeleteConfirmDialogProps) {
                         </DialogTitle>
                     </DialogHeader>
                     <form action={deleteReviewAction}>
-                        <input hidden name="id" value={review.id} />
+                        <input hidden name="id" defaultValue={review.id} />
                         <Button type="submit">Submit</Button>
                         <Button variant="outline" onClick={() => {
                             setDialogOpen(false)
