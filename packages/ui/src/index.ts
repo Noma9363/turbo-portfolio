@@ -53,8 +53,6 @@ export {
   DialogDescription,
 } from "./components/ui/dialog";
 
-export { Calendar, CalendarDayButton } from "./components/ui/calendar";
-
 export { Popover, PopoverTrigger, PopoverContent } from "./components/ui/popover";
 
 export {
@@ -73,3 +71,17 @@ export {
 export { Input } from "./components/ui/input";
 export { Skeleton } from "./components/ui/skeleton";
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "./components/ui/tooltip";
+export { Textarea } from "./components/ui/textarea";
+export { Rating, ratingVariants, type RatingProps } from "./components/ui/rating";
+export { Avatar, AvatarImage, AvatarFallback } from "./components/ui/avatar";
+export {
+  Field,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSeparator,
+  FieldSet,
+} from "./components/ui/field";
+
+export {Separator} from "./components/ui/separator";

@@ -339,3 +339,22 @@ const sensors = useSensors(
 | Calendar hydration mismatch | `toLocaleDateString()` 서버(UTC)/클라이언트(로컬) 결과 불일치 | `"en-CA"` 로케일 고정 (`YYYY-MM-DD` 형식) |
 | Calendar 스타일 미적용 | `react-day-picker/style.css` 미import로 레이아웃 CSS 누락 | `globals.css`에 import 추가 |
 | Calendar 선택일이 원형으로 표시 | `react-day-picker/style.css`가 `@layer base`보다 우선순위 높아 border-radius 충돌 | `.rdp-*` 오버라이드를 `@layer` 밖에 선언 |
+
+---
+
+## AI 협업 원칙 (taski — 완성된 프로젝트)
+
+taski는 구현이 완료된 상태다. 이 앱에서 AI의 역할은 코드 생성이 아니라
+내가 이미 작성한 코드를 면접에서 설명할 수 있도록 돕는 것이다.
+
+### 이 앱에서 AI가 할 것
+- 내가 컴포넌트나 로직을 설명하면, 면접관처럼 "왜 이렇게 했어?" 라고 되물을 것
+- "이 코드 설명해줘" 요청 시 설명해주지 말고, 내가 먼저 설명하게 유도할 것
+- 내 설명에서 논리적으로 약한 부분이나 빠진 트레이드오프를 지적할 것
+- 새 기능 추가 요청 시 전체 앱 원칙(위 섹션)을 따를 것
+
+### 면접 대비 질문 예시 (요청 시 사용)
+- "Zustand를 쓴 이유가 뭐야? Jotai나 Context API 대신 선택한 근거는?"
+- "DnD 멀티컨테이너에서 onDragOver에 낙관적 업데이트를 넣은 이유가 뭐야?"
+- "liveTask 패턴을 쓴 이유를 설명해봐. 다른 방법은 없었어?"
+- "칸반 충돌 감지를 pointerWithin + closestCenter 조합으로 쓴 이유는?"
