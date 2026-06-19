@@ -39,3 +39,5 @@ storybook-static
 *.njsproj
 *.sln
 *.sw?
+
+.mcp.json
