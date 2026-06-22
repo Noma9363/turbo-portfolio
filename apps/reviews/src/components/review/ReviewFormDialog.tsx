@@ -21,20 +21,20 @@ export function ReviewFromDialog({productId, userId}: ReviewFormDialogProps){
             {
                 (!userId) 
                 ? (
-                    <DialogContent>
-                        <DialogHeader>
+                    <DialogContent className="max-w-sm pt-12 pb-8">
+                        <DialogHeader className="space-y-2">
                             <DialogTitle>로그인이 필요한 서비스입니다.</DialogTitle>
                             <DialogDescription>
                                 로그인 하시겠습니까?
                             </DialogDescription>
                         </DialogHeader>
-                        <div className="w-full max-w-md relative z-10 flex gap-2">
+                        <div className="flex gap-2 justify-center pt-2">
                             <Link href='/login'>
                                 <Button>
                                     로그인
                                 </Button>
                             </Link>
-                            <Button variant="outline" onClick={()=>{setDialogOpen(false)}}>
+                            <Button variant="outline" className="bg-zinc-800 border-zinc-600 hover:bg-zinc-700" onClick={()=>{setDialogOpen(false)}}>
                                 취소
                             </Button>
                         </div>

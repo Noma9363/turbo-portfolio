@@ -4,9 +4,9 @@
 > `/clear` 후 새 세션에서 이 블록을 먼저 읽고 핵심 상황을 파악할 것
 
 - **브랜치**: `feat/audioreview` / **포트**: `localhost:3002`
-- **현재 단계**: 반응형 스타일링 진행 중 → 다음은 **ReviewCard 스타일링 + Vercel 배포**
-- **오늘 완료 (6/22)**: FilterBar size=sm + overflow-x-auto + 비활성 bg-zinc-900, ProductCard 이미지 aspect-square/object-contain/ring-1, Supabase 실제 젠하이저 데이터 11개 교체(이미지 포함), reviews/[id] 상세 페이지 스타일링(Badge/폰트 위계/label badges/Separator), StarRating sizeMap + size prop + 빈별 5개 분기, ReviewFormDialog bg-zinc-900
-- **다음 작업**: ReviewCard 스타일링, Vercel 배포
+- **현재 단계**: 스타일링 완료 → 다음은 **Vercel 배포**
+- **오늘 완료 (6/22)**: ReviewFormDialog 비로그인 dialog 스타일(max-w-sm/justify-center/py/취소버튼), ReviewCard 스타일링(Avatar 이니셜/title font-semibold text-base/gap 조정), ProductCard h-full flex-col + line-clamp-3 + label 모바일 2개/태블릿+ 전체 + 가격 font-semibold, reviews/page.tsx max-w-5xl mx-auto, reviews/[id] label Badge 기본 스타일/Reviews 섹션 pb-4+gap-3, ReviewForm 전체 한국어화, Supabase 더미 리뷰 22개 삽입
+- **다음 작업**: Vercel 배포
 - **마감**: 2026-06-20 (금) 지남 → 최대한 빠르게 배포
 - **협업 원칙**: 구현 전 항상 "어떻게 만들려고 해?" 먼저 물을 것. 코드 대신 방향/키워드만. 파일 전체 작성 금지.
 
@@ -164,7 +164,12 @@ pnpm build            # Next.js 빌드
 - [x] reviews/[id] 상세 페이지 스타일링 — Badge 카테고리, 폰트 위계, label badges(반전), Separator 80% mx-auto (6/22)
 - [x] StarRating — sizeMap + size prop(sm/md/lg/number) + 빈별 5개 분기 + No reviews yet (6/22)
 - [x] ReviewFormDialog — 리뷰 작성 버튼 bg-zinc-900 (6/22)
-- [ ] ReviewCard 스타일링
+- [x] ReviewCard 스타일링 — Avatar 이니셜, title font-semibold text-base, gap 조정, AvatarImage 제거 (6/22)
+- [x] ReviewForm 한국어화 — 리뷰 작성/별점/등록/취소/placeholder (6/22)
+- [x] ProductCard 반응형 — h-full flex-col, line-clamp-3, label 모바일 2개 CSS 분기, 가격 font-semibold (6/22)
+- [x] ReviewFormDialog 비로그인 dialog 스타일링 (6/22)
+- [x] reviews/page.tsx max-w-5xl mx-auto (6/22)
+- [x] Supabase 더미 리뷰 22개 삽입 (6/22)
 - [ ] Vercel 배포
 
 ## 다음 작업 (6/19)

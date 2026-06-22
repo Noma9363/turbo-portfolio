@@ -6,7 +6,7 @@ const sizeMap: Record<'sm' | 'md' | 'lg', number> = {
     lg: 24
 }
 
-export function StarRating({rating, reviews, size = 'sm'}: {rating: number, reviews?:number, size?: 'sm'|'md'|'lg' | number}) {
+export function StarRating({rating, reviews, showLgn = false, size = 'sm'}: {rating: number, reviews?:number, showLgn?: boolean, size?: 'sm'|'md'|'lg' | number}) {
     
     const svgSize = typeof size ==='number' ? size : sizeMap[size];
 
@@ -14,11 +14,14 @@ export function StarRating({rating, reviews, size = 'sm'}: {rating: number, revi
         <div>
             {
                 rating !== 0
-                ? <p className="flex flex-row gap-0.5">
+                ? <p className="flex flex-row gap-0.5 items-center">
                     {
                         Array.from({length:Math.floor(rating)}).map((_, idx)=> (<Star className="fill-foreground" size={svgSize} key={idx}/>))
                     }
-                    <span className="text-xs pl-2">{reviews} reviews available</span>
+                    {
+                        (showLgn) && <span className="text-xs pl-2">{reviews} reviews available</span>
+                    }
+                    
                 </p>
                 : 
                 <p className="text-sm text-muted-foreground flex items-center">

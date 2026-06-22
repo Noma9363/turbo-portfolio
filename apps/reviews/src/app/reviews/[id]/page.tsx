@@ -61,14 +61,14 @@ export default async function Page({ params }: { params: Promise<Params> }) {
                 /* rating area  get all reviews and calculate the rating then render star icon */
                 }
                 <div className="pb-4">
-                    <StarRating rating={reviewAvg(reviews)} reviews={reviews?.length} />
+                    <StarRating showLgn size="md" rating={reviewAvg(reviews)} reviews={reviews?.length} />
                 </div>
                 <Card className="bg-card rounded-xl border-border text-card-foreground hover:border-zinc-600 transition-colors duration-300 aspect-square overflow-hidden relative">
                     <img src={product.image_url} alt={`${product.name} name`} />
                 </Card>
                 {product.label &&
                     <div className="flex flex-row flex-wrap gap-2 mt-3">
-                        {(product.label).map((l,idx) => (<Badge key={idx+l} className="bg-foreground text-background">{l}</Badge>))}
+                        {(product.label).map((l,idx) => (<Badge key={idx+l}>{l}</Badge>))}
                     </div>
                 }
                 <Separator className="mt-4 mb-4 bg-zinc-600 h-px  mx-auto" />
@@ -79,14 +79,14 @@ export default async function Page({ params }: { params: Promise<Params> }) {
             <section className="pb-4">
                 <ReviewFromDialog productId={product.id} userId={user_id} />
             </section>
-            <section className="">
-                <h2 className="text-xl font-semibold">
+            <section className="pb-4">
+                <h2 className="text-xl font-semibold pb-3">
                     Reviews {reviews?.length ?? 0}
                 </h2>
                 {
                     reviews == null || reviews.length === 0
                         ? (<p className="text-muted-foreground text-sm pt-2">No reviews yet. Be the first to write one!</p>)
-                        : (reviews.map(r => (<ReviewCard key={r.id} review={r} currentUserId={user_id} />)))
+                        : (<div className="flex flex-col gap-3">{reviews.map(r => (<ReviewCard key={r.id} review={r} currentUserId={user_id} />))}</div>)
                 }
             </section>
         </div>
