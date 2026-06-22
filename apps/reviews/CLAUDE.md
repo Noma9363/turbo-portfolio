@@ -5,12 +5,22 @@
 ## 🔖 세션 시작 시 Claude가 읽어야 할 현황 요약
 > `/clear` 후 새 세션에서 이 블록을 먼저 읽고 핵심 상황을 파악할 것
 
-- **브랜치**: `feat/audioreview` / **포트**: `localhost:3002`
-- **현재 단계**: 스타일링 완료 → 다음은 **Vercel 배포**
-- **오늘 완료 (6/22)**: ReviewFormDialog 비로그인 dialog 스타일(max-w-sm/justify-center/py/취소버튼), ReviewCard 스타일링(Avatar 이니셜/title font-semibold text-base/gap 조정), ProductCard h-full flex-col + line-clamp-3 + label 모바일 2개/태블릿+ 전체 + 가격 font-semibold, reviews/page.tsx max-w-5xl mx-auto, reviews/[id] label Badge 기본 스타일/Reviews 섹션 pb-4+gap-3, ReviewForm 전체 한국어화, Supabase 더미 리뷰 22개 삽입
-- **다음 작업**: Vercel 배포
-- **마감**: 2026-06-20 (금) 지남 → 최대한 빠르게 배포
+- **브랜치**: `main` (feat/audioreview 머지 완료) / **포트**: `localhost:3002`
+- **현재 단계**: ✅ 배포 완료 → 다음은 **기술 학습 정리 (옵시디언)**
+- **오늘 완료 (6/22)**: 전체 스타일링 + Vercel 배포 + dialog 중앙 정렬 수정
+- **다음 작업**: 옵시디언에 기술 학습 정리 문서 작성 (아래 목차 참고)
 - **협업 원칙**: 구현 전 항상 "어떻게 만들려고 해?" 먼저 물을 것. 코드 대신 방향/키워드만. 파일 전체 작성 금지.
+
+### 📝 기술 학습 정리 문서 목차 (옵시디언)
+> 구현된 코드를 분석·정리하는 기술 회고 문서. 면접 설명 기준으로 작성.
+
+- [ ] 1. **아키텍처 개요** — 기술 스택 선택 이유, 전체 데이터 흐름도
+- [ ] 2. **Supabase 테이블 설계** — ERD, FK 관계, RLS 비활성화 이유, `getOrCreateUser` 패턴
+- [ ] 3. **인증 흐름** — NextAuth v5 `signIn` 콜백 순서, `auth()` 세션 사용법
+- [ ] 4. **페이지별 데이터 흐름** — searchParams 처리, `params.id` → DB 쿼리, `await` vs TanStack Query 선택 기준
+- [ ] 5. **Server Actions** — FormData 처리, `revalidatePath` + `redirect`, 권한 체크
+- [ ] 6. **컴포넌트 설계** — Dialog 상태 관리 + 비로그인 분기, 카드 높이 균등화 패턴
+- [ ] 7. **URL 쿼리 필터** — searchParams → router.push → 서버 재렌더 흐름, 카테고리 타입가드
 
 ---
 
