@@ -17,23 +17,34 @@ Turborepo 기반 모노레포 포트폴리오. Next.js 15 + Tailwind CSS v4 + Fr
 ```
 turbo-portfolio/
 ├── apps/
-│   └── portfolio/                  # Next.js 15 메인 포트폴리오 앱
+│   ├── portfolio/                  # Next.js 15 메인 포트폴리오 앱
+│   │   ├── next.config.ts          # transpilePackages: ['@repo/ui']
+│   │   ├── postcss.config.mjs      # @tailwindcss/postcss
+│   │   └── src/
+│   │       ├── app/
+│   │       │   ├── layout.tsx      # 루트 레이아웃, Geist + Noto Sans KR 폰트
+│   │       │   ├── page.tsx        # 원페이지 (/ 경로)
+│   │       │   └── globals.css     # Tailwind v4 + 다크 테마 변수 (@theme) + @utility
+│   │       └── components/
+│   │           ├── Navigation.tsx          # 고정 네비게이션 (모바일: 풀너비 / 데스크탑: 중앙 pill)
+│   │           ├── Container.tsx           # 최대 너비(1276px) 레이아웃 래퍼
+│   │           ├── SectionLabel.tsx        # 섹션 상단 라벨 (uppercase, border-b)
+│   │           └── sections/
+│   │               ├── Hero.tsx            # 히어로 섹션 (stagger 애니메이션)
+│   │               ├── About.tsx           # 소개 + 스킬 배지 (한국어 컨텐츠, max-w-prose)
+│   │               ├── Projects.tsx        # 프로젝트 카드 그리드
+│   │               └── Contact.tsx         # 연락처 + 소셜 링크 (한국어, 실제 연락처)
+│   └── taski/                      # 일정 관리 앱 (localhost:3001)
 │       ├── next.config.ts          # transpilePackages: ['@repo/ui']
-│       ├── postcss.config.mjs      # @tailwindcss/postcss
+│       ├── postcss.config.mjs
 │       └── src/
 │           ├── app/
-│           │   ├── layout.tsx      # 루트 레이아웃, Geist + Noto Sans KR 폰트
-│           │   ├── page.tsx        # 원페이지 (/ 경로)
-│           │   └── globals.css     # Tailwind v4 + 다크 테마 변수 (@theme) + @utility
-│           └── components/
-│               ├── Navigation.tsx          # 고정 네비게이션 (모바일: 풀너비 / 데스크탑: 중앙 pill)
-│               ├── Container.tsx           # 최대 너비(1276px) 레이아웃 래퍼
-│               ├── SectionLabel.tsx        # 섹션 상단 라벨 (uppercase, border-b)
-│               └── sections/
-│                   ├── Hero.tsx            # 히어로 섹션 (stagger 애니메이션)
-│                   ├── About.tsx           # 소개 + 스킬 배지 (한국어 컨텐츠, max-w-prose)
-│                   ├── Projects.tsx        # 프로젝트 카드 그리드
-│                   └── Contact.tsx         # 연락처 + 소셜 링크 (한국어, 실제 연락처)
+│           │   ├── layout.tsx
+│           │   ├── page.tsx        # Sidebar + TodoList + InputBar
+│           │   └── globals.css
+│           ├── components/         # 체크리스트/섹션/칸반 뷰, DnD, 모달 등
+│           └── store/
+│               └── taskStore.ts    # Zustand (persist, version: 3)
 ├── packages/
 │   ├── ui/                         # 공유 컴포넌트 라이브러리
 │   │   ├── components.json         # shadcn CLI 설정
@@ -61,7 +72,8 @@ turbo-portfolio/
 ## 패키지 이름
 - `@repo/ui` — 공유 UI 컴포넌트
 - `@repo/typescript-config` — 공유 TypeScript 설정
-- `portfolio` — Next.js 앱
+- `portfolio` — Next.js 포트폴리오 앱 (localhost:3000)
+- `taski` — 일정 관리 앱 (localhost:3001) → 상세 문서: `apps/taski/CLAUDE.md`
 
 ## 컴포넌트 관리 원칙
 - `packages/ui/src/components/ui/` — shadcn 원본 + 최소 커스텀, 모든 앱 공통 단일 컴포넌트
@@ -116,17 +128,19 @@ pnpm dlx shadcn@latest add <component>   # shadcn 컴포넌트 추가
 
 ## 브랜치 전략
 ```
-main  ← develop PR 머지로 배포 (v1 완료)
+main  ← develop PR 머지로 배포
 └── develop
-    ├── feat/ui-restructure   # packages/ui 구조, 공통 설정 (머지 완료)
-    ├── feat/hero             # Hero 섹션 + Container 컴포넌트 (머지 완료)
-    ├── feat/about            # About 섹션 + SectionLabel 컴포넌트 (머지 완료)
-    ├── feat/projects         # Projects 섹션 (머지 완료)
-    ├── feat/contact          # Contact 섹션 한국어 현지화 (머지 완료)
-    └── feat/<next>           # 다음 작업 브랜치
+    ├── feat/ui-restructure       # packages/ui 구조, 공통 설정 (머지 완료)
+    ├── feat/hero                 # Hero 섹션 + Container 컴포넌트 (머지 완료)
+    ├── feat/about                # About 섹션 + SectionLabel 컴포넌트 (머지 완료)
+    ├── feat/projects             # Projects 섹션 (머지 완료)
+    ├── feat/contact              # Contact 섹션 한국어 현지화 (머지 완료)
+    ├── feat/taski-kanban         # taski 칸반 보드 (머지 완료)
+    ├── feat/taski-responsive     # taski 반응형 + DnD TouchSensor (머지 완료)
+    └── feat/<next>               # 다음 작업 브랜치
 ```
 - `packages/ui` 변경은 `feat/ui-*` 브랜치에서 작업
-- 각 섹션 작업은 `develop` 에서 분기한 `feat/<section>` 브랜치에서 작업
+- 각 앱/섹션 작업은 `develop` 에서 분기한 `feat/<name>` 브랜치에서 작업
 - 완료 후 `develop` 으로 머지 → 검증 후 `main` 으로 PR → Vercel 자동 배포
 
 ## Navigation 구조
