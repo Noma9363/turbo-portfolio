@@ -14,14 +14,16 @@ export function ProductCard({ product }: { product: products }) {
                     {product.name}
                 </CardTitle>
             </CardHeader>
-            <CardContent className="flex flex-col">
-                {product.image_url && 
-                <img className="my-0 m-auto aspect-video object-cover" src={product.image_url} alt={product.name} />
+            <CardContent className="flex flex-col px-4 pb-4">
+                {product.image_url &&
+                <div className="w-full aspect-square bg-background overflow-hidden rounded-md ring-1 ring-border">
+                    <img className="w-full h-full object-contain" src={product.image_url} alt={product.name} />
+                </div>
                 }
-                <p className="p-4">{product.description}</p>
+                <p className="pt-4 text-sm text-muted-foreground">{product.description}</p>
             </CardContent>
             <CardFooter className="p-4 flex flex-row gap-2">
-                <p>{product.price}</p>
+                <p>${product.price}</p>
                 {
                     product.label?.map((l) => (<Badge className="px-2" key={l}>{l}</Badge>))
                 }

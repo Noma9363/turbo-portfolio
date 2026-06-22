@@ -25,7 +25,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<Sea
     return (
         <div className="p-4">
             <FilterBar currentCategory={category} />
-            <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-2 gap-2">
+            <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 mt-4">
                 {
                     (!category)
                     ? products.map(r=>(<ProductCard product={r} key={r.id}/>))

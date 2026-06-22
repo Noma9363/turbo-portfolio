@@ -16,7 +16,7 @@ export function ReviewFromDialog({productId, userId}: ReviewFormDialogProps){
     return(
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline">리뷰 작성</Button>
+                <Button variant="outline" className="bg-zinc-900">리뷰 작성</Button>
             </DialogTrigger>
             {
                 (!userId) 
