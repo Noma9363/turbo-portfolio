@@ -1,5 +1,7 @@
 # reviews
 
+**라이브 데모**: https://turbo-portfolio-reviews.vercel.app/reviews
+
 ## 🔖 세션 시작 시 Claude가 읽어야 할 현황 요약
 > `/clear` 후 새 세션에서 이 블록을 먼저 읽고 핵심 상황을 파악할 것
 
