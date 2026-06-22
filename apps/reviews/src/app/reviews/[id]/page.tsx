@@ -56,12 +56,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
                         {product.name}
                     </h1>
                     <p className="text-2xl">
-                        <span>
-                            $
-                        </span>
-                        <span>
-                            {product.price}
-                        </span>
+                        <span>$</span><span>{product.price}</span>
                     </p>
                 </div>
                 {
@@ -79,7 +74,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
                 </article>
             </section>
             <section className="pb-4">
-                <ReviewFromDialog productId={product.id} />
+                <ReviewFromDialog productId={product.id} userId={user_id} />
             </section>
             <section className="">
                 <h2 className="text-3xl font-semibold">

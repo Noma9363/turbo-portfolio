@@ -156,6 +156,8 @@ pnpm build            # Next.js 빌드
 - [x] RLS — users 테이블 비활성화 (6/18)
 - [x] createReviewAction — redirect를 /reviews/${product_id}로 수정 (6/18)
 - [x] Separator — packages/ui index.ts export 추가 (6/18)
+- [x] 카테고리 필터 미동작 버그 수정 (category undefined 시 전체 렌더, CATEGORIES 타입가드 캐스팅)
+- [ ] 리팩토링 — `CATEGORIES.includes()` 타입가드 함수 분리 (마이너)
 - [ ] ReviewCard 스타일링
 - [ ] 빈 상태/로딩 처리
 - [ ] Vercel 배포
