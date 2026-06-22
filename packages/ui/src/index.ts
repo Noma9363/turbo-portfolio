@@ -85,3 +85,4 @@ export {
 } from "./components/ui/field";
 
 export {Separator} from "./components/ui/separator";
+export { Calendar, CalendarDayButton } from "./components/ui/calendar";
