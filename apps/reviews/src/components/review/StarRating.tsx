@@ -1,18 +1,34 @@
 import { Star } from "lucide-react";
 
-export function StarRating({rating}: {rating: number}) {
+const sizeMap: Record<'sm' | 'md' | 'lg', number> = {
+    sm: 16,
+    md: 20,
+    lg: 24
+}
 
+export function StarRating({rating, reviews, showLgn = false, size = 'sm'}: {rating: number, reviews?:number, showLgn?: boolean, size?: 'sm'|'md'|'lg' | number}) {
+    
+    const svgSize = typeof size ==='number' ? size : sizeMap[size];
 
     return (
         <div>
             {
                 rating !== 0
-                ? <span className="flex flex-row gap-0.5">
+                ? <p className="flex flex-row gap-0.5 items-center">
                     {
-                        Array.from({length:Math.floor(rating)}).map((_, idx)=> (<Star className="fill-foreground" size={16} key={idx}/>))
+                        Array.from({length:Math.floor(rating)}).map((_, idx)=> (<Star className="fill-foreground" size={svgSize} key={idx}/>))
                     }
-                </span>
-                : <span>There's No Reviews Yet</span>
+                    {
+                        (showLgn) && <span className="text-xs pl-2">{reviews} reviews available</span>
+                    }
+                    
+                </p>
+                : 
+                <p className="text-sm text-muted-foreground flex items-center">
+                    {Array.from({length:5}).map((_,idx)=> (<Star key={idx} size={svgSize} className="fill-none stroke-muted-foreground" />))}
+                    
+                    <span className="text-xs pl-2">No reviews yet</span>
+                </p>
             }
         </div>
     )

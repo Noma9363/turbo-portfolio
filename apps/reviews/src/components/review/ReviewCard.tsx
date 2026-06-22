@@ -1,7 +1,7 @@
 "use client";
 
 import { ReviewWithUser } from "@/types/database";
-import { Avatar, AvatarFallback, AvatarImage, Badge, Card, CardContent, CardFooter, CardHeader, CardTitle } from "@repo/ui";
+import { Avatar, AvatarFallback, Card, CardContent, CardFooter, CardHeader, CardTitle } from "@repo/ui";
 import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
 import { StarRating } from "./StarRating";
 
@@ -19,22 +19,21 @@ export function ReviewCard({ review, currentUserId }: ReviewCardProps) {
                 <CardTitle>
                     <div className="flex gap-4">
                         <Avatar className="ring-1">
-                            <AvatarImage src={review.users.name} />
                             <AvatarFallback>
-                                {review.users.name as string}
+                                {(review.users.name)[0]}
                             </AvatarFallback>
                         </Avatar>
-                        <div className="flex flex-col text-sm pb-4">
+                        <div className="flex flex-col text-sm pb-2">
                             <span className="font-medium">{review.users.name}</span>
                             <span className="font-light text-card-foreground">{new Date(review.created_at).toLocaleDateString('ko-KR')}</span>
                         </div>
                     </div>
-                    <p className="font-bold text-2xl">
+                    <p className="font-semibold text-base">
                         {review.title}
                     </p>
                 </CardTitle>
             </CardHeader>
-            <CardContent className="flex flex-col gap-8">
+            <CardContent className="flex flex-col gap-3">
                 <div>
                     <StarRating rating={review.rating}/>
                 </div>
