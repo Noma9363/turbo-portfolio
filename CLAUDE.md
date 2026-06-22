@@ -153,6 +153,18 @@ main  ← develop PR 머지로 배포
 - `packages/ui/tsconfig.json`: `include: ["src", ".storybook"]` — .storybook 폴더도 bundler 모듈 해석 적용
 - 모든 섹션 컴포넌트는 `"use client"` 선언 (Framer Motion은 클라이언트 전용)
 
+## 트러블슈팅 — Tailwind 클래스 미적용
+**증상**: `@repo/ui` 컴포넌트에 적용한 Tailwind 클래스(애니메이션, 색상 등)가 앱에서 무시됨
+
+**원인**: `globals.css`의 `@source` 경로가 잘못되면 Tailwind v4가 `packages/ui/src` 파일을 스캔하지 못해 해당 클래스를 purge(제거)함
+
+**해결**: 각 앱의 `globals.css` 최상단 `@source` 경로가 `packages/ui/src`를 정확히 가리켜야 함
+- `apps/portfolio`: `@source "../../../packages/ui/src"`
+- `apps/taski`: `@source "../../../packages/ui/src"`
+- `apps/reviews`: `@source "../../../packages/ui/src"` (glob 패턴 `**/*.{ts,tsx}` 붙이면 오히려 오동작)
+
+**주의**: glob 패턴 없이 디렉토리 경로만 지정하는 것이 Tailwind v4에서 올바른 방식
+
 ## Framer Motion 패턴
 ```tsx
 // 스크롤 애니메이션 (각 섹션)
@@ -196,10 +208,13 @@ variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
 - [x] reviews/page.tsx — searchParams 구조 + 목록 렌더링
 - [x] ProductCard 컴포넌트 + URL 쿼리 필터 + 스타일링
 - [x] 리뷰 create — Server Action + ReviewForm + ReviewFormDialog
-- [x] 리뷰 delete — deleteReview + deleteReviewAction + ReviewCard + DeleteConfirmDialog (화 6/17)
-- [ ] ReviewCard 스타일링 (다음 — 화 6/17)
-- [ ] 빈 상태/로딩 처리
-- [ ] Vercel 배포
+- [x] 리뷰 delete — deleteReview + deleteReviewAction + ReviewCard + DeleteConfirmDialog
+- [x] ReviewCard 스타일링 + 빈 상태 처리 (6/19)
+- [x] Vercel 배포 (6/19) — turbo.json env 선언, auth.ts 타입 오류 수정
+- [ ] 버그 수정 — 카테고리 필터 미동작 (모든 상품 노출)
+- [ ] 버그 수정 — 비로그인 시 리뷰 모달 오픈 (로그인 페이지 redirect 필요)
+- [ ] 반응형 스타일 마무리
+- [ ] NEXTAUTH_URL Vercel 환경변수 등록 (배포 URL 확정 후)
 
 ### 일정 (재조정 — 마감 6/20 금요일)
 | 날짜 | 작업 |
@@ -207,9 +222,9 @@ variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
 | 월 6/8 | ✅ Supabase + Google OAuth 구축 |
 | 화~목 6/9~11 | ✅ 테이블 + 쿼리 + 타입 |
 | 금~월 6/12~16 | ✅ ProductCard + FilterBar + ReviewForm + ReviewFormDialog + delete |
-| 화 6/17 | ReviewCard 스타일링 |
-| 수~목 6/18~19 | 빈 상태/로딩 처리 + 마무리 |
-| 금 6/20 | Vercel 배포 |
+| 화 6/17 | ✅ ReviewCard 스타일링 + 빈 상태 처리 |
+| 수~목 6/18~19 | ✅ Vercel 배포 |
+| 금 6/20 | 버그 수정 (필터, 비로그인 redirect) + 반응형 마무리 |
 
 ### 디렉토리 원칙 (taski 반성)
 - 기능 단위 폴더 분리: `components/product/`, `components/review/`, `components/auth/`
