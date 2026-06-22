@@ -1,5 +1,15 @@
 # turbo-portfolio
 
+## 🔖 세션 시작 시 Claude가 읽어야 할 현황 요약
+> `/clear` 후 새 세션에서 이 블록을 먼저 읽고 핵심 상황을 파악할 것
+
+- **현재 단계**: reviews 앱 배포 완료 → 다음 프로젝트 준비 중
+- **완료된 앱**: portfolio (localhost:3000) · taski (localhost:3001) · reviews (localhost:3002)
+- **라이브**: [portfolio](https://turbo-portfolio-portfolio.vercel.app/) · [taski](https://turbo-portfolio-taski.vercel.app) · [reviews](https://turbo-portfolio-reviews.vercel.app/reviews)
+- **협업 원칙**: 구현 전 항상 "어떻게 만들려고 해?" 먼저 물을 것. 코드 대신 방향/키워드만. 파일 전체 작성 금지.
+
+---
+
 ## 프로젝트 개요
 Turborepo 기반 모노레포 포트폴리오. Next.js 15 + Tailwind CSS v4 + Framer Motion + Shadcn/ui 스타일 컴포넌트로 구성된 다크 미니멀 테마 원페이지 포트폴리오.
 
@@ -137,6 +147,7 @@ main  ← develop PR 머지로 배포
     ├── feat/contact              # Contact 섹션 한국어 현지화 (머지 완료)
     ├── feat/taski-kanban         # taski 칸반 보드 (머지 완료)
     ├── feat/taski-responsive     # taski 반응형 + DnD TouchSensor (머지 완료)
+    ├── feat/audioreview          # reviews 앱 전체 (머지 완료)
     └── feat/<next>               # 다음 작업 브랜치
 ```
 - `packages/ui` 변경은 `feat/ui-*` 브랜치에서 작업
@@ -181,76 +192,12 @@ variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
 
 ---
 
-## Phase 3 — reviews 앱 (진행 중)
+## Phase 3 — reviews 앱 ✅ 완료 (6/22)
 
-### 개요
-- **브랜치**: `feat/audioreview`
-- **앱 경로**: `apps/reviews/` (localhost:3002)
-- **마감**: 2026-06-14 (일) — 일정 조정 (목/금 작업 지연)
-- **브랜드**: 젠하이저(Sennheiser) 음향기기 리뷰 플랫폼
-
-### 기술 스택
-| 역할 | 기술 |
-|------|------|
-| 프레임워크 | Next.js 15 (App Router) |
-| 인증 | NextAuth v5 + Google OAuth |
-| DB | Supabase (PostgreSQL) |
-| 서버 상태 | TanStack Query v5 |
-| 스타일 | Tailwind CSS v4 |
-
-### 진행 현황
-- [x] 앱 스캐폴딩 + @repo/ui 연동
-- [x] Supabase 프로젝트 생성 및 클라이언트 연동
-- [x] NextAuth v5 Google OAuth 로그인 구현
-- [x] TanStack Query + SessionProvider 설정
-- [x] Supabase 테이블 생성 + seed 데이터 (users, products, reviews, likes)
-- [x] queries/products.ts + queries/reviews.ts + types/database.ts
-- [x] reviews/page.tsx — searchParams 구조 + 목록 렌더링
-- [x] ProductCard 컴포넌트 + URL 쿼리 필터 + 스타일링
-- [x] 리뷰 create — Server Action + ReviewForm + ReviewFormDialog
-- [x] 리뷰 delete — deleteReview + deleteReviewAction + ReviewCard + DeleteConfirmDialog
-- [x] ReviewCard 스타일링 + 빈 상태 처리 (6/19)
-- [x] Vercel 배포 (6/19) — turbo.json env 선언, auth.ts 타입 오류 수정
-- [ ] 버그 수정 — 카테고리 필터 미동작 (모든 상품 노출)
-- [ ] 버그 수정 — 비로그인 시 리뷰 모달 오픈 (로그인 페이지 redirect 필요)
-- [ ] 반응형 스타일 마무리
-- [ ] NEXTAUTH_URL Vercel 환경변수 등록 (배포 URL 확정 후)
-
-### 일정 (재조정 — 마감 6/20 금요일)
-| 날짜 | 작업 |
-|------|------|
-| 월 6/8 | ✅ Supabase + Google OAuth 구축 |
-| 화~목 6/9~11 | ✅ 테이블 + 쿼리 + 타입 |
-| 금~월 6/12~16 | ✅ ProductCard + FilterBar + ReviewForm + ReviewFormDialog + delete |
-| 화 6/17 | ✅ ReviewCard 스타일링 + 빈 상태 처리 |
-| 수~목 6/18~19 | ✅ Vercel 배포 |
-| 금 6/20 | 버그 수정 (필터, 비로그인 redirect) + 반응형 마무리 |
-
-### 디렉토리 원칙 (taski 반성)
-- 기능 단위 폴더 분리: `components/product/`, `components/review/`, `components/auth/`
-- 훅은 `hooks/`에 모아서 관리 (`useReviews.ts`, `useFilter.ts`)
-- Supabase 쿼리 함수는 `queries/`에 분리 (컴포넌트에 직접 쓰지 않음)
-
-### 반응형 브레이크포인트
-- **시작**: 모바일(default) → `md`(768px) → `lg`(1024px) 순서
-- 모바일: 1열, 풀너비 필터 드로어
-- md: 2열 그리드, 사이드 필터
-- lg: 3열 그리드
-
-### 주의사항
-- `src/auth.ts` 루트 파일이 NextAuth v5 핵심 — 삭제 금지
-- `.env.local`은 gitignore — 다른 기기에서 새로 만들어야 함
-- 다른 기기(Windows) 세팅 시 필요한 환경변수:
-  ```
-  NEXT_PUBLIC_SUPABASE_URL
-  NEXT_PUBLIC_SUPABASE_ANON_KEY
-  NEXTAUTH_URL=http://localhost:3002
-  NEXTAUTH_SECRET
-  GOOGLE_CLIENT_ID
-  GOOGLE_CLIENT_SECRET
-  ```
-- turbopack.root 설정 필수 (모노레포 워크스페이스 감지 오류 방지)
-- 블랙박스 방지: 작은 단위로 요청 (파일 하나씩, 타입 먼저 확정 후 구현)
+- **브랜치**: `feat/audioreview` → main 머지 완료
+- **라이브**: https://turbo-portfolio-reviews.vercel.app/reviews
+- **상세 문서**: `apps/reviews/CLAUDE.md`
+- NextAuth v5 Google OAuth + Supabase PostgreSQL + Server Actions CRUD + 카테고리 필터 + 반응형
 
 ---
 
@@ -259,9 +206,16 @@ variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
 이 레포의 모든 앱은 프론트엔드 엔지니어링 포트폴리오다.
 코드의 모든 결정을 내가 설명할 수 있어야 한다.
 
+### 협업 스타일
+- 반말로 대화할 것
+- 짧고 간결하게
+- 컴포넌트/함수 흐름 파악 시 Joy가 먼저 흐름 작성 → Claude가 검증
+- 먼저 구조 잡아주지 말 것
+
 ### 하지 말 것
+- 파일 전체를 완성해서 주지 말 것 — 반드시 하나의 함수/컴포넌트 단위로만
+- 내 설계 없이 먼저 구조를 잡아주지 말 것
 - 요청 없이 완성된 코드를 먼저 제시하지 말 것
-- 파일 전체를 한 번에 작성해서 주지 말 것
 - 내가 방향을 말하기 전에 구현을 제안하지 말 것
 
 ### 반드시 할 것
@@ -270,3 +224,4 @@ variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
 - 막혀서 힌트를 요청하면 코드 대신 방향과 키워드만 줄 것
 - 내 코드에 문제가 있으면 고쳐주지 말고 무엇이 왜 문제인지만 설명할 것
 - 라이브러리·패턴 선택 시 "왜 이걸 쓰려고 해?"를 먼저 물을 것
+- 완성된 코드를 받은 경우 "이 코드에서 네가 설명할 수 있는 부분이 어디야?"라고 물을 것
