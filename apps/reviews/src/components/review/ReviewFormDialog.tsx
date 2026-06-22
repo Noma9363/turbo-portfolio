@@ -22,7 +22,7 @@ export function ReviewFromDialog({productId, userId}: ReviewFormDialogProps){
                 (!userId) 
                 ? (
                     <DialogContent className="max-w-sm pt-12 pb-8">
-                        <DialogHeader className="space-y-2">
+                        <DialogHeader className="space-y-2 text-center sm:text-center">
                             <DialogTitle>로그인이 필요한 서비스입니다.</DialogTitle>
                             <DialogDescription>
                                 로그인 하시겠습니까?
