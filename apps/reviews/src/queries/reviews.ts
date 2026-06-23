@@ -1,5 +1,6 @@
 import { CreateReviewInput, products, reviews, ReviewWithProduct, ReviewWithUser } from '@/types/database';
 import { supabase } from '@/lib/supabase/client';
+import { supabaseAdmin } from '@/lib/supabase/admin';
 
 export const getAllReviews = async (): Promise<ReviewWithProduct[] | null> => {
     const { data, error } = await supabase.from('reviews').select('*, products(name, category, image_url, description, label, price), users(name)');
@@ -11,7 +12,7 @@ export const getAllReviews = async (): Promise<ReviewWithProduct[] | null> => {
 }
 
 export const createReview = async (ipt: CreateReviewInput): Promise<reviews | null> => {
-    const { data, error } = await supabase.from('reviews').insert(ipt).select().single();
+    const { data, error } = await supabaseAdmin.from('reviews').insert(ipt).select().single();
     if (!data) {
         console.error(JSON.stringify(error));
         return null;
@@ -20,7 +21,7 @@ export const createReview = async (ipt: CreateReviewInput): Promise<reviews | nu
 }
 
 export const deleteReview = async (id: string, user_id: string): Promise<boolean | null> => {
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
         .from('reviews')
         .delete()
         .eq('id', id)
