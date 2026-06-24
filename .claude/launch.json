@@ -7,5 +7,12 @@
       "runtimeArgs": ["--filter", "reviews", "dev"],
       "port": 3002
     }
+  ,{
+      "name": "classbook",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "classbook", "dev"],
+      "port": 3003,
+      "autoPort": false
+    }
   ]
 }

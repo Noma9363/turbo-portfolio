@@ -86,3 +86,7 @@ export {
 
 export {Separator} from "./components/ui/separator";
 export { Calendar } from "./components/ui/calendar";
+
+export {AspectRatio} from "./components/ui/aspect-ratio";
+
+export {MembersValue} from "./components/blocks/MembersValue";

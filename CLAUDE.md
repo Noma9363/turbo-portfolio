@@ -255,3 +255,116 @@ variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
 - 막혀서 힌트를 요청하면 코드 대신 방향과 키워드만 줄 것
 - 내 코드에 문제가 있으면 고쳐주지 말고 무엇이 왜 문제인지만 설명할 것
 - 라이브러리·패턴 선택 시 "왜 이걸 쓰려고 해?"를 먼저 물을 것
+
+---
+
+## Phase 4 — classbook 앱 (진행 중)
+
+### 개요
+- **브랜치**: `feat/classbook`
+- **앱 경로**: `apps/classbook/` (localhost:3003)
+- **목표**: 카카오맵 + 달력 SDK 연동, 예약 충돌 방지, 슬롯 가용성 계산 어필
+- **Supabase project-ref**: `ncpmoqgqhpqupagzeeyw`
+
+### 기술 스택
+| 역할 | 기술 |
+|------|------|
+| 프레임워크 | Next.js 15 (App Router) |
+| 인증 | NextAuth v5 + Google OAuth |
+| DB | Supabase (PostgreSQL) |
+| 서버 상태 | TanStack Query v5 |
+| 지도 | 카카오맵 SDK |
+| 날짜 처리 | date-fns |
+| 스타일 | Tailwind CSS v4 |
+
+### 라우트 구조
+```
+app/page.tsx                    # 메인 (지도 + 검색)
+app/venues/page.tsx             # 전체 조회 (지도보기/목록보기 토글)
+app/venues/[id]/page.tsx        # 상세 (하단 카카오맵 위치)
+app/reserve/[id]/page.tsx       # 예약 페이지
+app/my/page.tsx                 # 내 정보
+app/my/reservations/page.tsx    # 예약 내역
+app/my/favorites/page.tsx       # 찜 목록
+app/login/page.tsx              # 로그인
+app/api/auth/[...nextauth]/route.ts
+```
+
+### DB 테이블
+```sql
+users:        id, email, name, avatar_url, created_at
+venues:       id, name, phone, address, latitude, longitude, thumbnail_url, price, title, sub_title, body, capacity, operating_hours, category, amenities, tags
+reservations: id, user_id, venue_id, name, phone, email, start_at, end_at, members, purpose, request, status
+favorites:    id, user_id, venue_id
+```
+- `venues.category`: `SINGLE | DOUBLE | MEETING | LECTURE`
+- `reservations.status`: `WAITING | CONFIRMED | CANCELED` (DEFAULT 'WAITING')
+- seed 데이터: 12개 강의실 (카테고리별 3개씩)
+
+### 환경변수 (.env.local)
+```
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+NEXTAUTH_URL=http://localhost:3003
+NEXTAUTH_SECRET=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+```
+
+### 주요 파일 구조
+```
+apps/classbook/src/
+├── auth.ts
+├── app/
+│   ├── layout.tsx
+│   ├── page.tsx
+│   ├── globals.css          # @source "../../../../packages/ui/src" (glob 없이)
+│   ├── venues/page.tsx
+│   └── api/auth/[...nextauth]/route.ts
+├── components/
+│   ├── layout/Providers.tsx
+│   ├── venunes/VenueCard.tsx  # 주의: 폴더명 오타 venunes (추후 수정)
+│   ├── price/PriceValue.tsx
+│   └── location/LocationLabel.tsx
+├── lib/supabase/client.ts
+├── queries/venues.ts
+└── types/database.ts
+```
+
+### packages/ui 추가 컴포넌트
+- `blocks/MembersValue.tsx` — 인원 표시 (Users 아이콘 + 숫자)
+- `ui/aspect-ratio.tsx` — shadcn AspectRatio
+
+### 진행 현황
+- [x] 브랜치 feat/classbook 생성
+- [x] 스캐폴딩 (package.json, tsconfig, next.config, postcss, globals.css)
+- [x] Supabase 프로젝트 + 테이블 4개 + seed 12개
+- [x] 환경변수 + Google OAuth (localhost:3003 리디렉션 URI 추가)
+- [x] auth.ts + Providers.tsx + supabase client
+- [x] types/database.ts (User, Venue, Reservation, Favorite, Categories, Statuses)
+- [x] queries/venues.ts (getVenues, getVenuesByCategory, getVenueById)
+- [x] venues/page.tsx 데이터 연결 확인
+- [x] VenueCard.tsx 기본 구조
+- [ ] VenueCard 그리드 레이아웃 + 썸네일 이미지
+- [ ] 카카오맵 연동
+- [ ] 예약 폼 + 슬롯 로직
+- [ ] 찜 기능
+- [ ] 내 페이지
+- [ ] 로그인 페이지
+- [ ] Vercel 배포
+
+### 일정 목표
+| 날짜 | 작업 |
+|------|------|
+| 화 6/24 | VenueCard UI 완성 |
+| 수 6/25 | 카카오맵 연동 |
+| 목 6/26 | 예약 폼 + 슬롯 로직 |
+| 금 6/27 | 찜 + 내 페이지 |
+| 월 6/30 | 로그인 + 마무리 |
+| 화 7/1 | Vercel 배포 |
+
+### 주의사항
+- `globals.css` `@source` glob 패턴 없이 디렉토리만: `@source "../../../../packages/ui/src"`
+- `components/venunes/` — 폴더명 오타 있음 (venunes), 추후 venues로 수정 필요
+- `.mcp.json` project-ref: classbook(`ncpmoqgqhpqupagzeeyw`) / reviews(`aynbwrurevrfmrfxplsd`) 전환 필요
