@@ -153,6 +153,45 @@ main  ← develop PR 머지로 배포
 - `packages/ui/tsconfig.json`: `include: ["src", ".storybook"]` — .storybook 폴더도 bundler 모듈 해석 적용
 - 모든 섹션 컴포넌트는 `"use client"` 선언 (Framer Motion은 클라이언트 전용)
 
+## 반복 에러 방지 체크리스트
+
+### shadcn 컴포넌트 설치 후
+- `@/lib/utils` import는 `packages/ui` 안에서 동작 안 함 → `../../lib/utils`로 수정
+- `next.config.ts`의 `turbopack.resolveAlias`에 이미 `@/lib/utils` 매핑이 있으면 자동 해결
+- 설치 명령어는 반드시 `packages/ui` 디렉토리에서 실행
+
+### @repo/ui 컴포넌트 외부 패키지 의존성
+- `packages/ui`에 있는 패키지라도 앱에서 실제로 쓰이면 앱 `package.json`에도 추가
+- 예: `react-day-picker` (calendar), `@radix-ui/*` 계열
+- 추가 후 `pnpm install` 및 서버 재시작 필요
+
+### "use client" 필수 컴포넌트
+- `react-day-picker` 등 클라이언트 훅 사용 컴포넌트: `calendar.tsx`에 `"use client"` 추가
+- shadcn 설치 컴포넌트 중 Context 사용하는 것들은 `"use client"` 없으면 SSR에서 깨짐
+
+### useSearchParams() 사용 시
+- `useSearchParams()`를 쓰는 컴포넌트는 반드시 `<Suspense>`로 감싸야 함
+- 감싸지 않으면 `NextRouter was not mounted` 런타임 에러 발생
+
+### Supabase 쿼리 조건 체이닝
+- `.eq()`, `.gte()`, `.lte()` 등에 `undefined` 넘기면 `= null` 조건으로 필터링됨
+- 조건 있을 때만 체이닝:
+  ```ts
+  let query = supabase.from('venues').select('*');
+  if (params?.category) query = query.eq('category', params.category);
+  ```
+
+### Tailwind v4 @source 설정
+- glob 패턴(`**/*.{ts,tsx}`) 넣으면 오류 — 디렉토리만 지정:
+  ```css
+  @source "../../../packages/ui/src";  /* OK */
+  @source "../../../packages/ui/src/**/*.{ts,tsx}";  /* 오류 */
+  ```
+
+### Suspense + 서버 컴포넌트 스트리밍
+- `loading.tsx`는 페이지 전체가 suspend될 때만 동작 → 필터 같은 상단 UI도 사라짐
+- 카드 목록만 스켈레톤으로 대체하려면: async 서버 컴포넌트 분리 + page 내부 `<Suspense>` 사용
+
 ## Framer Motion 패턴
 ```tsx
 // 스크롤 애니메이션 (각 섹션)
