@@ -1,5 +1,7 @@
 # Reviews
 
+**라이브 데모**: https://turbo-portfolio-reviews.vercel.app/reviews
+
 젠하이저 음향기기 리뷰 플랫폼. Google 소셜 로그인 기반 사용자 인증과 리뷰 CRUD, 카테고리 필터링 기능을 제공합니다.
 
 ## 구현된 기능
