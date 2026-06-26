@@ -5,8 +5,14 @@ export interface User {
     avatar_url?: string;
     created_at: string;
 }
+export type CategorySelectBlockType = {
+    value: string,
+    name: string,
+    onClick?: ()=>void;
+}
 
 export type Categories = "SINGLE" | "DOUBLE" | "MEETING" | "LECTURE";
+export const CATEGORIES : Categories[] = ["SINGLE", "DOUBLE", "MEETING", "LECTURE"]
 
 export type Statuses = "WAITING" | "CONFIRMED" | "CANCELED";
 

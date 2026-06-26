@@ -1,14 +1,26 @@
 import { supabase } from "@/lib/supabase/client"
 import { Categories, Venue } from "@/types/database"
 
-// 모든 강의실 조회
-export const getVenues = async ():Promise<Venue[] | null> => {
-    const {data, error} = await supabase.from('venues').select('*');
+interface GetVenuesParam{
+    category?: Categories;
+    minPrc?: number;
+    maxPrc?: number;
+}
 
+// 모든 강의실 조회
+export const getVenues = async (params?: GetVenuesParam):Promise<Venue[] | null> => {
+    let query = supabase.from("venues").select('*');
+    if(params?.category) query = query.eq('category', params.category);
+    if(params?.minPrc) query = query.gte('price', params.minPrc);
+    if(params?.maxPrc) query = query.lte('price', params.maxPrc);
+    const {data, error} = await query;
+    
     if(!data){
         console.error(error, `error! : ${error}`);
         return null;
     }
+    
+    
     return data;
 }
 

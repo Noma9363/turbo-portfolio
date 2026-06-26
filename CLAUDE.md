@@ -346,7 +346,10 @@ apps/classbook/src/
 - [x] queries/venues.ts (getVenues, getVenuesByCategory, getVenueById)
 - [x] venues/page.tsx 데이터 연결 확인
 - [x] VenueCard.tsx 기본 구조
-- [ ] VenueCard 그리드 레이아웃 + 썸네일 이미지
+- [x] VenueList.tsx — grid/list 토글 (useState)
+- [x] 썸네일 이미지 URL seed 업데이트
+- [x] VenueCard 그리드 레이아웃 + gap + rounded overflow
+- [ ] VenueCard 카테고리 배지 + 리스트 뷰 레이아웃
 - [ ] 카카오맵 연동
 - [ ] 예약 폼 + 슬롯 로직
 - [ ] 찜 기능
@@ -357,10 +360,10 @@ apps/classbook/src/
 ### 일정 목표
 | 날짜 | 작업 |
 |------|------|
-| 화 6/24 | VenueCard UI 완성 |
-| 수 6/25 | 카카오맵 연동 |
-| 목 6/26 | 예약 폼 + 슬롯 로직 |
-| 금 6/27 | 찜 + 내 페이지 |
+| 화 6/24 | ✅ VenueCard 그리드 UI + 스캐폴딩 |
+| 목 6/26 | 카테고리 배지 + 리스트 뷰 + 카카오맵 연동 |
+| 금 6/27 | 예약 폼 + 슬롯 로직 (핵심) |
+| 토 6/28 | 찜 기능 + 내 페이지 |
 | 월 6/30 | 로그인 + 마무리 |
 | 화 7/1 | Vercel 배포 |
 

@@ -89,4 +89,17 @@ export { Calendar } from "./components/ui/calendar";
 
 export {AspectRatio} from "./components/ui/aspect-ratio";
 
+export {
+  Select,
+  SelectGroup,
+  SelectValue,
+  SelectTrigger,
+  SelectContent,
+  SelectLabel,
+  SelectItem,
+  SelectSeparator,
+  SelectScrollUpButton,
+  SelectScrollDownButton,
+} from "./components/ui/select";
+
 export {MembersValue} from "./components/blocks/MembersValue";

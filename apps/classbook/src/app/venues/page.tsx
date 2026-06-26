@@ -1,22 +1,27 @@
-import { VenueCard } from "@/components/venunes/VenueCard";
-import { VenueList } from "@/components/venunes/VenuList";
-import { getVenues } from "@/queries/venues";
+import { FilterBar } from "@/components/filter/FilterBar";
+import { VenueListFetcher } from "@/components/venunes/VenueListFetcher";
+import { VenueListSkeleton } from "@/components/venunes/VenuListSkeleton";
+import { Categories } from "@/types/database";
+import { Suspense } from "react";
 
-export default async function Page() {
-    const venues = await getVenues();
+export const dynamic = 'force-dynamic';
 
-    if(venues === null){
-        return(
-            <div>
-                There's No Venues Presnt
-            </div>
-        )
-    }
-    
-    
-    return(
+interface SearchParamsInterface {
+    category?: string;
+    minPrc?: number;
+    maxPrc?: number;
+}
+
+export default async function Page({ searchParams }: { searchParams: Promise<SearchParamsInterface> }) {
+    const { category: categoryParam } = await searchParams;
+    const category = categoryParam as Categories | undefined;
+
+    return (
         <div>
-            <VenueList venues={venues}/>
+            <FilterBar currentCategory={category} />
+            <Suspense fallback={<VenueListSkeleton />}>
+                <VenueListFetcher searchParams={searchParams} />
+            </Suspense>
         </div>
     )
 }
