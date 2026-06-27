@@ -25,7 +25,7 @@ export function ProductCard({ product }: { product: products }) {
             <CardFooter className="p-4 flex flex-row gap-2 mt-auto">
                 <p className="font-semibold">${product.price}</p>
                 {
-                    product.label?.map((l, idx) => (<Badge className={`px-2 ${idx >= 2 ? 'hidden md:inline-flex' : ''}`} key={l}>{l}</Badge>))
+                    product.label?.map((l, idx) => (<Badge className={`px-2 whitespace-nowrap ${idx >= 2 ? 'hidden md:inline-flex' : ''}`} key={l}>{l}</Badge>))
                 }
             </CardFooter>
         </Card>
