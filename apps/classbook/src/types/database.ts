@@ -33,6 +33,7 @@ export interface Venue {
     category: Categories;
     amenities: string[];
     tags: string[];
+    images: string[];
 }
 
 export interface Reservation {

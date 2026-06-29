@@ -87,6 +87,14 @@ export {
 
 export {Separator} from "./components/ui/separator";
 export { Calendar } from "./components/ui/calendar";
+export {
+  type CarouselApi,
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from "./components/ui/carousel";
 
 export {AspectRatio} from "./components/ui/aspect-ratio";
 
