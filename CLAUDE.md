@@ -332,7 +332,7 @@ app/api/auth/[...nextauth]/route.ts
 ### DB 테이블
 ```sql
 users:        id, email, name, avatar_url, created_at
-venues:       id, name, phone, address, latitude, longitude, thumbnail_url, price, title, sub_title, body, capacity, operating_hours, category, amenities, tags
+venues:       id, name, phone, address, latitude, longitude, thumbnail_url, images text[], price, title, sub_title, body, capacity, operating_hours, category, amenities, tags
 reservations: id, user_id, venue_id, name, phone, email, start_at, end_at, members, purpose, request, status
 favorites:    id, user_id, venue_id
 ```
@@ -382,29 +382,32 @@ apps/classbook/src/
 - [x] 환경변수 + Google OAuth (localhost:3003 리디렉션 URI 추가)
 - [x] auth.ts + Providers.tsx + supabase client
 - [x] types/database.ts (User, Venue, Reservation, Favorite, Categories, Statuses)
-- [x] queries/venues.ts (getVenues, getVenuesByCategory, getVenueById)
-- [x] venues/page.tsx 데이터 연결 확인
-- [x] VenueCard.tsx 기본 구조
-- [x] VenueList.tsx — grid/list 토글 (useState)
-- [x] 썸네일 이미지 URL seed 업데이트
-- [x] VenueCard 그리드 레이아웃 + gap + rounded overflow
-- [ ] VenueCard 카테고리 배지 + 리스트 뷰 레이아웃
-- [ ] 카카오맵 연동
-- [ ] 예약 폼 + 슬롯 로직
+- [x] queries/venues.ts (getVenues 필터 파라미터 포함, getVenueById)
+- [x] venues/page.tsx — searchParams 기반 서버 필터링
+- [x] VenueCard.tsx — grid/list 뷰, padding-bottom 이미지 비율, Badge overlay
+- [x] VenueList.tsx — grid/list 토글
+- [x] VenueListFetcher (async 서버 컴포넌트) + Suspense 구조
+- [x] VenueListSkeleton / VenueCardSkeleton
+- [x] FilterBar — 카테고리 Select + 가격 범위 Popover, URL searchParams 연동
+- [x] venues/[id]/page.tsx — Bento 갤러리 레이아웃 (좌: 메인, 우: 2x2 그리드)
+- [x] VenuGallery, VenuGalleryDialog 스캐폴딩
+- [x] venues 테이블 images text[] 컬럼 추가 + seed 4장씩
+- [ ] VenuGalleryDialog — Carousel 연결, 더보기 오버레이
+- [ ] venues/[id] 상세 정보 섹션 (공간 정보, amenities, 카카오맵)
+- [ ] 예약 사이드바 + 예약 폼 + 슬롯 로직 (핵심)
 - [ ] 찜 기능
-- [ ] 내 페이지
+- [ ] 내 페이지 (간소화)
 - [ ] 로그인 페이지
 - [ ] Vercel 배포
 
-### 일정 목표
+### 일정 목표 (6/29 기준 재조정)
 | 날짜 | 작업 |
 |------|------|
-| 화 6/24 | ✅ VenueCard 그리드 UI + 스캐폴딩 |
-| 목 6/26 | 카테고리 배지 + 리스트 뷰 + 카카오맵 연동 |
-| 금 6/27 | 예약 폼 + 슬롯 로직 (핵심) |
-| 토 6/28 | 찜 기능 + 내 페이지 |
-| 월 6/30 | 로그인 + 마무리 |
-| 화 7/1 | Vercel 배포 |
+| 월 6/29 | ✅ 가격 필터 + venues/[id] 갤러리 스캐폴딩 |
+| 화 7/1 | VenuGalleryDialog + 상세 정보 섹션 + 카카오맵 |
+| 수 7/2 | 예약 폼 + 슬롯 로직 (핵심) |
+| 목 7/3 | 찜 + 내 페이지 (간소화) |
+| 금 7/4 | 로그인 + Vercel 배포 |
 
 ### 주의사항
 - `globals.css` `@source` glob 패턴 없이 디렉토리만: `@source "../../../../packages/ui/src"`
