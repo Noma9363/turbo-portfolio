@@ -1,5 +1,15 @@
 # turbo-portfolio
 
+## 🔖 세션 시작 시 Claude가 읽어야 할 현황 요약
+> `/clear` 후 새 세션에서 이 블록을 먼저 읽고 핵심 상황을 파악할 것
+
+- **현재 단계**: classbook 앱 개발 중 (feat/classbook 브랜치)
+- **완료된 앱**: portfolio (localhost:3000) · taski (localhost:3001) · reviews (localhost:3002)
+- **라이브**: [portfolio](https://turbo-portfolio-portfolio.vercel.app/) · [taski](https://turbo-portfolio-taski.vercel.app) · [reviews](https://turbo-portfolio-reviews.vercel.app/reviews)
+- **협업 원칙**: 구현 전 항상 "어떻게 만들려고 해?" 먼저 물을 것. 코드 대신 방향/키워드만. 파일 전체 작성 금지. **반말로 대화.**
+
+---
+
 ## 프로젝트 개요
 Turborepo 기반 모노레포 포트폴리오. Next.js 15 + Tailwind CSS v4 + Framer Motion + Shadcn/ui 스타일 컴포넌트로 구성된 다크 미니멀 테마 원페이지 포트폴리오.
 
@@ -208,21 +218,12 @@ variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
 
 ---
 
-## Phase 3 — reviews 앱 (진행 중)
+## Phase 3 — reviews 앱 ✅ 완료 (6/22)
 
-### 개요
-- **브랜치**: `feat/audioreview`
-- **앱 경로**: `apps/reviews/` (localhost:3002)
-- **마감**: 2026-06-14 (일) — 일정 조정 (목/금 작업 지연)
-- **브랜드**: 젠하이저(Sennheiser) 음향기기 리뷰 플랫폼
-
-### 기술 스택
-| 역할 | 기술 |
-|------|------|
-| 프레임워크 | Next.js 15 (App Router) |
-| 인증 | NextAuth v5 + Google OAuth |
-| DB | Supabase (PostgreSQL) |
-| 서버 상태 | TanStack Query v5 |
+- **브랜치**: `feat/audioreview` → main 머지 완료
+- **라이브**: https://turbo-portfolio-reviews.vercel.app/reviews
+- **상세 문서**: `apps/reviews/CLAUDE.md`
+- NextAuth v5 Google OAuth + Supabase PostgreSQL + Server Actions CRUD + 카테고리 필터 + 반응형
 | 스타일 | Tailwind CSS v4 |
 
 ### 진행 현황
