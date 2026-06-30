@@ -7,8 +7,9 @@
 
 ### [portfolio](./apps/portfolio) — 메인 포트폴리오
 프론트엔드 개발 경험과 프로젝트를 소개하는 원페이지 포트폴리오
-
+<br/>
 **라이브**: https://turbo-portfolio-portfolio.vercel.app/
+<br/>
 **기술**: Next.js 15, Tailwind CSS v4, Framer Motion
 
 ### [reviews](./apps/reviews) — 음향기기 리뷰 플랫폼
