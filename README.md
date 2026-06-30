@@ -14,14 +14,16 @@
 
 ### [reviews](./apps/reviews) — 음향기기 리뷰 플랫폼
 Google OAuth 인증과 Supabase 기반 음향기기 리뷰 플랫폼
-
+<br/>
 **라이브**: https://turbo-portfolio-reviews.vercel.app/reviews
+<br/>
 **기술**: Next.js 15, NextAuth v5, Supabase, TanStack Query
 
 ### [taski](./apps/taski) — 칸반 일정 관리 앱
 드래그앤드롭으로 우선순위를 조정하는 칸반형 일정 관리 앱
-
+<br/>
 **라이브**: https://turbo-portfolio-taski.vercel.app
+<br/>
 **기술**: Next.js 15, Zustand, Dnd-kit
 
 ## 공통 기술 스택
