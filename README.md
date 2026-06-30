@@ -26,7 +26,7 @@ Google OAuth 인증과 Supabase 기반 음향기기 리뷰 플랫폼
 - 공유 컴포넌트: `packages/ui` (shadcn/ui 기반)
 
 ## 로컬 실행
-\`\`\`bash
+```bash
 pnpm install
 pnpm dev
-\`\`\`
+```
