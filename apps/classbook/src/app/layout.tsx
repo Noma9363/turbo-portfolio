@@ -22,6 +22,9 @@ export default function RootLayout({
     <html lang="ko" className={geist.variable}>
       <body className="antialiased">
         <Providers>
+          <header className="h-14 border-b border-border flex items-center px-4">
+            <h1 className="text-sm font-semibold">Classbook</h1>
+          </header>
           {children}
         </Providers>
       </body>

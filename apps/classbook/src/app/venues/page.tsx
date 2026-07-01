@@ -1,6 +1,6 @@
 import { FilterBar } from "@/components/filter/FilterBar";
-import { VenueListFetcher } from "@/components/venunes/VenueListFetcher";
-import { VenueListSkeleton } from "@/components/venunes/VenuListSkeleton";
+import { VenueListFetcher } from "@/components/venues/VenueListFetcher";
+import { VenueListSkeleton } from "@/components/venues/VenuListSkeleton";
 import { Categories } from "@/types/database";
 import { Suspense } from "react";
 

@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "react-day-picker/style.css";
 
 @source "../../../../packages/ui/src";
 
@@ -40,7 +41,45 @@
 
 }
 
+.rdp-root {
+  --rdp-accent-color: var(--color-primary);
+  --rdp-accent-background-color: var(--color-accent);
+  color: var(--color-foreground);
+  background: transparent;
+}
+
+.rdp-day_button {
+  border-radius: calc(var(--radius) - 2px);
+  color: inherit;
+}
+
+.rdp-selected .rdp-day_button,
+.rdp-selected:focus-visible .rdp-day_button {
+  border-radius: calc(var(--radius) - 2px);
+  background-color: var(--color-primary);
+  color: var(--color-primary-foreground);
+}
+
+.rdp-today:not(.rdp-selected) .rdp-day_button {
+  border-radius: calc(var(--radius) - 2px);
+  background-color: var(--color-accent);
+  color: var(--color-accent-foreground);
+}
+
+.rdp-outside .rdp-day_button {
+  color: var(--color-muted-foreground);
+  opacity: 0.5;
+}
+
+.rdp-chevron {
+  fill: var(--color-muted-foreground);
+}
+
 @layer base {
+  :root {
+    --cell-size: 2rem;
+  }
+
   * {
     box-sizing: border-box;
     border-color: var(--color-border);

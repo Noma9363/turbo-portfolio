@@ -51,7 +51,7 @@ export function PopoverFilterBlock({onApply}:PopoverFilterBlockProps){
                             />
                         </div>
                     </div>
-                    <Button onClick={()=>{
+                    <Button size="sm" className="mt-4" onClick={()=>{
                         onApply(Number(localMin), Number(localMax));
                         setOpen(false);
                     }}>적용</Button>

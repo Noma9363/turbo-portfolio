@@ -112,3 +112,4 @@ export {
 } from "./components/ui/select";
 
 export {MembersValue} from "./components/blocks/MembersValue";
+export { Progress } from "./components/ui/progress";
