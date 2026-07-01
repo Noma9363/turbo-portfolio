@@ -46,8 +46,8 @@ export interface Reservation {
     start_at: string;
     end_at: string;
     members: number;
-    purpose: string;
-    request: string;
+    purpose?: string;
+    request?: string;
     status: Statuses;
 }
 
@@ -56,3 +56,5 @@ export interface Favorite{
     user_id: string;
     venue_id: string;
 }
+
+export type CreateReservation = Omit<Reservation, 'id' | 'status' >;

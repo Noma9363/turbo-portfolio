@@ -1,8 +1,9 @@
 "use client";
 
+import { createReserveAction } from "@/actions/reservation";
 import { Venue } from "@/types/database";
 import { Button, Calendar, Card, Field, FieldDescription, FieldGroup, FieldLabel, FieldLegend, FieldSet, Input, Popover, PopoverContent, PopoverTrigger, Progress } from "@repo/ui";
-import { useState } from "react";
+import { useActionState, useState } from "react";
 
 interface Props {
     venue: Venue;
@@ -12,11 +13,12 @@ export function VenueReserveForm({ venue }: Props) {
     const [open, setOpen] = useState<boolean>(false);
     const [date, setDate] = useState<Date | undefined>(undefined);
     const [progress, setProgress] = useState<number>(0);
-    
+    const [state, action] = useActionState(createReserveAction , {success: false})
+
     return (
         <article>
             <Card className="px-4 py-6">
-                <form action={""}>
+                <form action={action}>
                     <input type="hidden" name="venue_id" value={venue.id} />
                     <FieldGroup className="flex flex-col gap-4">
                         <FieldSet>
@@ -27,19 +29,19 @@ export function VenueReserveForm({ venue }: Props) {
                                     <FieldLabel className="font-semibold" htmlFor="form_name">
                                         성함
                                     </FieldLabel>
-                                    <Input id="form_name" name="title" placeholder="이름을 적어주세요" required />
+                                    <Input id="form_name" name="name" placeholder="이름을 적어주세요" required />
                                 </Field>
                                 <Field>
                                     <FieldLabel className="font-semibold" htmlFor="form_phone">
                                         연락처
                                     </FieldLabel>
-                                    <Input id="form_phone" name="title" placeholder="010-0000-0000" required />
+                                    <Input id="form_phone" name="phone" placeholder="010-0000-0000" required />
                                 </Field>
                                 <Field>
                                     <FieldLabel className="font-semibold" htmlFor="form_email">
                                         이메일
                                     </FieldLabel>
-                                    <Input id="form_email" name="title" placeholder="이름을 적어주세요" required />
+                                    <Input id="form_email" name="email" placeholder="이메일을 입력해주세요" required />
                                 </Field>
                                 <Field>
                                     <FieldLabel className="font-semibold" htmlFor="form_start_at">
@@ -62,62 +64,58 @@ export function VenueReserveForm({ venue }: Props) {
                                             />
                                         </PopoverContent>
                                     </Popover>
+                                    {date && <input type="hidden" name="date" value={date.toISOString().split('T')[0]}/>}
                                     <div className="flex text-nowrap items-center gap-4">
-
                                         <div className="flex-1 flex flex-col gap-1">
-
-                                            <FieldLabel className="font-semibold pl-1" htmlFor="form_start_at">
+                                            <FieldLabel className="font-semibold pl-1" htmlFor="form_start_time">
                                                 부터
                                             </FieldLabel>
                                             <Input
                                                 type="time"
-                                                id=""
+                                                id="form_start_time"
+                                                name="start_time"
                                                 step={1}
                                                 defaultValue={'00:00:00'}
                                                 className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
                                             />
-
                                         </div>
-
                                         <div className="flex-1 flex flex-col gap-1">
-
-                                            <FieldLabel className="font-semibold  pl-1" htmlFor="form_start_at">
+                                            <FieldLabel className="font-semibold pl-1" htmlFor="form_end_time">
                                                 까지
                                             </FieldLabel>
                                             <Input
                                                 type="time"
-                                                id=""
+                                                id="form_end_time"
+                                                name="end_time"
                                                 step={1}
                                                 defaultValue={'00:00:00'}
                                                 className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
                                             />
-
                                         </div>
                                     </div>
                                 </Field>
                                 <Field>
-                                    <FieldLabel className="font-semibold" htmlFor="form_email">
+                                    <FieldLabel className="font-semibold" htmlFor="form_members">
                                         인원
                                     </FieldLabel>
-                                    <Input type="number" id="form_email" name="title" placeholder="0" required />
+                                    <Input type="number" id="form_members" name="members" placeholder="0" required />
                                 </Field>
                                 <Field>
-                                    <FieldLabel className="font-semibold" htmlFor="form_email">
+                                    <FieldLabel className="font-semibold" htmlFor="form_purpose">
                                         목적
                                     </FieldLabel>
-                                    <Input type="number" id="form_email" name="title" placeholder="0" required />
+                                    <Input type="text" id="form_purpose" name="purpose" placeholder="사용 목적을 입력해주세요" required />
                                 </Field>
                                 <Field>
-                                    <FieldLabel className="font-semibold" htmlFor="form_email">
+                                    <FieldLabel className="font-semibold" htmlFor="form_request">
                                         요청 사항
                                     </FieldLabel>
-                                    <Input type="number" id="form_email" name="title" placeholder="0" required />
+                                    <Input type="text" id="form_request" name="request" placeholder="요청 사항을 입력해주세요" />
                                 </Field>
                             </FieldGroup>
                         </FieldSet>
-                        <FieldLabel className=" w-full flex justify-between items-center">
+                        <div className=" w-full flex justify-between items-center">
                             <span>
-                                
                                 {
                                     progress === 0
                                     ? "작성중"
@@ -127,10 +125,10 @@ export function VenueReserveForm({ venue }: Props) {
                                 }
                             </span>
                             <span>{progress}%</span>
-                        </FieldLabel>
+                        </div>
                         <Progress value={progress} className="w-[60%] h-1"/>
                     </FieldGroup>
-                        
+                    <Button type="submit">예약하기</Button>
                 </form>
             </Card>
         </article>
