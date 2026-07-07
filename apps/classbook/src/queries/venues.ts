@@ -58,3 +58,13 @@ export const createReservation = async (ipt: CreateReservation): Promise<Reserva
     }
     return data;
 }
+
+export const getReservationByVenueAndUser = async (venue_id: string, user_id: string): Promise<Reservation | null> => {
+    const {data, error} = await supabase.from('reservations').select('*').eq('venue_id', venue_id).eq('user_id', user_id).maybeSingle();
+
+    if (error) {
+        console.error(JSON.stringify(error));
+        return null;
+    }
+    return data;
+}

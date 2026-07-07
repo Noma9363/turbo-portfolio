@@ -26,7 +26,7 @@ export const createReserveAction = async (prevState:{ success: boolean | undefin
     const request = formData.get('request') as string;
     const venue_id = formData.get('venue_id')as string ;
 
-    if(!user_id || !name || !phone || !email || !date || !curr_start_time || !curr_end_time || !members) return; // 필수 정보 없을시 리턴
+    if(!user_id || !name || !phone || !email || !date || !curr_start_time || !curr_end_time || !members) return {success: false}; // 필수 정보 없을시 리턴
 
     const start_at = new Date(`${date}T${curr_start_time}`).toISOString();
     const end_at = new Date(`${date}T${curr_end_time}`).toISOString();
