@@ -1,8 +1,8 @@
 "use client";
 
-import { createReserveAction } from "@/actions/reservation";
+import { cancelReservevationAction, createReserveAction } from "@/actions/reservation";
 import { Reservation, Venue } from "@/types/database";
-import { Button, Calendar, Card, Field, FieldDescription, FieldGroup, FieldLabel, FieldLegend, FieldSet, Input, Popover, PopoverContent, PopoverTrigger, Progress } from "@repo/ui";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, Button, Calendar, Card, Field, FieldDescription, FieldGroup, FieldLabel, FieldLegend, FieldSet, Input, Popover, PopoverContent, PopoverTrigger, Progress } from "@repo/ui";
 import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 
@@ -19,16 +19,37 @@ type DefaultDate = {
 
 function SubmitButton({ success, existingReservation }: { success: boolean, existingReservation: Reservation | null }) {
     const { pending } = useFormStatus();
+    const cancelWithId = existingReservation
+        ? cancelReservevationAction.bind(null, existingReservation.id, existingReservation.venue_id)
+        : null; 
 
-    const progress = success ? 100 : pending ? 50 : 0;
+    const progress = existingReservation ? 100 : success ? 100 : pending ? 50 : 0;
     // TODO : cancel 예약 취소 액션 필요
     return (
         <>
             <span className="block mt-8 text-xs text-muted-foreground">{progress === 0 ? "작성중" : progress === 50 ? "예약중" : "예약 완료"}</span>
             <Progress value={progress} className="w-[60%] h-1 mt-2 mb-4" />
-            <Button disabled={pending} type="submit">
-                {existingReservation ? "예약하기" : "예약취소"}
-            </Button>
+            {
+                existingReservation ?
+                (
+                <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                        <Button type="button">예약취소</Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>정말 예약을 취소할까요?</AlertDialogTitle>
+                            <AlertDialogDescription>해당 양식은 제거됩니다.</AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>아니오</AlertDialogCancel>
+                            <AlertDialogAction onClick={()=>cancelWithId?.()}>예</AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>)
+                :
+                <Button disabled={pending} type="submit">예약하기</Button>
+            }
         </>
     )
 }
@@ -147,7 +168,7 @@ export function VenueReserveForm({ venue, existingReservation }: Props) {
                             </FieldGroup>
                         </FieldSet>
                     </FieldGroup>
-                    <SubmitButton success={state.success} />
+                    <SubmitButton success={state.success} existingReservation={existingReservation} />
                 </form>
             </Card>
         </article>

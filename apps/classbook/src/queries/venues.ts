@@ -48,10 +48,10 @@ export const getVenueById = async (id: string): Promise<Venue | null> => {
 }
 
 // 예약 생성
-export const createReservation = async (ipt: CreateReservation): Promise<Reservation | null> => {    
+export const createReservation = async (ipt: CreateReservation): Promise<Reservation | null> => {
     const { data, error } = await supabase.from('reservations').insert(ipt).select().single();
 
-    
+
     if (!data) {
         console.error(JSON.stringify(error));
         return null;
@@ -60,11 +60,21 @@ export const createReservation = async (ipt: CreateReservation): Promise<Reserva
 }
 
 export const getReservationByVenueAndUser = async (venue_id: string, user_id: string): Promise<Reservation | null> => {
-    const {data, error} = await supabase.from('reservations').select('*').eq('venue_id', venue_id).eq('user_id', user_id).maybeSingle();
+    const { data, error } = await supabase.from('reservations').select('*').eq('venue_id', venue_id).eq('user_id', user_id).maybeSingle();
 
     if (error) {
         console.error(JSON.stringify(error));
         return null;
     }
     return data;
+}
+
+export const removeReservationById = async (reservation_id: string, user_id: string): Promise<boolean | null> => {
+    const { error } = await supabase
+        .from('reservations')
+        .delete()
+        .eq('id', reservation_id)
+        .eq('user_id', user_id);
+    return !error
+
 }
