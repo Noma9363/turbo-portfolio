@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { Providers } from "@/components/layout/Providers";
 import "./globals.css";
+import Script from "next/script";
 
 const geist = Geist({
   subsets: ["latin"],

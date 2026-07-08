@@ -5,6 +5,7 @@ import { VenueDetailNav } from "./VenueDetailNav";
 import { Venue } from "@/types/database";
 import { Car, CircleHelp, HdmiPort, LucideIcon, MapPin, Presentation, Refrigerator, Wifi, Wind } from "lucide-react";
 import { Card } from "@repo/ui";
+import { KakaoMap } from "../map/KakaoMap";
 
 interface VenueDetailContentProps {
     venue: Venue;
@@ -92,7 +93,7 @@ export function VenueDetailContent({ venue }: VenueDetailContentProps) {
                     <span>{venue.address}</span>
                 </p>
                 <div>
-                    placeholder
+                    <KakaoMap lat={venue.latitude} lng={venue.longitude} />
                 </div>
             </section>
         </>
