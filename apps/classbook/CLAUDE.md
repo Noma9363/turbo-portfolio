@@ -4,9 +4,10 @@
 > `/clear` 후 새 세션에서 이 블록을 먼저 읽고 핵심 상황을 파악할 것
 
 - **브랜치**: `feat/classbook` / **포트**: `localhost:3003`
-- **현재 단계**: venues/[id] 갤러리·상세 스캐폴딩 완료 → 다음은 **VenuGalleryDialog Carousel + 상세 정보 섹션**
+- **현재 단계**: 카카오맵 렌더 완료 → 다음은 **마커 추가**
 - **마감**: 2026-07-10 (금) — Vercel 배포까지
 - **협업 원칙**: 구현 전 항상 "어떻게 만들려고 해?" 먼저 물을 것. 코드 대신 방향/키워드만. 파일 전체 작성 금지. 반말로 대화.
+- **카카오맵 주의**: 기존 앱(이전 프로젝트)의 JS 키를 사용해야 함 — 새 앱 생성 시 도메인 403 이슈 있었음
 
 ---
 
@@ -84,6 +85,15 @@ apps/classbook/src/
 ## packages/ui 추가 컴포넌트
 - `blocks/MembersValue.tsx` — 인원 표시 (Users 아이콘 + 숫자)
 - `ui/aspect-ratio.tsx` — shadcn AspectRatio
+- `ui/alert-dialog.tsx` — shadcn AlertDialog (경로 수정: `../../lib/utils`, `./Button`)
+- `ui/carousel.tsx` — shadcn Carousel (경로 수정 완료)
+
+## 카카오맵 설정
+- 기존 앱의 JS 키 사용 (새 앱 생성 시 403 이슈)
+- `NEXT_PUBLIC_KAKAO_MAP_KEY` — `.env.local`에 등록
+- `KakaoMap.tsx` — `useEffect` 내 동적 스크립트 로드 방식
+- `declare const kakao: any` — 타입 처리
+- 가드: `typeof kakao === 'undefined'` 체크 필수
 
 ## 진행 현황
 - [x] 브랜치 feat/classbook 생성
@@ -102,28 +112,30 @@ apps/classbook/src/
 - [x] venues/[id]/page.tsx — Bento 갤러리 레이아웃 (좌: 메인, 우: 2x2 그리드)
 - [x] VenuGallery, VenuGalleryDialog 스캐폴딩
 - [x] venues 테이블 images text[] 컬럼 추가 + seed 4장씩
+- [x] VenueReserveForm — 예약 폼 + createReserveAction (name/phone/email/date/time/members)
+- [x] SubmitButton 분리 — useFormStatus 기반 Progress 상태 (0/50/100%)
+- [x] getReservationByVenueAndUser — maybeSingle로 기존 예약 조회
+- [x] 기존 예약 있을 시 폼 비활성화 + 기존 데이터 표시
+- [x] cancelReservationAction — reservation_id + venue_id bind 방식, AlertDialog 확인
+- [x] KakaoMap 컴포넌트 — 동적 SDK 로드, 지도 렌더 완료
+- [x] VenueDetailContent 위치 섹션에 KakaoMap 연동
+- [ ] KakaoMap 마커 추가
 - [ ] VenuGalleryDialog — Carousel 연결, 더보기 오버레이
-- [ ] venues/[id] 상세 정보 섹션 (공간 정보, amenities, 카카오맵)
-- [ ] 예약 사이드바 + 예약 폼 + 슬롯 로직 (핵심)
 - [ ] 찜 기능
 - [ ] 내 페이지 (간소화)
 - [ ] 로그인 페이지
 - [ ] Vercel 배포
 
-## 일정 목표 (7/6 기준 재조정, 마감 7/10 금요일)
+## 일정 목표 (7/8 기준 재조정, 마감 7/10 금요일)
 | 날짜 | 시간대 | 작업 |
 |------|--------|------|
-| 화 7/7 | 09:30-12:00 | VenuGalleryDialog — Carousel + 더보기 오버레이 |
-| 화 7/7 | 14:00-18:00 | venues/[id] 상세 정보 섹션 (공간정보, amenities) |
-| 수 7/8 | 09:30-12:00 | 카카오맵 연동 |
-| 수 7/8 | 14:00-18:00 | 예약 사이드바 + 예약 폼 UI |
-| 목 7/9 | 09:30-12:00 | 슬롯 가용성 로직 설계 (충돌 체크, 시간 계산) |
-| 목 7/9 | 14:00-18:00 | 슬롯 로직 구현 + 테스트 (핵심 어필) |
-| 목 7/9 | 19:00-20:00 | 슬롯 로직 마무리 점검 |
-| 금 7/10 | 09:30-11:00 | 찜 기능 (favorites) |
-| 금 7/10 | 11:00-12:30 | 내 페이지 (간소화) |
-| 금 7/10 | 14:00-15:30 | 로그인 페이지 |
-| 금 7/10 | 16:00-18:00 | Vercel 배포 + 최종 확인 |
+| 목 7/9 | 09:30-11:00 | 카카오맵 마커 추가 |
+| 목 7/9 | 11:00-13:00 | VenuGalleryDialog Carousel + 더보기 오버레이 |
+| 목 7/9 | 14:00-16:00 | 찜 기능 (favorites) |
+| 목 7/9 | 16:00-18:00 | 내 페이지 (간소화) |
+| 금 7/10 | 09:30-11:00 | 로그인 페이지 |
+| 금 7/10 | 11:00-13:00 | 전체 마무리 + 버그 수정 |
+| 금 7/10 | 14:00-18:00 | Vercel 배포 + 최종 확인 |
 
 > 매일 08:00-09:30은 운동(덤벨 서킷) 시간이라 개발 시작은 09:30부터. Google Calendar에도 동일하게 등록되어 있음(noma9363@gmail.com).
 
