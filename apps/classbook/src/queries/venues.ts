@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { supabase } from "@/lib/supabase/client"
-import { Categories, CreateReservation, Reservation, Venue } from "@/types/database"
+import { Categories, CreateReservation, Favorite, Reservation, ReservationWithVenue, Venue } from "@/types/database"
 
 interface GetVenuesParam {
     category?: Categories;
@@ -77,4 +77,69 @@ export const removeReservationById = async (reservation_id: string, user_id: str
         .eq('user_id', user_id);
     return !error
 
+}
+
+// favorites icons
+export const getFavoritesByUser = async (user_id: string): Promise<string[] | null> => {
+    const { data, error } = await supabase
+        .from('favorites')
+        .select('venue_id')
+        .eq('user_id', user_id);
+
+    if (!data) {
+        console.error(error, `error : ${error}`);
+        return null;
+    }
+
+    return data.map(f => f.venue_id);
+}
+
+// apps/my/page
+export const getFavoriteVenuesByUser = async (user_id: string): Promise<Venue[]| null> => {
+    const {data, error} = await supabase
+        .from('favorites')
+        .select('venues(*)')
+        .eq('user_id',user_id);
+    if(!data){
+        console.error(error, `error: ${error}`);
+        return  null;
+    }
+    return data.flatMap(fv => fv.venues ?? []) as Venue[];
+}
+
+export const addFavorite = async (user_id: string, venue_id: string): Promise<Favorite | null> => {
+    const { data, error } = await supabase
+        .from('favorites')
+        .insert({ 'user_id': user_id, 'venue_id': venue_id })
+        .select()
+        .single();
+    if (!data) {
+        console.error(JSON.stringify(error));
+        return null;
+    }
+
+    return data;
+}
+
+export const removeFavorite = async (user_id: string, venue_id: string): Promise<boolean | null> => {
+    const { error } = await supabase
+        .from('favorites')
+        .delete()
+        .eq('user_id', user_id)
+        .eq('venue_id', venue_id);
+    return !error;
+}
+
+export const getReservationsByUser = async (user_id: string): Promise<ReservationWithVenue[]|null > => {
+    const {data, error} = await supabase
+        .from('reservations')
+        .select('*, venues(*)')
+        .eq('user_id', user_id);
+
+    if(!data){
+        console.error(JSON.stringify(error));
+        return null;
+    }
+
+    return data;
 }

@@ -1,6 +1,7 @@
 import { Categories } from "@/types/database";
 import { VenueList } from "./VenuList";
-import { getVenues } from "@/queries/venues";
+import { getFavoritesByUser, getVenues } from "@/queries/venues";
+import { auth } from "@/auth";
 
 interface searchParamsInterface {
     category?: string;
@@ -9,6 +10,10 @@ interface searchParamsInterface {
 }
 
 export async function VenueListFetcher({ searchParams }: { searchParams: Promise<searchParamsInterface> }) {
+    const session = await auth();
+    const user_id = session?.user?.id;
+    const favoritedIds = user_id ? await getFavoritesByUser(user_id) : [];
+
     const { category: categoryParam } = await searchParams;
     const category = categoryParam as Categories | undefined;
 
@@ -21,6 +26,6 @@ export async function VenueListFetcher({ searchParams }: { searchParams: Promise
         )
     }
     return (
-        <VenueList venues={venues} />
+        <VenueList favoritedIds={favoritedIds} venues={venues} />
     )
 }

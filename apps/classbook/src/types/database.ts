@@ -58,3 +58,7 @@ export interface Favorite{
 }
 
 export type CreateReservation = Omit<Reservation, 'id' | 'status' >;
+
+export interface ReservationWithVenue extends Reservation{
+    venues: Venue;
+}

@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Card, CardContent, Carousel, CarouselContent, CarouselItem, Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@repo/ui";
+import { Button, Card, CardContent, Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@repo/ui";
 import { Frame } from "lucide-react";
 
 interface VenuGalleryDialogProps{
@@ -31,6 +31,8 @@ export function VenuGalleryDialog({images}:VenuGalleryDialogProps){
                             </div>
                         </CarouselItem>))}
                     </CarouselContent>
+                    <CarouselPrevious/>
+                    <CarouselNext/>
                 </Carousel>
             </DialogContent>
         </Dialog>

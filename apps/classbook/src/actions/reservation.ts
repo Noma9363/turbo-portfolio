@@ -47,9 +47,9 @@ export const cancelReservevationAction = async (reservation_id: string, venue_id
     const session = await auth();
     const user_id = session?.user?.id;
     const prev_url = (await headers()).get('referer');
-    
-    if(!user_id){
-       redirect(`/login?callbackUrl=${prev_url}`);
+
+    if (!user_id) {
+        redirect(`/login?callbackUrl=${prev_url}`);
     }
 
     await removeReservationById(reservation_id, user_id);

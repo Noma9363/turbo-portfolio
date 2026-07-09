@@ -127,3 +127,5 @@ export {
   AlertDialogAction,
   AlertDialogCancel,
 } from "./components/ui/alert-dialog";
+
+export { Tabs, TabsList, TabsTrigger, TabsContent } from "./components/ui/tabs";

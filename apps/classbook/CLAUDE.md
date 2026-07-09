@@ -4,7 +4,7 @@
 > `/clear` 후 새 세션에서 이 블록을 먼저 읽고 핵심 상황을 파악할 것
 
 - **브랜치**: `feat/classbook` / **포트**: `localhost:3003`
-- **현재 단계**: 카카오맵 렌더 완료 → 다음은 **마커 추가**
+- **현재 단계**: 내 페이지 진행 중 → 다음은 **ReservationCard 구현**
 - **마감**: 2026-07-10 (금) — Vercel 배포까지
 - **협업 원칙**: 구현 전 항상 "어떻게 만들려고 해?" 먼저 물을 것. 코드 대신 방향/키워드만. 파일 전체 작성 금지. 반말로 대화.
 - **카카오맵 주의**: 기존 앱(이전 프로젝트)의 JS 키를 사용해야 함 — 새 앱 생성 시 도메인 403 이슈 있었음
@@ -119,11 +119,19 @@ apps/classbook/src/
 - [x] cancelReservationAction — reservation_id + venue_id bind 방식, AlertDialog 확인
 - [x] KakaoMap 컴포넌트 — 동적 SDK 로드, 지도 렌더 완료
 - [x] VenueDetailContent 위치 섹션에 KakaoMap 연동
-- [ ] KakaoMap 마커 추가
-- [ ] VenuGalleryDialog — Carousel 연결, 더보기 오버레이
-- [ ] 찜 기능
-- [ ] 내 페이지 (간소화)
+- [x] KakaoMap 마커 추가 — Geocoder 주소→좌표 변환, &libraries=services
+- [x] VenuGalleryDialog — Carousel + CarouselPrevious/Next 연결
+- [x] 찜 기능 — createFavoritAction / removeFavoritAction, VenueCard Heart 아이콘 filled 분기
+- [x] getFavoritesByUser / getFavoriteVenuesByUser / addFavorite / removeFavorite 쿼리
+- [x] VenueListFetcher — favoritedIds 조회 후 VenueCard에 isFavorited 전달
+- [x] packages/ui — Tabs 컴포넌트 추가 (경로 수정 완료)
+- [x] /my/page.tsx — 프로필 카드 (Avatar + 배경 그라디언트) + Tabs 스캐폴딩
+- [x] getReservationsByUser + ReservationWithVenue 타입 추가
+- [ ] ReservationCard — 썸네일/날짜/status 배지/AlertDialog 취소 버튼
+- [ ] /my 찜 탭 — getFavoriteVenuesByUser 데이터 렌더
+- [ ] /my 예약 탭 — ReservationCard 렌더
 - [ ] 로그인 페이지
+- [ ] 전체 스타일링 마무리
 - [ ] Vercel 배포
 
 ## 일정 목표 (7/8 기준 재조정, 마감 7/10 금요일)

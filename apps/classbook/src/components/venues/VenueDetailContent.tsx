@@ -93,7 +93,7 @@ export function VenueDetailContent({ venue }: VenueDetailContentProps) {
                     <span>{venue.address}</span>
                 </p>
                 <div>
-                    <KakaoMap lat={venue.latitude} lng={venue.longitude} />
+                    <KakaoMap address={venue.address}/>
                 </div>
             </section>
         </>

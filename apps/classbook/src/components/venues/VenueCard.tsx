@@ -6,17 +6,21 @@ import { Heart } from "lucide-react";
 import Link from "next/link";
 import { PriceValue } from "../price/PriceValue";
 import { LocationLabel } from "../location/LocationLabel";
+import { createFavoritAction, removeFavoritAction } from "@/actions/favorite";
 
-export function VenueCard({ venue, view }: { venue: Venue, view: 'grid' | 'list' }) {
+export function VenueCard({ venue, view, isFavorited }: { venue: Venue, view: 'grid' | 'list', isFavorited: boolean }) {
 
     if (view === 'list') {
         return (
-            <Link href={``} className="block">
+            <Link href={`/venues/${venue.id}`} className="block">
                 <Card className={cn("border-0 bg-background text-card-foreground  transition-colors duration-300 flex flex-row overflow-hidden")}>
-                    <div className="relative w-full max-w-40 h-full max-h-32 rounded-xl overflow-hidden" style={{"paddingBottom" : '128px'}}>
+                    <div className="relative w-full max-w-40 h-full max-h-32 rounded-xl overflow-hidden" style={{ "paddingBottom": '128px' }}>
                         <img src={venue.thumbnail_url} alt={`${venue.name}'s thumbnail`} className="absolute inset-0 w-full h-full object-cover" />
-                        <Button size="icon" className="absolute left-2 top-2">
-                            <Heart size="icon"/>
+                        <Button onClick={(e) => {
+                            e.preventDefault();
+                            isFavorited ? removeFavoritAction(venue.id) : createFavoritAction(venue.id)
+                        }} size="icon" className="absolute left-2 top-2">
+                            <Heart size="icon" className={cn(`${isFavorited ? 'fill-red-500' : ''}`)} />
                         </Button>
                         <Badge className="text-accent-foreground bg-primary-foreground ring-accent-foreground w-fit absolute left-2 bottom-2">{venue.category}</Badge>
                     </div>
@@ -38,12 +42,17 @@ export function VenueCard({ venue, view }: { venue: Venue, view: 'grid' | 'list'
     }
 
     return (
-        <Link href={``} className="block">
+        <Link href={`/venues/${venue.id}`} className="block">
             <Card className={cn("bg-card rounded-xl border-border text-card-foreground hover:border-zinc-600 transition-colors duration-300 overflow-hidden")}>
                 <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
                     <img src={venue.thumbnail_url} alt={`${venue.name}'s thumbnail`} className="absolute inset-0 w-full h-full object-cover" />
-                    <Button size="icon" className="absolute left-4 top-4">
-                        <Heart />
+                    <Button
+                        onClick={(e) => {
+                            e.preventDefault();
+                            isFavorited ? removeFavoritAction(venue.id) : createFavoritAction(venue.id)
+                        }}
+                        size="icon" className="absolute left-4 top-4">
+                        <Heart className={cn(`${isFavorited ? 'fill-red-500' : ''}`)} />
                     </Button>
                     <Badge className="text-accent-foreground bg-primary-foreground ring-accent-foreground w-fit absolute left-4 bottom-4">{venue.category}</Badge>
                 </div>
