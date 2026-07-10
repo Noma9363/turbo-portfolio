@@ -14,7 +14,7 @@ export type CategorySelectBlockType = {
 export type Categories = "SINGLE" | "DOUBLE" | "MEETING" | "LECTURE";
 export const CATEGORIES : Categories[] = ["SINGLE", "DOUBLE", "MEETING", "LECTURE"]
 
-export type Statuses = "WAITING" | "CONFIRMED" | "CANCELED";
+export type Statuses = "CONFIRMED" | "CANCELED";
 
 export interface Venue {
     id: string;

@@ -54,7 +54,7 @@ export function VenueDetailContent({ venue }: VenueDetailContentProps) {
                 <h3>편의시설</h3>
                 <div className="flex flex-row gap-4">
 
-                    {venue.amenities.map((a) => {
+                    {venue.amenities?.map((a) => {
                         const Icon = AMENITY_ICONS[a] ?? CircleHelp;
                         return (
                             <Card key={a} className="aspect-square flex-1 relative">

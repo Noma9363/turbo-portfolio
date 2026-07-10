@@ -4,7 +4,7 @@
 > `/clear` 후 새 세션에서 이 블록을 먼저 읽고 핵심 상황을 파악할 것
 
 - **브랜치**: `feat/classbook` / **포트**: `localhost:3003`
-- **현재 단계**: 내 페이지 진행 중 → 다음은 **ReservationCard 구현**
+- **현재 단계**: 기능 구현 완료 → 다음은 **헤더 네비 (로그인/마이페이지 링크) + 스타일링 마무리 + Vercel 배포**
 - **마감**: 2026-07-10 (금) — Vercel 배포까지
 - **협업 원칙**: 구현 전 항상 "어떻게 만들려고 해?" 먼저 물을 것. 코드 대신 방향/키워드만. 파일 전체 작성 금지. 반말로 대화.
 - **카카오맵 주의**: 기존 앱(이전 프로젝트)의 JS 키를 사용해야 함 — 새 앱 생성 시 도메인 403 이슈 있었음
@@ -127,10 +127,14 @@ apps/classbook/src/
 - [x] packages/ui — Tabs 컴포넌트 추가 (경로 수정 완료)
 - [x] /my/page.tsx — 프로필 카드 (Avatar + 배경 그라디언트) + Tabs 스캐폴딩
 - [x] getReservationsByUser + ReservationWithVenue 타입 추가
-- [ ] ReservationCard — 썸네일/날짜/status 배지/AlertDialog 취소 버튼
-- [ ] /my 찜 탭 — getFavoriteVenuesByUser 데이터 렌더
-- [ ] /my 예약 탭 — ReservationCard 렌더
-- [ ] 로그인 페이지
+- [x] ReservationCard — 썸네일/날짜/status 배지/AlertDialog 취소 버튼
+- [x] /my 찜 탭 — getFavoriteVenuesByUser 데이터 렌더
+- [x] /my 예약 탭 — ReservationCard 렌더
+- [x] 로그인 페이지 — Google OAuth (reviews 앱과 동일 패턴)
+- [x] / → /venues 리다이렉트
+- [x] reservations.status WAITING 제거 → CONFIRMED/CANCELED 만 유지
+- [x] cancelReservationFromMyAction — /my 리다이렉트 전용 액션
+- [ ] 헤더 네비 — 로고 + 로그인/마이페이지 링크
 - [ ] 전체 스타일링 마무리
 - [ ] Vercel 배포
 

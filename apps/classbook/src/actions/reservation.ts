@@ -58,3 +58,12 @@ export const cancelReservevationAction = async (reservation_id: string, venue_id
 
 
 }
+
+export const cancelReservevationFormMyAction = async (reservation_id: string) => {
+    const session = await auth();
+    const user_id = session?.user?.id;
+
+    await removeReservationById(reservation_id, user_id!);
+    revalidatePath(`/my`);
+    redirect(`/my`);
+}

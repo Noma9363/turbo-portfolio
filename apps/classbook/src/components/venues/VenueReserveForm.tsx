@@ -19,6 +19,7 @@ type DefaultDate = {
 
 function SubmitButton({ success, existingReservation }: { success: boolean, existingReservation: Reservation | null }) {
     const { pending } = useFormStatus();
+    // TODO: Explane this code
     const cancelWithId = existingReservation
         ? cancelReservevationAction.bind(null, existingReservation.id, existingReservation.venue_id)
         : null; 
@@ -43,7 +44,7 @@ function SubmitButton({ success, existingReservation }: { success: boolean, exis
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                             <AlertDialogCancel>아니오</AlertDialogCancel>
-                            <AlertDialogAction onClick={()=>cancelWithId?.()}>예</AlertDialogAction>
+                            <AlertDialogAction onClick={()=>cancelWithId?.()}>취소하기</AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>)

@@ -1,4 +1,5 @@
 import { auth } from "@/auth"
+import { ReservationCard } from "@/components/venues/ReservationCard";
 import { VenueCard } from "@/components/venues/VenueCard";
 import { VenueList } from "@/components/venues/VenuList";
 import { getFavoriteVenuesByUser, getReservationsByUser } from "@/queries/venues";
@@ -47,7 +48,7 @@ export default async function Page() {
                         <CardContent>
                             <h3 className="pb-4">
                                 {/* TODO: get favorites length */}
-                                현재 { } 건
+                                현재 { favoriteVanues?.length } 건
                             </h3>
                             {/* TODO: render favorites card items */}
                             <div className="">
@@ -65,11 +66,11 @@ export default async function Page() {
                         <CardContent>
                             <p>
                                 {/* TODO: get reservations length */}
-                                현재 { } 건
+                                현재 {reservations?.length} 건
                             </p>
                             {/* TODO: render reservations card items */}
                             <div className="">
-                                ...
+                                {reservations?.map((r)=>(<ReservationCard key={r.venue_id} reservationWithVenue={r} />))}
                             </div>
                         </CardContent>
                     </Card>
