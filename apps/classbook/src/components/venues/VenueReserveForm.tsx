@@ -29,7 +29,7 @@ function SubmitButton({ success, existingReservation }: { success: boolean, exis
     return (
         <>
             <span className="block mt-8 text-xs text-muted-foreground">{progress === 0 ? "작성중" : progress === 50 ? "예약중" : "예약 완료"}</span>
-            <Progress value={progress} className="w-[60%] h-1 mt-2 mb-4" />
+            <Progress value={progress} className="w-full h-1 mt-2 mb-4" />
             {
                 existingReservation ?
                 (
@@ -68,7 +68,7 @@ export function VenueReserveForm({ venue, existingReservation }: Props) {
 
 
     return (
-        <article>
+        <article className="mt-4">
             <Card className="px-4 py-6">
                 <form action={action}>
                     <input type="hidden" name="venue_id" value={venue.id} />

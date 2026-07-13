@@ -21,7 +21,7 @@ export function KakaoMap({ address }: KakaoMapProps) {
             kakao.maps.load(() => {
                 console.log('kakao.map.load 콜백 실행');
                 new kakao.maps.services.Geocoder().addressSearch(address,
-                    (result: any, 맞status: any) => {
+                    (result: any, status: any) => {
                         if (status === kakao.maps.services.Status.OK) {
                             const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
                             const options = { center: coords, level: 3 };

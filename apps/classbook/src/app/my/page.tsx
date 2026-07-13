@@ -12,7 +12,7 @@ export default async function Page() {
     const reservations = user?.id ? await getReservationsByUser(user.id) : null;
 
     return (
-        <div className="">
+        <div className="p-4">
             <Card className="ring-foreground/10 relative flex flex-col gap-6 rounded-xl text-sm shadow-xs border-none ">
                 <div className="h-32 relative bg-cover bg-center rounded-t-xl bg-gradient-to-r from-zinc-800 to-zinc-700">
 
@@ -34,7 +34,7 @@ export default async function Page() {
             </Card>
 
             {/* tab */}
-            <Tabs defaultValue="favorites" className="">
+            <Tabs defaultValue="favorites" className="mt-2">
                 <TabsList>
                     <TabsTrigger value="favorites">찜</TabsTrigger>
                     <TabsTrigger value="reservations">예약</TabsTrigger>
@@ -51,7 +51,7 @@ export default async function Page() {
                                 현재 { favoriteVanues?.length } 건
                             </h3>
                             {/* TODO: render favorites card items */}
-                            <div className="">
+                            <div className="flex flex-col gap-4">
                                 {favoriteVanues?.map((fv)=>(<VenueCard key={fv.id} isFavorited={true} venue={fv} view="grid"/>))}
                             </div>
                         </CardContent>

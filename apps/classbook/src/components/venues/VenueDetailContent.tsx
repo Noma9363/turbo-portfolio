@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { VenueDetailNav } from "./VenueDetailNav";
 import { Venue } from "@/types/database";
 import { Car, CircleHelp, HdmiPort, LucideIcon, MapPin, Presentation, Refrigerator, Wifi, Wind } from "lucide-react";
@@ -30,6 +30,7 @@ const AMENITY_ICONS: Record<string, LucideIcon> = {
 export function VenueDetailContent({ venue }: VenueDetailContentProps) {
     const [activeId, setActiveId] = useState<string>("description");
 
+
     const INFO_ITEMS = [
         { label: '최대 인원', value: `${venue.capacity} 명` },
         { label: '운영 시간', value: `${venue.operating_hours}` },
@@ -38,19 +39,24 @@ export function VenueDetailContent({ venue }: VenueDetailContentProps) {
     ]
 
     const handleTabClick = (id: string) => {
-        const currElById = document.getElementById(id);
-        currElById?.scrollIntoView({ behavior: 'smooth' });
+        const el = document.getElementById(id);
+        if(!el) return;
+        const offset = 14 * 4 * 2;
+        const top = el.getBoundingClientRect().top + window.scrollY - offset;
+        setActiveId(id);
+        window.scrollTo({top, behavior: 'smooth'});
     }
+
 
 
     return (
         <>
-            <VenueDetailNav tabs={TABS} activeId={activeId} onTabClick={(id) => { setActiveId(id); handleTabClick(id) }} />
-            <section id="description">
+            <VenueDetailNav tabs={TABS} activeId={activeId} onTabClick={(id) => { handleTabClick(id) }} />
+            <section id="description" className="pt-4 min-h-96">
                 <h3 className="pt-8 pb-3 text-base font-semibold">공간 소개</h3>
                 <p className="whitespace-pre-line text-sm text-muted-foreground leading-relaxed">{venue.body}</p>
             </section>
-            <section id="amenities" className="pb-12 max-w-md">
+            <section id="amenities" className="pb-12 max-w-md ">
                 <h3 className="pt-8 pb-3 text-base font-semibold">편의시설</h3>
                 <div className="flex flex-row gap-4">
 
@@ -65,7 +71,7 @@ export function VenueDetailContent({ venue }: VenueDetailContentProps) {
                     })}
                 </div>
             </section>
-            <section id="info">
+            <section id="info" className="min-h-96">
                 <h3 className="pt-8 pb-3 text-base font-semibold">시설 정보</h3>
 
                 <dl className="">
@@ -86,13 +92,13 @@ export function VenueDetailContent({ venue }: VenueDetailContentProps) {
                 </dl>
 
             </section>
-            <section id="location">
+            <section id="location" className="min-h-96">
                 <h3 className="pt-8 pb-3 text-base font-semibold">위치</h3>
                 <p className="flex justify-start items-center gap-1">
                     <span><MapPin size={14}/></span>
                     <span>{venue.address}</span>
                 </p>
-                <div>
+                <div className="pt-2">
                     <KakaoMap address={venue.address}/>
                 </div>
             </section>
