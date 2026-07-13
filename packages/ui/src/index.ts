@@ -69,6 +69,7 @@ export {
 } from "./components/ui/sheet";
 
 export { Input } from "./components/ui/input";
+export { Label } from "./components/ui/label";
 export { Skeleton } from "./components/ui/skeleton";
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "./components/ui/tooltip";
 export { Textarea } from "./components/ui/textarea";

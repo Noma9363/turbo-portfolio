@@ -34,7 +34,7 @@ export interface reviews {
     updated_at: string; // Date 타입을 받고 string 처리?
 }
 
-// 해당 likes 는 어떻게 활용하는지 모르겠음
+// 해당 좋아요를 통한 리뷰 추출 
 export interface likes {
     id: string;
     user_id: string;
