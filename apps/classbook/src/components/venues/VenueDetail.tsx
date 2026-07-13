@@ -10,11 +10,11 @@ export function VenueDetail({ venue }: Props) {
     return (
         <section className="pt-4">
             <article>
-                <p className="font-semibold text-xs">{venue.sub_title}</p>
+                <p className="font-semibold text-xs text-muted-foreground">{venue.sub_title}</p>
                 <h2 className="font-bold text-2xl">{venue.title}</h2>
                 <address className="flex flex-row gap-1 items-center pt-2">
-                    <MapPin size={12}/>
-                    <span className="not-italic font-light text-xs">{venue.address}</span>
+                    <MapPin size={12} className="text-muted-foreground"/>
+                    <span className="not-italic font-light text-xs text-muted-foreground">{venue.address}</span>
                 </address>
             </article>
             <VenueDetailContent venue={venue} />

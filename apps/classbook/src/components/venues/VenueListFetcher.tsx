@@ -1,7 +1,7 @@
 import { Categories } from "@/types/database";
-import { VenueList } from "./VenuList";
 import { getFavoritesByUser, getVenues } from "@/queries/venues";
 import { auth } from "@/auth";
+import { VenueListWrapper } from "./VenueListWrapper";
 
 interface searchParamsInterface {
     category?: string;
@@ -26,6 +26,6 @@ export async function VenueListFetcher({ searchParams }: { searchParams: Promise
         )
     }
     return (
-        <VenueList favoritedIds={favoritedIds} venues={venues} />
+        <VenueListWrapper currentCategory={category as Categories} favoritedIds={favoritedIds} venues={venues} />
     )
 }

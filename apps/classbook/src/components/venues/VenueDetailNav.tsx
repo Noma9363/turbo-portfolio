@@ -13,10 +13,10 @@ interface Props {
 
 export function VenueDetailNav({ tabs, activeId, onTabClick }: Props) {
     return (
-        <nav>
+        <nav className="mt-4 sticky top-14 bg-background z-10">
             <ul className="list-none p-0 flex flex-row relative">
                 <div
-                    className="absolute h-0.5 bottom-0 left-0 bg-accent-foreground transition-transform duration-300"
+                    className="absolute h-0.5 bottom-0 left-0 bg-foreground transition-transform duration-300"
                     style={{
                         width: `${100 / tabs.length}%`,
                         transform: `translateX(${tabs.findIndex(t => t.id === activeId) * 100}%)`,
@@ -25,7 +25,7 @@ export function VenueDetailNav({ tabs, activeId, onTabClick }: Props) {
                 {tabs.map((t) => (
                     <li key={t.id} className={cn("flex-1")}>
                         <button
-                            className={cn("text-center mx-auto w-full")}
+                            className={cn("text-center mx-auto w-full py-3 text-sm text-muted-foreground data-[active=true]:text-foreground data-[active=true]:font-medium")}
                             onClick={() => onTabClick(t.id)}
                             data-active={activeId === t.id}
                         >

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { Providers } from "@/components/layout/Providers";
 import "./globals.css";
-import Script from "next/script";
+import { Header } from "@/components/layout/Header";
 
 const geist = Geist({
   subsets: ["latin"],
@@ -23,9 +23,7 @@ export default function RootLayout({
     <html lang="ko" className={geist.variable}>
       <body className="antialiased">
         <Providers>
-          <header className="h-14 border-b border-border flex items-center px-4">
-            <h1 className="text-sm font-semibold">Classbook</h1>
-          </header>
+          <Header />
           {children}
         </Providers>
       </body>

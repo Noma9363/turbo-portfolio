@@ -21,13 +21,15 @@ export function KakaoMap({ address }: KakaoMapProps) {
             kakao.maps.load(() => {
                 console.log('kakao.map.load 콜백 실행');
                 new kakao.maps.services.Geocoder().addressSearch(address,
-                    (result: any, status: any) => {
+                    (result: any, 맞status: any) => {
                         if (status === kakao.maps.services.Status.OK) {
                             const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
                             const options = { center: coords, level: 3 };
                             const map = new kakao.maps.Map(mapRef.current, options);
 
                             new kakao.maps.Marker({ position: coords, map })
+                        }else{
+                            console.log('Geocoder 실패', status, result);
                         }
                     }
                 )

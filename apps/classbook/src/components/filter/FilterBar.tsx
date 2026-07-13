@@ -8,9 +8,11 @@ import { useSearchParams } from "next/navigation";
 
 interface FilterBarProps{
     currentCategory?: Categories;
+    view: 'grid'|'list';
+    setView?: ()=>void;
 }
 
-export function FilterBar({currentCategory}:FilterBarProps){
+export function FilterBar({currentCategory, view}:FilterBarProps){
     const router = useRouter();
     const searchParam = useSearchParams();
 
@@ -36,7 +38,7 @@ export function FilterBar({currentCategory}:FilterBarProps){
         categories.push({value: c, name: c});
     })
     return(
-        <div className="flex flex-row ">
+        <div className="flex flex-row z-10 items-center gap-3 sticky top-14 bg-background/80 backdrop-blur-sm py-2 px-4">
             <SelectBlock 
                 placeholder="유형" 
                 label="강의실 유형을 선택해주세요" 

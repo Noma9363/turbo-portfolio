@@ -6,24 +6,28 @@ import { useState } from "react";
 import { Button } from "@repo/ui";
 import { Grid, List } from "lucide-react";
 
-interface VenueListProps{
+export interface VenueListProps{
     venues: Venue[];
     favoritedIds: string[] | null;
 }
 
-export function VenueList({venues, favoritedIds}:VenueListProps){
-    const [view,setView] = useState<'grid' | 'list'>('grid');
+interface VenuListInternalProps extends VenueListProps{
+    view: 'grid' | 'list';
+    setView: ()=>void;
+}
+
+export function VenueList({venues, favoritedIds, view, setView}:VenuListInternalProps){
     const venuesLength = (venues).length;
 
     return(
-        <div>
+        <div className="px-4 py-4">
             <div className="flex flex-col">
-                <p className="flex flex-row gap-2">
-                    <span>
+                <p className="flex flex-row gap-2 justify-between items-center pb-2">
+                    <span className="text-sm text-muted-foreground">
                         {venuesLength} Result
                     </span>
                     <span>
-                        <Button onClick={()=>{setView((prev)=>(prev=="grid" ? "list" : "grid"))}}>
+                        <Button onClick={()=>{setView()}} variant="ghost" size="sm">
                             {view == "grid"
                             ? <List size={12}/> 
                             :<Grid size={12}/>

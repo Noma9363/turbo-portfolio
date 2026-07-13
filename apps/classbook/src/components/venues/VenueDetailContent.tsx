@@ -47,39 +47,39 @@ export function VenueDetailContent({ venue }: VenueDetailContentProps) {
         <>
             <VenueDetailNav tabs={TABS} activeId={activeId} onTabClick={(id) => { setActiveId(id); handleTabClick(id) }} />
             <section id="description">
-                <h3>공간 소개</h3>
-                <p className="whitespace-pre-line">{venue.body}</p>
+                <h3 className="pt-8 pb-3 text-base font-semibold">공간 소개</h3>
+                <p className="whitespace-pre-line text-sm text-muted-foreground leading-relaxed">{venue.body}</p>
             </section>
             <section id="amenities" className="pb-12 max-w-md">
-                <h3>편의시설</h3>
+                <h3 className="pt-8 pb-3 text-base font-semibold">편의시설</h3>
                 <div className="flex flex-row gap-4">
 
                     {venue.amenities?.map((a) => {
                         const Icon = AMENITY_ICONS[a] ?? CircleHelp;
                         return (
-                            <Card key={a} className="aspect-square flex-1 relative">
-                                <Icon size={24} className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
-                                <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-nowrap">{a}</span>
+                            <Card key={a} className="aspect-square w-14 relative flex-none">
+                                <Icon size={20} className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
+                                <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-nowrap text-xs text-muted-foreground">{a}</span>
                             </Card>
                         )
                     })}
                 </div>
             </section>
             <section id="info">
-                <h3>시설 정보</h3>
+                <h3 className="pt-8 pb-3 text-base font-semibold">시설 정보</h3>
 
                 <dl className="">
                     {INFO_ITEMS.map((i, idx) => (
-                        <div className="text-nowrap gap-2 inset-ring-zinc-200 border-b-[0.4px] border-x-0 border-t-0 py-1 flex" key={`${idx}-${i.label}`}>
-                            <dt className="w-1/5  gap-2 flex justify-start items-center border-r-[0.4px] inset-ring-zinc-200">
-                                <span className="text-center inline-flex justify-center items-center w-6 h-6 aspect-square inset-ring-zinc-200 border-[0.4px] rounded-sm">
+                        <div className="gap-2 border-b border-border py-3 flex" key={`${idx}-${i.label}`}>
+                            <dt className="w-1/3 gap-2 flex justify-start items-center">
+                                <span className="inline-flex justify-center items-center w-5 h-5 aspect-square border border-border rounded-sm text-xs text-muted-foreground">
                                     {(idx + 1)}
                                 </span>
-                                <span className="text-center">
+                                <span className="text-sm text-muted-foreground">
                                     {i.label}
                                 </span>
                             </dt>
-                            <dd className="">
+                            <dd className="text-sm font-medium">
                                 {i.value}
                             </dd>
                         </div>))}
@@ -87,7 +87,7 @@ export function VenueDetailContent({ venue }: VenueDetailContentProps) {
 
             </section>
             <section id="location">
-                <h3>위치</h3>
+                <h3 className="pt-8 pb-3 text-base font-semibold">위치</h3>
                 <p className="flex justify-start items-center gap-1">
                     <span><MapPin size={14}/></span>
                     <span>{venue.address}</span>
