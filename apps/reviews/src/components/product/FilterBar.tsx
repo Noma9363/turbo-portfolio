@@ -12,7 +12,7 @@ export function FilterBar({ currentCategory }: FilterBarProps) {
     const router = useRouter();
 
     return (
-        <div className="flex flex-row gap-1.5">
+        <div className="flex flex-row gap-1.5 overflow-x-auto">
             <Button
                 onClick={() => {
                     router.push(`/reviews`)
@@ -20,6 +20,8 @@ export function FilterBar({ currentCategory }: FilterBarProps) {
                 variant={
                     !currentCategory ? "default" : "outline"
                 }
+                size="sm"
+                className={!currentCategory ? "" : "bg-zinc-900"}
             >
                 All
             </Button>
@@ -32,6 +34,8 @@ export function FilterBar({ currentCategory }: FilterBarProps) {
                     variant={
                         currentCategory === category ? "default" : "outline"
                     }
+                    size="sm"
+                    className={currentCategory === category ? "" : "bg-zinc-900"}
                 >
                     {category}
                 </Button>

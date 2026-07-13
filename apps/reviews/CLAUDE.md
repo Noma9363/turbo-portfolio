@@ -1,14 +1,26 @@
 # reviews
 
+**라이브 데모**: https://turbo-portfolio-reviews.vercel.app/reviews
+
 ## 🔖 세션 시작 시 Claude가 읽어야 할 현황 요약
 > `/clear` 후 새 세션에서 이 블록을 먼저 읽고 핵심 상황을 파악할 것
 
-- **브랜치**: `feat/audioreview` / **포트**: `localhost:3002`
-- **현재 단계**: 상세 페이지 + getOrCreateUser 완료 → 다음은 **ReviewCard 스타일링 + 빈 상태 처리 + 배포**
-- **오늘 완료 (6/18)**: /reviews/[id] 상세 페이지, getReviewsByProductId, ReviewWithUser 타입, ProductCard Link, getOrCreateUser(signIn 콜백 + supabaseAdmin), RLS users 비활성화, createReviewAction redirect 수정
-- **다음 작업 (6/19)**: ReviewCard 스타일링, 빈 상태 처리, Vercel 배포
-- **마감**: 2026-06-20 (금) — Vercel 배포까지
+- **브랜치**: `main` (feat/audioreview 머지 완료) / **포트**: `localhost:3002`
+- **현재 단계**: ✅ 배포 완료 → 다음은 **기술 학습 정리 (옵시디언)**
+- **오늘 완료 (6/22)**: 전체 스타일링 + Vercel 배포 + dialog 중앙 정렬 수정
+- **다음 작업**: 옵시디언에 기술 학습 정리 문서 작성 (아래 목차 참고)
 - **협업 원칙**: 구현 전 항상 "어떻게 만들려고 해?" 먼저 물을 것. 코드 대신 방향/키워드만. 파일 전체 작성 금지.
+
+### 📝 기술 학습 정리 문서 목차 (옵시디언)
+> 구현된 코드를 분석·정리하는 기술 회고 문서. 면접 설명 기준으로 작성.
+
+- [ ] 1. **아키텍처 개요** — 기술 스택 선택 이유, 전체 데이터 흐름도
+- [ ] 2. **Supabase 테이블 설계** — ERD, FK 관계, RLS 비활성화 이유, `getOrCreateUser` 패턴
+- [ ] 3. **인증 흐름** — NextAuth v5 `signIn` 콜백 순서, `auth()` 세션 사용법
+- [ ] 4. **페이지별 데이터 흐름** — searchParams 처리, `params.id` → DB 쿼리, `await` vs TanStack Query 선택 기준
+- [ ] 5. **Server Actions** — FormData 처리, `revalidatePath` + `redirect`, 권한 체크
+- [ ] 6. **컴포넌트 설계** — Dialog 상태 관리 + 비로그인 분기, 카드 높이 균등화 패턴
+- [ ] 7. **URL 쿼리 필터** — searchParams → router.push → 서버 재렌더 흐름, 카테고리 타입가드
 
 ---
 
@@ -156,8 +168,20 @@ pnpm build            # Next.js 빌드
 - [x] RLS — users 테이블 비활성화 (6/18)
 - [x] createReviewAction — redirect를 /reviews/${product_id}로 수정 (6/18)
 - [x] Separator — packages/ui index.ts export 추가 (6/18)
-- [ ] ReviewCard 스타일링
-- [ ] 빈 상태/로딩 처리
+- [x] 카테고리 필터 미동작 버그 수정 (category undefined 시 전체 렌더, CATEGORIES 타입가드 캐스팅)
+- [ ] 리팩토링 — `CATEGORIES.includes()` 타입가드 함수 분리 (마이너)
+- [x] FilterBar — size=sm, overflow-x-auto, 비활성 버튼 bg-zinc-900 (6/22)
+- [x] ProductCard — 이미지 aspect-square + object-contain + ring-1 ring-border + rounded-md (6/22)
+- [x] Supabase products — 실제 젠하이저 11개 제품 데이터로 교체 (이미지 URL 포함) (6/22)
+- [x] reviews/[id] 상세 페이지 스타일링 — Badge 카테고리, 폰트 위계, label badges(반전), Separator 80% mx-auto (6/22)
+- [x] StarRating — sizeMap + size prop(sm/md/lg/number) + 빈별 5개 분기 + No reviews yet (6/22)
+- [x] ReviewFormDialog — 리뷰 작성 버튼 bg-zinc-900 (6/22)
+- [x] ReviewCard 스타일링 — Avatar 이니셜, title font-semibold text-base, gap 조정, AvatarImage 제거 (6/22)
+- [x] ReviewForm 한국어화 — 리뷰 작성/별점/등록/취소/placeholder (6/22)
+- [x] ProductCard 반응형 — h-full flex-col, line-clamp-3, label 모바일 2개 CSS 분기, 가격 font-semibold (6/22)
+- [x] ReviewFormDialog 비로그인 dialog 스타일링 (6/22)
+- [x] reviews/page.tsx max-w-5xl mx-auto (6/22)
+- [x] Supabase 더미 리뷰 22개 삽입 (6/22)
 - [ ] Vercel 배포
 
 ## 다음 작업 (6/19)

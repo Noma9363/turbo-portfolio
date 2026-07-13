@@ -19,13 +19,12 @@ export function ReviewForm({ productId, onCancel }: ReviewFormProps) {
                 <FieldGroup className="flex flex-col gap-4">
                     <FieldSet>
                         <FieldLegend>
-                            Create Review
+                            리뷰 작성
                         </FieldLegend>
                         <FieldDescription className="mb-4">
-                            this is Create Reivew form
+                            음향기기 사용 경험을 공유해주세요.
                         </FieldDescription>
                         <FieldGroup>
-                            {/* field-1 */}
                             <Field>
                                 <FieldLabel htmlFor="form_title">
                                     제목
@@ -33,7 +32,7 @@ export function ReviewForm({ productId, onCancel }: ReviewFormProps) {
                                 <Input
                                     id="form_title"
                                     name="title"
-                                    placeholder="evil rabbit"
+                                    placeholder="제목을 입력해주세요"
                                     required
                                 />
                             </Field>
@@ -43,7 +42,7 @@ export function ReviewForm({ productId, onCancel }: ReviewFormProps) {
                     <FieldSet>
                         <FieldGroup>
                             <Field>
-                                <FieldLabel id="rating">Rating</FieldLabel>
+                                <FieldLabel id="rating">별점</FieldLabel>
                                 <Rating size={24} precision={1} value={starCount} onValueChange={setStartCount} />
                                 <input type="hidden" name="rating" value={starCount} />
 
@@ -57,15 +56,15 @@ export function ReviewForm({ productId, onCancel }: ReviewFormProps) {
                                 <Textarea
                                     id="body"
                                     name="body"
-                                    placeholder="Add any additional comments"
+                                    placeholder="솔직한 리뷰를 남겨주세요."
                                     className="resize-none"
                                 />
                             </Field>
                         </FieldGroup>
                     </FieldSet>
                     <Field orientation="horizontal">
-                        <Button type="submit">Submit</Button>
-                        <Button onClick={onCancel} variant="outline">Cancel</Button>
+                        <Button type="submit">등록</Button>
+                        <Button onClick={onCancel} variant="outline">취소</Button>
                     </Field>
                 </FieldGroup>
             </form>

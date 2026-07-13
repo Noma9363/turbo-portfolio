@@ -18,12 +18,13 @@ const projects = [
     featured: true,
   },
   {
-    title: "Project Beta",
+    title: "AUDIO REVIEW",
     description:
-      "Open source CLI tool for automating development workflows. Reduces repetitive setup tasks and enforces team conventions.",
-    tags: ["Node.js", "TypeScript", "Commander", "Inquirer"],
-    github: "https://github.com",
-    live: null,
+      "Supabase(PostgreSQL)와 Google OAuth를 활용한 음향기기 리뷰 플랫폼.\n" +
+        "로그인, 리뷰 작성·삭제, 카테고리 필터링을 지원합니다.",
+    tags: ["Next.js", "TypeScript", "Tailwind", "Supabase", "NextAuth", "TanStack Query"],
+    github: "https://github.com/Noma9363/turbo-portfolio/tree/main/apps/reviews",
+    live: "https://turbo-portfolio-reviews.vercel.app/reviews",
     featured: false,
   },
   {

@@ -5,7 +5,15 @@
       "name": "reviews",
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["--filter", "reviews", "dev"],
-      "port": 3002
+      "port": 3002,
+      "autoPort": false
+    },
+    {
+      "name": "portfolio",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "portfolio", "dev"],
+      "port": 3000,
+      "autoPort": false
     }
   ,{
       "name": "classbook",

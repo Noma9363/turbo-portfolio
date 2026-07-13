@@ -3,10 +3,10 @@
 ## 🔖 세션 시작 시 Claude가 읽어야 할 현황 요약
 > `/clear` 후 새 세션에서 이 블록을 먼저 읽고 핵심 상황을 파악할 것
 
-- **현재 단계**: classbook 앱 개발 중 (feat/classbook 브랜치)
+- **현재 단계**: reviews 앱 배포 완료 → 다음 프로젝트 준비 중
 - **완료된 앱**: portfolio (localhost:3000) · taski (localhost:3001) · reviews (localhost:3002)
 - **라이브**: [portfolio](https://turbo-portfolio-portfolio.vercel.app/) · [taski](https://turbo-portfolio-taski.vercel.app) · [reviews](https://turbo-portfolio-reviews.vercel.app/reviews)
-- **협업 원칙**: 구현 전 항상 "어떻게 만들려고 해?" 먼저 물을 것. 코드 대신 방향/키워드만. 파일 전체 작성 금지. **반말로 대화.**
+- **협업 원칙**: 구현 전 항상 "어떻게 만들려고 해?" 먼저 물을 것. 코드 대신 방향/키워드만. 파일 전체 작성 금지.
 
 ---
 
@@ -147,6 +147,7 @@ main  ← develop PR 머지로 배포
     ├── feat/contact              # Contact 섹션 한국어 현지화 (머지 완료)
     ├── feat/taski-kanban         # taski 칸반 보드 (머지 완료)
     ├── feat/taski-responsive     # taski 반응형 + DnD TouchSensor (머지 완료)
+    ├── feat/audioreview          # reviews 앱 전체 (머지 완료)
     └── feat/<next>               # 다음 작업 브랜치
 ```
 - `packages/ui` 변경은 `feat/ui-*` 브랜치에서 작업
@@ -163,44 +164,17 @@ main  ← develop PR 머지로 배포
 - `packages/ui/tsconfig.json`: `include: ["src", ".storybook"]` — .storybook 폴더도 bundler 모듈 해석 적용
 - 모든 섹션 컴포넌트는 `"use client"` 선언 (Framer Motion은 클라이언트 전용)
 
-## 반복 에러 방지 체크리스트
+## 트러블슈팅 — Tailwind 클래스 미적용
+**증상**: `@repo/ui` 컴포넌트에 적용한 Tailwind 클래스(애니메이션, 색상 등)가 앱에서 무시됨
 
-### shadcn 컴포넌트 설치 후
-- `@/lib/utils` import는 `packages/ui` 안에서 동작 안 함 → `../../lib/utils`로 수정
-- `next.config.ts`의 `turbopack.resolveAlias`에 이미 `@/lib/utils` 매핑이 있으면 자동 해결
-- 설치 명령어는 반드시 `packages/ui` 디렉토리에서 실행
+**원인**: `globals.css`의 `@source` 경로가 잘못되면 Tailwind v4가 `packages/ui/src` 파일을 스캔하지 못해 해당 클래스를 purge(제거)함
 
-### @repo/ui 컴포넌트 외부 패키지 의존성
-- `packages/ui`에 있는 패키지라도 앱에서 실제로 쓰이면 앱 `package.json`에도 추가
-- 예: `react-day-picker` (calendar), `@radix-ui/*` 계열
-- 추가 후 `pnpm install` 및 서버 재시작 필요
+**해결**: 각 앱의 `globals.css` 최상단 `@source` 경로가 `packages/ui/src`를 정확히 가리켜야 함
+- `apps/portfolio`: `@source "../../../packages/ui/src"`
+- `apps/taski`: `@source "../../../packages/ui/src"`
+- `apps/reviews`: `@source "../../../packages/ui/src"` (glob 패턴 `**/*.{ts,tsx}` 붙이면 오히려 오동작)
 
-### "use client" 필수 컴포넌트
-- `react-day-picker` 등 클라이언트 훅 사용 컴포넌트: `calendar.tsx`에 `"use client"` 추가
-- shadcn 설치 컴포넌트 중 Context 사용하는 것들은 `"use client"` 없으면 SSR에서 깨짐
-
-### useSearchParams() 사용 시
-- `useSearchParams()`를 쓰는 컴포넌트는 반드시 `<Suspense>`로 감싸야 함
-- 감싸지 않으면 `NextRouter was not mounted` 런타임 에러 발생
-
-### Supabase 쿼리 조건 체이닝
-- `.eq()`, `.gte()`, `.lte()` 등에 `undefined` 넘기면 `= null` 조건으로 필터링됨
-- 조건 있을 때만 체이닝:
-  ```ts
-  let query = supabase.from('venues').select('*');
-  if (params?.category) query = query.eq('category', params.category);
-  ```
-
-### Tailwind v4 @source 설정
-- glob 패턴(`**/*.{ts,tsx}`) 넣으면 오류 — 디렉토리만 지정:
-  ```css
-  @source "../../../packages/ui/src";  /* OK */
-  @source "../../../packages/ui/src/**/*.{ts,tsx}";  /* 오류 */
-  ```
-
-### Suspense + 서버 컴포넌트 스트리밍
-- `loading.tsx`는 페이지 전체가 suspend될 때만 동작 → 필터 같은 상단 UI도 사라짐
-- 카드 목록만 스켈레톤으로 대체하려면: async 서버 컴포넌트 분리 + page 내부 `<Suspense>` 사용
+**주의**: glob 패턴 없이 디렉토리 경로만 지정하는 것이 Tailwind v4에서 올바른 방식
 
 ## Framer Motion 패턴
 ```tsx
@@ -222,8 +196,8 @@ variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
 
 - **브랜치**: `feat/audioreview` → main 머지 완료
 - **라이브**: https://turbo-portfolio-reviews.vercel.app/reviews
+- **상세 문서**: `apps/reviews/CLAUDE.md`
 - NextAuth v5 Google OAuth + Supabase PostgreSQL + Server Actions CRUD + 카테고리 필터 + 반응형
-- **상세 문서(진행현황/일정/버그기록/AI협업원칙)**: `apps/reviews/CLAUDE.md`
 
 ---
 
@@ -232,9 +206,16 @@ variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
 이 레포의 모든 앱은 프론트엔드 엔지니어링 포트폴리오다.
 코드의 모든 결정을 내가 설명할 수 있어야 한다.
 
+### 협업 스타일
+- 반말로 대화할 것
+- 짧고 간결하게
+- 컴포넌트/함수 흐름 파악 시 Joy가 먼저 흐름 작성 → Claude가 검증
+- 먼저 구조 잡아주지 말 것
+
 ### 하지 말 것
+- 파일 전체를 완성해서 주지 말 것 — 반드시 하나의 함수/컴포넌트 단위로만
+- 내 설계 없이 먼저 구조를 잡아주지 말 것
 - 요청 없이 완성된 코드를 먼저 제시하지 말 것
-- 파일 전체를 한 번에 작성해서 주지 말 것
 - 내가 방향을 말하기 전에 구현을 제안하지 말 것
 
 ### 반드시 할 것
@@ -243,12 +224,4 @@ variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
 - 막혀서 힌트를 요청하면 코드 대신 방향과 키워드만 줄 것
 - 내 코드에 문제가 있으면 고쳐주지 말고 무엇이 왜 문제인지만 설명할 것
 - 라이브러리·패턴 선택 시 "왜 이걸 쓰려고 해?"를 먼저 물을 것
-
----
-
-## Phase 4 — classbook 앱 (진행 중)
-
-- **브랜치**: `feat/classbook` / **포트**: `localhost:3003`
-- **목표**: 카카오맵 + 달력 SDK 연동, 예약 충돌 방지, 슬롯 가용성 계산 어필
-- **마감**: 2026-07-10 (금)
-- **상세 문서(기술스택/DB/라우트/진행현황/일정/AI협업원칙)**: `apps/classbook/CLAUDE.md`
+- 완성된 코드를 받은 경우 "이 코드에서 네가 설명할 수 있는 부분이 어디야?"라고 물을 것
