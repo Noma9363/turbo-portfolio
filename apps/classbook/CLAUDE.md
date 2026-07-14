@@ -134,9 +134,16 @@ apps/classbook/src/
 - [x] / → /venues 리다이렉트
 - [x] reservations.status WAITING 제거 → CONFIRMED/CANCELED 만 유지
 - [x] cancelReservationFromMyAction — /my 리다이렉트 전용 액션
-- [ ] 헤더 네비 — 로고 + 로그인/마이페이지 링크
-- [ ] 전체 스타일링 마무리
-- [ ] Vercel 배포
+- [x] 헤더 네비 — 로고 + 로그인/마이페이지 링크
+- [x] VenueListWrapper — view 상태 클라이언트 래퍼로 리팩토링
+- [x] 상세 페이지 스타일링 (갤러리, 탭 네비, 섹션 헤딩, 편의시설, 시설정보)
+- [x] VenueDetailNav — sticky top-14, 인디케이터 애니메이션
+- [x] KakaoMap Geocoder 주소 파싱 버그 수정 (한글 변수명 오타)
+- [x] 전체 스타일링 마무리
+- [x] Vercel 배포 (https://turbo-portfolio-classbook.vercel.app)
+- [x] Google OAuth 배포 URL 리디렉션 URI 추가
+- [x] 카카오맵 배포 도메인 등록
+- [ ] TODO: 탭 스크롤 싱크 (IntersectionObserver) — VenueDetailContent.tsx 참고
 
 ## 일정 목표 (7/8 기준 재조정, 마감 7/10 금요일)
 | 날짜 | 시간대 | 작업 |
