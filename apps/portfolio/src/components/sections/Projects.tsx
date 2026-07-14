@@ -28,21 +28,13 @@ const projects = [
     featured: false,
   },
   {
-    title: "Project Gamma",
+    title: "CLASSBOOK",
     description:
-      "E-commerce platform with advanced filtering, search, and a seamless checkout flow powered by Stripe.",
-    tags: ["Next.js", "Algolia", "Stripe", "Zustand"],
-    github: "https://github.com",
-    live: "https://example.com",
-    featured: false,
-  },
-  {
-    title: "Project Delta",
-    description:
-      "A personal finance dashboard that aggregates data from multiple sources and visualizes spending patterns.",
-    tags: ["React", "D3.js", "Express", "MongoDB"],
-    github: "https://github.com",
-    live: "https://example.com",
+      "카카오맵 SDK와 달력 연동으로 강의실을 예약하는 플랫폼.\n" +
+        "예약 충돌 방지, 슬롯 가용성 계산, 찜 기능을 지원합니다.",
+    tags: ["Next.js", "TypeScript", "Tailwind", "Supabase", "NextAuth", "KakaoMap"],
+    github: "https://github.com/Noma9363/turbo-portfolio/tree/main/apps/classbook",
+    live: "https://turbo-portfolio-classbook.vercel.app",
     featured: false,
   },
 ];
