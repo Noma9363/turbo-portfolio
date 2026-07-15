@@ -1,7 +1,7 @@
 # turbo-portfolio
 
 프론트엔드 개발자 포트폴리오. Turborepo 기반 모노레포로 구성되어 있으며,
-아래 3개 앱으로 구성됨.
+아래 4개 앱으로 구성됨.
 
 ## 앱 구성
 
@@ -25,6 +25,13 @@ Google OAuth 인증과 Supabase 기반 음향기기 리뷰 플랫폼
 **라이브**: https://turbo-portfolio-taski.vercel.app
 <br/>
 **기술**: Next.js 15, Zustand, Dnd-kit
+
+### [classbook](./apps/classbook) — 공간 예약 플랫폼
+회의실·스터디룸·강의실 등 공간을 시간 단위로 예약하는 플랫폼
+<br/>
+**라이브**: https://turbo-portfolio-classbook.vercel.app/venues
+<br/>
+**기술**: Next.js 15, NextAuth v5, Supabase, TanStack Query
 
 ## 공통 기술 스택
 - Turborepo + pnpm workspaces
