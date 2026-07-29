@@ -3,10 +3,10 @@
 ## 🔖 세션 시작 시 Claude가 읽어야 할 현황 요약
 > `/clear` 후 새 세션에서 이 블록을 먼저 읽고 핵심 상황을 파악할 것
 
-- **현재 단계**: reviews 앱 배포 완료 → 다음 프로젝트 준비 중
+- **현재 단계**: classbook 앱 개발 중 (feat/classbook 브랜치, main 미머지) — Vercel 배포는 되어 있으나 브랜치 자체는 아직 통합 전
 - **완료된 앱**: portfolio (localhost:3000) · taski (localhost:3001) · reviews (localhost:3002)
-- **라이브**: [portfolio](https://turbo-portfolio-portfolio.vercel.app/) · [taski](https://turbo-portfolio-taski.vercel.app) · [reviews](https://turbo-portfolio-reviews.vercel.app/reviews)
-- **협업 원칙**: 구현 전 항상 "어떻게 만들려고 해?" 먼저 물을 것. 코드 대신 방향/키워드만. 파일 전체 작성 금지.
+- **라이브**: [portfolio](https://turbo-portfolio-portfolio.vercel.app/) · [taski](https://turbo-portfolio-taski.vercel.app) · [reviews](https://turbo-portfolio-reviews.vercel.app/reviews) · classbook (배포 URL 확인 필요)
+- **협업 원칙**: 구현 전 항상 "어떻게 만들려고 해?" 먼저 물을 것. 코드 대신 방향/키워드만. 파일 전체 작성 금지. **반말로 대화.**
 
 ---
 
@@ -147,7 +147,6 @@ main  ← develop PR 머지로 배포
     ├── feat/contact              # Contact 섹션 한국어 현지화 (머지 완료)
     ├── feat/taski-kanban         # taski 칸반 보드 (머지 완료)
     ├── feat/taski-responsive     # taski 반응형 + DnD TouchSensor (머지 완료)
-    ├── feat/audioreview          # reviews 앱 전체 (머지 완료)
     └── feat/<next>               # 다음 작업 브랜치
 ```
 - `packages/ui` 변경은 `feat/ui-*` 브랜치에서 작업
@@ -164,17 +163,44 @@ main  ← develop PR 머지로 배포
 - `packages/ui/tsconfig.json`: `include: ["src", ".storybook"]` — .storybook 폴더도 bundler 모듈 해석 적용
 - 모든 섹션 컴포넌트는 `"use client"` 선언 (Framer Motion은 클라이언트 전용)
 
-## 트러블슈팅 — Tailwind 클래스 미적용
-**증상**: `@repo/ui` 컴포넌트에 적용한 Tailwind 클래스(애니메이션, 색상 등)가 앱에서 무시됨
+## 반복 에러 방지 체크리스트
 
-**원인**: `globals.css`의 `@source` 경로가 잘못되면 Tailwind v4가 `packages/ui/src` 파일을 스캔하지 못해 해당 클래스를 purge(제거)함
+### shadcn 컴포넌트 설치 후
+- `@/lib/utils` import는 `packages/ui` 안에서 동작 안 함 → `../../lib/utils`로 수정
+- `next.config.ts`의 `turbopack.resolveAlias`에 이미 `@/lib/utils` 매핑이 있으면 자동 해결
+- 설치 명령어는 반드시 `packages/ui` 디렉토리에서 실행
 
-**해결**: 각 앱의 `globals.css` 최상단 `@source` 경로가 `packages/ui/src`를 정확히 가리켜야 함
-- `apps/portfolio`: `@source "../../../packages/ui/src"`
-- `apps/taski`: `@source "../../../packages/ui/src"`
-- `apps/reviews`: `@source "../../../packages/ui/src"` (glob 패턴 `**/*.{ts,tsx}` 붙이면 오히려 오동작)
+### @repo/ui 컴포넌트 외부 패키지 의존성
+- `packages/ui`에 있는 패키지라도 앱에서 실제로 쓰이면 앱 `package.json`에도 추가
+- 예: `react-day-picker` (calendar), `@radix-ui/*` 계열
+- 추가 후 `pnpm install` 및 서버 재시작 필요
 
-**주의**: glob 패턴 없이 디렉토리 경로만 지정하는 것이 Tailwind v4에서 올바른 방식
+### "use client" 필수 컴포넌트
+- `react-day-picker` 등 클라이언트 훅 사용 컴포넌트: `calendar.tsx`에 `"use client"` 추가
+- shadcn 설치 컴포넌트 중 Context 사용하는 것들은 `"use client"` 없으면 SSR에서 깨짐
+
+### useSearchParams() 사용 시
+- `useSearchParams()`를 쓰는 컴포넌트는 반드시 `<Suspense>`로 감싸야 함
+- 감싸지 않으면 `NextRouter was not mounted` 런타임 에러 발생
+
+### Supabase 쿼리 조건 체이닝
+- `.eq()`, `.gte()`, `.lte()` 등에 `undefined` 넘기면 `= null` 조건으로 필터링됨
+- 조건 있을 때만 체이닝:
+  ```ts
+  let query = supabase.from('venues').select('*');
+  if (params?.category) query = query.eq('category', params.category);
+  ```
+
+### Tailwind v4 @source 설정
+- glob 패턴(`**/*.{ts,tsx}`) 넣으면 오류 — 디렉토리만 지정:
+  ```css
+  @source "../../../packages/ui/src";  /* OK */
+  @source "../../../packages/ui/src/**/*.{ts,tsx}";  /* 오류 */
+  ```
+
+### Suspense + 서버 컴포넌트 스트리밍
+- `loading.tsx`는 페이지 전체가 suspend될 때만 동작 → 필터 같은 상단 UI도 사라짐
+- 카드 목록만 스켈레톤으로 대체하려면: async 서버 컴포넌트 분리 + page 내부 `<Suspense>` 사용
 
 ## Framer Motion 패턴
 ```tsx
@@ -198,6 +224,58 @@ variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
 - **라이브**: https://turbo-portfolio-reviews.vercel.app/reviews
 - **상세 문서**: `apps/reviews/CLAUDE.md`
 - NextAuth v5 Google OAuth + Supabase PostgreSQL + Server Actions CRUD + 카테고리 필터 + 반응형
+| 스타일 | Tailwind CSS v4 |
+
+### 진행 현황
+- [x] 앱 스캐폴딩 + @repo/ui 연동
+- [x] Supabase 프로젝트 생성 및 클라이언트 연동
+- [x] NextAuth v5 Google OAuth 로그인 구현
+- [x] TanStack Query + SessionProvider 설정
+- [x] Supabase 테이블 생성 + seed 데이터 (users, products, reviews, likes)
+- [x] queries/products.ts + queries/reviews.ts + types/database.ts
+- [x] reviews/page.tsx — searchParams 구조 + 목록 렌더링
+- [x] ProductCard 컴포넌트 + URL 쿼리 필터 + 스타일링
+- [x] 리뷰 create — Server Action + ReviewForm + ReviewFormDialog
+- [x] 리뷰 delete — deleteReview + deleteReviewAction + ReviewCard + DeleteConfirmDialog (화 6/17)
+- [ ] ReviewCard 스타일링 (다음 — 화 6/17)
+- [ ] 빈 상태/로딩 처리
+- [ ] Vercel 배포
+
+### 일정 (재조정 — 마감 6/20 금요일)
+| 날짜 | 작업 |
+|------|------|
+| 월 6/8 | ✅ Supabase + Google OAuth 구축 |
+| 화~목 6/9~11 | ✅ 테이블 + 쿼리 + 타입 |
+| 금~월 6/12~16 | ✅ ProductCard + FilterBar + ReviewForm + ReviewFormDialog + delete |
+| 화 6/17 | ReviewCard 스타일링 |
+| 수~목 6/18~19 | 빈 상태/로딩 처리 + 마무리 |
+| 금 6/20 | Vercel 배포 |
+
+### 디렉토리 원칙 (taski 반성)
+- 기능 단위 폴더 분리: `components/product/`, `components/review/`, `components/auth/`
+- 훅은 `hooks/`에 모아서 관리 (`useReviews.ts`, `useFilter.ts`)
+- Supabase 쿼리 함수는 `queries/`에 분리 (컴포넌트에 직접 쓰지 않음)
+
+### 반응형 브레이크포인트
+- **시작**: 모바일(default) → `md`(768px) → `lg`(1024px) 순서
+- 모바일: 1열, 풀너비 필터 드로어
+- md: 2열 그리드, 사이드 필터
+- lg: 3열 그리드
+
+### 주의사항
+- `src/auth.ts` 루트 파일이 NextAuth v5 핵심 — 삭제 금지
+- `.env.local`은 gitignore — 다른 기기에서 새로 만들어야 함
+- 다른 기기(Windows) 세팅 시 필요한 환경변수:
+  ```
+  NEXT_PUBLIC_SUPABASE_URL
+  NEXT_PUBLIC_SUPABASE_ANON_KEY
+  NEXTAUTH_URL=http://localhost:3002
+  NEXTAUTH_SECRET
+  GOOGLE_CLIENT_ID
+  GOOGLE_CLIENT_SECRET
+  ```
+- turbopack.root 설정 필수 (모노레포 워크스페이스 감지 오류 방지)
+- 블랙박스 방지: 작은 단위로 요청 (파일 하나씩, 타입 먼저 확정 후 구현)
 
 ---
 
@@ -206,16 +284,9 @@ variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
 이 레포의 모든 앱은 프론트엔드 엔지니어링 포트폴리오다.
 코드의 모든 결정을 내가 설명할 수 있어야 한다.
 
-### 협업 스타일
-- 반말로 대화할 것
-- 짧고 간결하게
-- 컴포넌트/함수 흐름 파악 시 Joy가 먼저 흐름 작성 → Claude가 검증
-- 먼저 구조 잡아주지 말 것
-
 ### 하지 말 것
-- 파일 전체를 완성해서 주지 말 것 — 반드시 하나의 함수/컴포넌트 단위로만
-- 내 설계 없이 먼저 구조를 잡아주지 말 것
 - 요청 없이 완성된 코드를 먼저 제시하지 말 것
+- 파일 전체를 한 번에 작성해서 주지 말 것
 - 내가 방향을 말하기 전에 구현을 제안하지 말 것
 
 ### 반드시 할 것
@@ -224,4 +295,122 @@ variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
 - 막혀서 힌트를 요청하면 코드 대신 방향과 키워드만 줄 것
 - 내 코드에 문제가 있으면 고쳐주지 말고 무엇이 왜 문제인지만 설명할 것
 - 라이브러리·패턴 선택 시 "왜 이걸 쓰려고 해?"를 먼저 물을 것
-- 완성된 코드를 받은 경우 "이 코드에서 네가 설명할 수 있는 부분이 어디야?"라고 물을 것
+
+---
+
+## Phase 4 — classbook 앱 (진행 중)
+
+### 개요
+- **브랜치**: `feat/classbook`
+- **앱 경로**: `apps/classbook/` (localhost:3003)
+- **목표**: 카카오맵 + 달력 SDK 연동, 예약 충돌 방지, 슬롯 가용성 계산 어필
+- **Supabase project-ref**: `ncpmoqgqhpqupagzeeyw`
+
+### 기술 스택
+| 역할 | 기술 |
+|------|------|
+| 프레임워크 | Next.js 15 (App Router) |
+| 인증 | NextAuth v5 + Google OAuth |
+| DB | Supabase (PostgreSQL) |
+| 서버 상태 | TanStack Query v5 |
+| 지도 | 카카오맵 SDK |
+| 날짜 처리 | date-fns |
+| 스타일 | Tailwind CSS v4 |
+
+### 라우트 구조
+```
+app/page.tsx                    # 메인 (지도 + 검색)
+app/venues/page.tsx             # 전체 조회 (지도보기/목록보기 토글)
+app/venues/[id]/page.tsx        # 상세 (하단 카카오맵 위치)
+app/reserve/[id]/page.tsx       # 예약 페이지
+app/my/page.tsx                 # 내 정보
+app/my/reservations/page.tsx    # 예약 내역
+app/my/favorites/page.tsx       # 찜 목록
+app/login/page.tsx              # 로그인
+app/api/auth/[...nextauth]/route.ts
+```
+
+### DB 테이블
+```sql
+users:        id, email, name, avatar_url, created_at
+venues:       id, name, phone, address, latitude, longitude, thumbnail_url, images text[], price, title, sub_title, body, capacity, operating_hours, category, amenities, tags
+reservations: id, user_id, venue_id, name, phone, email, start_at, end_at, members, purpose, request, status
+favorites:    id, user_id, venue_id
+```
+- `venues.category`: `SINGLE | DOUBLE | MEETING | LECTURE`
+- `reservations.status`: `WAITING | CONFIRMED | CANCELED` (DEFAULT 'WAITING')
+- seed 데이터: 12개 강의실 (카테고리별 3개씩)
+
+### 환경변수 (.env.local)
+```
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+NEXTAUTH_URL=http://localhost:3003
+NEXTAUTH_SECRET=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+```
+
+### 주요 파일 구조
+```
+apps/classbook/src/
+├── auth.ts
+├── app/
+│   ├── layout.tsx
+│   ├── page.tsx
+│   ├── globals.css          # @source "../../../../packages/ui/src" (glob 없이)
+│   ├── venues/page.tsx
+│   └── api/auth/[...nextauth]/route.ts
+├── components/
+│   ├── layout/Providers.tsx
+│   ├── venunes/VenueCard.tsx  # 주의: 폴더명 오타 venunes (추후 수정)
+│   ├── price/PriceValue.tsx
+│   └── location/LocationLabel.tsx
+├── lib/supabase/client.ts
+├── queries/venues.ts
+└── types/database.ts
+```
+
+### packages/ui 추가 컴포넌트
+- `blocks/MembersValue.tsx` — 인원 표시 (Users 아이콘 + 숫자)
+- `ui/aspect-ratio.tsx` — shadcn AspectRatio
+
+### 진행 현황
+- [x] 브랜치 feat/classbook 생성
+- [x] 스캐폴딩 (package.json, tsconfig, next.config, postcss, globals.css)
+- [x] Supabase 프로젝트 + 테이블 4개 + seed 12개
+- [x] 환경변수 + Google OAuth (localhost:3003 리디렉션 URI 추가)
+- [x] auth.ts + Providers.tsx + supabase client
+- [x] types/database.ts (User, Venue, Reservation, Favorite, Categories, Statuses)
+- [x] queries/venues.ts (getVenues 필터 파라미터 포함, getVenueById)
+- [x] venues/page.tsx — searchParams 기반 서버 필터링
+- [x] VenueCard.tsx — grid/list 뷰, padding-bottom 이미지 비율, Badge overlay
+- [x] VenueList.tsx — grid/list 토글
+- [x] VenueListFetcher (async 서버 컴포넌트) + Suspense 구조
+- [x] VenueListSkeleton / VenueCardSkeleton
+- [x] FilterBar — 카테고리 Select + 가격 범위 Popover, URL searchParams 연동
+- [x] venues/[id]/page.tsx — Bento 갤러리 레이아웃 (좌: 메인, 우: 2x2 그리드)
+- [x] VenuGallery, VenuGalleryDialog 스캐폴딩
+- [x] venues 테이블 images text[] 컬럼 추가 + seed 4장씩
+- [ ] VenuGalleryDialog — Carousel 연결, 더보기 오버레이
+- [ ] venues/[id] 상세 정보 섹션 (공간 정보, amenities, 카카오맵)
+- [ ] 예약 사이드바 + 예약 폼 + 슬롯 로직 (핵심)
+- [ ] 찜 기능
+- [ ] 내 페이지 (간소화)
+- [ ] 로그인 페이지
+- [ ] Vercel 배포
+
+### 일정 목표 (6/29 기준 재조정 — 7/29 시점 지연, 재조정 필요)
+| 날짜 | 작업 | 상태 |
+|------|------|------|
+| 월 6/29 | 가격 필터 + venues/[id] 갤러리 스캐폴딩 | ✅ |
+| 화 7/1 | VenuGalleryDialog + 상세 정보 섹션 + 카카오맵 | 지연 |
+| 수 7/2 | 예약 폼 + 슬롯 로직 (핵심) | 지연 |
+| 목 7/3 | 찜 + 내 페이지 (간소화) | 지연 |
+| 금 7/4 | 로그인 + Vercel 배포 | 지연 (배포는 별도로 진행된 상태 — 실제 배포본과 브랜치 상태 재확인 필요) |
+
+### 주의사항
+- `globals.css` `@source` glob 패턴 없이 디렉토리만: `@source "../../../../packages/ui/src"`
+- `components/venunes/` — 폴더명 오타 있음 (venunes), 추후 venues로 수정 필요
+- `.mcp.json` project-ref: classbook(`ncpmoqgqhpqupagzeeyw`) / reviews(`aynbwrurevrfmrfxplsd`) 전환 필요
