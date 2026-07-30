@@ -3,9 +3,9 @@
 ## 🔖 세션 시작 시 Claude가 읽어야 할 현황 요약
 > `/clear` 후 새 세션에서 이 블록을 먼저 읽고 핵심 상황을 파악할 것
 
-- **현재 단계**: reviews 앱 배포 완료 → 다음 프로젝트 준비 중
-- **완료된 앱**: portfolio (localhost:3000) · taski (localhost:3001) · reviews (localhost:3002)
-- **라이브**: [portfolio](https://turbo-portfolio-portfolio.vercel.app/) · [taski](https://turbo-portfolio-taski.vercel.app) · [reviews](https://turbo-portfolio-reviews.vercel.app/reviews)
+- **현재 단계**: classbook 앱 배포 완료 → 다음 프로젝트 준비 중
+- **완료된 앱**: portfolio (localhost:3000) · taski (localhost:3001) · reviews (localhost:3002) · classbook (localhost:3003)
+- **라이브**: [portfolio](https://turbo-portfolio-portfolio.vercel.app/) · [taski](https://turbo-portfolio-taski.vercel.app) · [reviews](https://turbo-portfolio-reviews.vercel.app/reviews) · [classbook](https://turbo-portfolio-classbook.vercel.app)
 - **협업 원칙**: 구현 전 항상 "어떻게 만들려고 해?" 먼저 물을 것. 코드 대신 방향/키워드만. 파일 전체 작성 금지.
 
 ---
