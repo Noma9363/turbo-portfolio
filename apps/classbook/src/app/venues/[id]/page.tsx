@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { Container } from "@/components/layout/Container";
 import { VenuGallery } from "@/components/venues/VenuGallery";
 import { VenueDetail } from "@/components/venues/VenueDetail";
 import { VenueReserveForm } from "@/components/venues/VenueReserveForm";
@@ -16,12 +17,12 @@ export default async function Page({ params }: { params: Promise<{id: string}> }
     return (
         <div>
             <VenuGallery images={venue!.images} />
-            <div className="max-w-[1276px] mx-auto px-4">
+            <Container>
                 <section>
                     <VenueDetail venue={venue!} />
                     <VenueReserveForm venue={venue!} existingReservation={existingReservation}/>
                 </section>
-            </div>
+            </Container>
         </div>
     )
 }

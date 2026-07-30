@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { Button } from "@repo/ui";
 import Link from "next/link";
+import { Container } from "./Container";
 
 function DefaultPart() {
     return (
@@ -18,9 +19,11 @@ export async function Header() {
     const session = await auth();
     const user_id = session?.user?.id;
     return (
-        <header className="flex flex-row items-center justify-between sticky top-0 px-4 h-14 bg-background/80 backdrop-blur-sm z-12">
-            <DefaultPart />
-            {!user_id ? <Link href={`/login`}><Button size="sm">로그인</Button></Link> : <Link href={`/my`}><Button size="sm">마이페이지</Button></Link>}
+        <header className="sticky top-0 h-14 bg-background/80 backdrop-blur-sm z-12">
+            <Container className="flex flex-row items-center justify-between h-full">
+                <DefaultPart />
+                {!user_id ? <Link href={`/login`}><Button size="sm">로그인</Button></Link> : <Link href={`/my`}><Button size="sm">마이페이지</Button></Link>}
+            </Container>
         </header>
     )
 }
