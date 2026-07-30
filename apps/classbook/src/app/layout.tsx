@@ -3,6 +3,7 @@ import { Geist } from "next/font/google";
 import { Providers } from "@/components/layout/Providers";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
+import { HeaderVisibility } from "@/components/layout/HeaderVisibility";
 
 const geist = Geist({
   subsets: ["latin"],
@@ -23,7 +24,9 @@ export default function RootLayout({
     <html lang="ko" className={geist.variable}>
       <body className="antialiased">
         <Providers>
-          <Header />
+          <HeaderVisibility>
+            <Header />
+          </HeaderVisibility>
           {children}
         </Providers>
       </body>
