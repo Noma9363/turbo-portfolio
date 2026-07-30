@@ -27,18 +27,18 @@
 | 날짜 처리 | date-fns |
 | 스타일 | Tailwind CSS v4 |
 
-## 라우트 구조
+## 라우트 구조 (실제 구현 기준 — 계획 대비 통합됨)
 ```
-app/page.tsx                    # 메인 (지도 + 검색)
-app/venues/page.tsx             # 전체 조회 (지도보기/목록보기 토글)
-app/venues/[id]/page.tsx        # 상세 (하단 카카오맵 위치)
-app/reserve/[id]/page.tsx       # 예약 페이지
-app/my/page.tsx                 # 내 정보
-app/my/reservations/page.tsx    # 예약 내역
-app/my/favorites/page.tsx       # 찜 목록
-app/login/page.tsx              # 로그인
+app/page.tsx                    # /venues로 리다이렉트
+app/venues/page.tsx             # 전체 조회 (grid/list 토글)
+app/venues/[id]/page.tsx        # 상세 — 갤러리 + 탭(공간소개/편의시설/시설정보/위치+카카오맵) + 예약 폼(VenueReserveForm) 통합
+app/my/page.tsx                 # 내 정보 — 프로필 카드 + 탭(찜/예약) 통합
+app/login/page.tsx              # 로그인 (Google OAuth)
 app/api/auth/[...nextauth]/route.ts
 ```
+- ~~`app/reserve/[id]/page.tsx`~~ — 별도 페이지로 안 만들고 `venues/[id]`에 `VenueReserveForm` 섹션으로 통합
+- ~~`app/my/reservations/page.tsx`~~, ~~`app/my/favorites/page.tsx`~~ — 별도 페이지로 안 만들고 `/my`의 탭(Tabs)으로 통합
+- `app/page.tsx`에 계획했던 "지도 + 검색" UI는 구현하지 않음, `/venues`로 즉시 리다이렉트만 함
 
 ## DB 테이블
 ```sql
@@ -144,6 +144,14 @@ apps/classbook/src/
 - [x] Google OAuth 배포 URL 리디렉션 URI 추가
 - [x] 카카오맵 배포 도메인 등록
 - [ ] TODO: 탭 스크롤 싱크 (IntersectionObserver) — VenueDetailContent.tsx 참고
+
+## TODO — RLS/보안/로직 에러 점검 + 옵시디언 정리
+- [ ] Supabase RLS 정책 상태 확인 — `venues`/`reservations`/`favorites`/`users` 테이블별로 RLS on/off 여부와 정책 내용을 문서화 (현재 CLAUDE.md에 미기재 상태)
+- [ ] `SUPABASE_SERVICE_ROLE_KEY` 사용처(`auth.ts` upsert) 외에 service_role 키 노출 경로 점검
+- [ ] 예약(`createReserveAction`/`cancelReservationAction`) 권한 체크 — 본인 예약만 취소 가능한지 서버에서 검증하는지
+- [ ] 찜(`createFavoritAction`/`removeFavoritAction`) 권한 체크 — 비로그인/타인 계정으로 조작 가능한 틈 없는지
+- [ ] 예약 충돌 방지 로직 실제 동작 재검증 — 같은 시간대 중복 예약이 DB 레벨/애플리케이션 레벨 중 어디서 막히는지, 실제로 막히는지 테스트
+- [ ] 위 점검 내용을 옵시디언에 기술 학습 정리 문서로 작성 (reviews 앱과 동일한 형식 — 아키텍처/RLS/인증 흐름 등)
 
 ## 일정 목표 (7/8 기준 재조정, 마감 7/10 금요일)
 | 날짜 | 시간대 | 작업 |

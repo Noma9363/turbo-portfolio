@@ -189,6 +189,13 @@ pnpm build            # Next.js 빌드
 2. **빈 상태 처리** — 리뷰 없을 때 empty state UI
 3. **Vercel 배포** — 환경변수 설정 포함
 
+## TODO — RLS/보안/로직 에러 점검 + 옵시디언 정리
+- [ ] Supabase RLS 재점검 — 현재 `products`/`reviews`/`users` RLS 비활성화 상태(위 "중요 결정" 참고). 실제 운영 기준으로 RLS 정책을 켜야 하는지, anon key로 접근 가능한 범위가 의도한 대로인지 확인
+- [ ] `SUPABASE_SERVICE_ROLE_KEY` 사용처(`auth.ts`의 `getOrCreateUser`) 외에 service_role 키가 클라이언트 번들에 노출되는 경로가 없는지 점검
+- [ ] Server Action(`createReviewAction`, `deleteReviewAction` 등) 권한 체크 — 요청자가 실제 리소스 소유자인지 서버에서 검증하는지, 클라이언트 값만 믿고 처리하는 부분 없는지
+- [ ] 카테고리 필터 등 로직 에러 재점검 — 이미 알려진 "카테고리 필터 미동작" 수정 이후 회귀 없는지
+- [ ] 위 점검 내용을 옵시디언 기술 학습 정리 문서(위 목차 2번 "Supabase 테이블 설계 — RLS 비활성화 이유")에 반영
+
 ### 레이아웃 결정 (6/18)
 - `/reviews` — 상품 카드 그리드만 렌더 (products 독립 fetch)
 - `/reviews/[id]` — 상품 상세 + 평균 별점 + ReviewFormDialog + 리뷰 목록
