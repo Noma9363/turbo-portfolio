@@ -3,9 +3,9 @@
 ## 🔖 세션 시작 시 Claude가 읽어야 할 현황 요약
 > `/clear` 후 새 세션에서 이 블록을 먼저 읽고 핵심 상황을 파악할 것
 
-- **현재 단계**: classbook 앱 개발 중 (feat/classbook 브랜치, main 미머지) — Vercel 배포는 되어 있으나 브랜치 자체는 아직 통합 전
-- **완료된 앱**: portfolio (localhost:3000) · taski (localhost:3001) · reviews (localhost:3002)
-- **라이브**: [portfolio](https://turbo-portfolio-portfolio.vercel.app/) · [taski](https://turbo-portfolio-taski.vercel.app) · [reviews](https://turbo-portfolio-reviews.vercel.app/reviews) · classbook (배포 URL 확인 필요)
+- **현재 단계**: classbook 앱 배포 완료 → 다음 프로젝트 준비 중
+- **완료된 앱**: portfolio (localhost:3000) · taski (localhost:3001) · reviews (localhost:3002) · classbook (localhost:3003)
+- **라이브**: [portfolio](https://turbo-portfolio-portfolio.vercel.app/) · [taski](https://turbo-portfolio-taski.vercel.app) · [reviews](https://turbo-portfolio-reviews.vercel.app/reviews) · [classbook](https://turbo-portfolio-classbook.vercel.app)
 - **협업 원칙**: 구현 전 항상 "어떻게 만들려고 해?" 먼저 물을 것. 코드 대신 방향/키워드만. 파일 전체 작성 금지. **반말로 대화.**
 
 ---
@@ -298,11 +298,14 @@ variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
 
 ---
 
-## Phase 4 — classbook 앱 (진행 중)
+## Phase 4 — classbook 앱 ✅ 완료 (7/30 main 머지)
+
+- **브랜치**: `feat/classbook` → main 머지 완료 (PR [#19](https://github.com/Noma9363/turbo-portfolio/pull/19))
+- **라이브**: https://turbo-portfolio-classbook.vercel.app
+- **상세 문서**: `apps/classbook/CLAUDE.md`
+- NextAuth v5 Google OAuth + Supabase PostgreSQL + 카카오맵 + 예약/찜 기능 + 반응형 스타일링
 
 ### 개요
-- **브랜치**: `feat/classbook`
-- **앱 경로**: `apps/classbook/` (localhost:3003)
 - **목표**: 카카오맵 + 달력 SDK 연동, 예약 충돌 방지, 슬롯 가용성 계산 어필
 - **Supabase project-ref**: `ncpmoqgqhpqupagzeeyw`
 
@@ -312,23 +315,8 @@ variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
 | 프레임워크 | Next.js 15 (App Router) |
 | 인증 | NextAuth v5 + Google OAuth |
 | DB | Supabase (PostgreSQL) |
-| 서버 상태 | TanStack Query v5 |
 | 지도 | 카카오맵 SDK |
-| 날짜 처리 | date-fns |
 | 스타일 | Tailwind CSS v4 |
-
-### 라우트 구조
-```
-app/page.tsx                    # 메인 (지도 + 검색)
-app/venues/page.tsx             # 전체 조회 (지도보기/목록보기 토글)
-app/venues/[id]/page.tsx        # 상세 (하단 카카오맵 위치)
-app/reserve/[id]/page.tsx       # 예약 페이지
-app/my/page.tsx                 # 내 정보
-app/my/reservations/page.tsx    # 예약 내역
-app/my/favorites/page.tsx       # 찜 목록
-app/login/page.tsx              # 로그인
-app/api/auth/[...nextauth]/route.ts
-```
 
 ### DB 테이블
 ```sql
@@ -338,79 +326,18 @@ reservations: id, user_id, venue_id, name, phone, email, start_at, end_at, membe
 favorites:    id, user_id, venue_id
 ```
 - `venues.category`: `SINGLE | DOUBLE | MEETING | LECTURE`
-- `reservations.status`: `WAITING | CONFIRMED | CANCELED` (DEFAULT 'WAITING')
-- seed 데이터: 12개 강의실 (카테고리별 3개씩)
+- `reservations.status`: `CONFIRMED | CANCELED`
 
-### 환경변수 (.env.local)
-```
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
-NEXTAUTH_URL=http://localhost:3003
-NEXTAUTH_SECRET=
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-```
-
-### 주요 파일 구조
-```
-apps/classbook/src/
-├── auth.ts
-├── app/
-│   ├── layout.tsx
-│   ├── page.tsx
-│   ├── globals.css          # @source "../../../../packages/ui/src" (glob 없이)
-│   ├── venues/page.tsx
-│   └── api/auth/[...nextauth]/route.ts
-├── components/
-│   ├── layout/Providers.tsx
-│   ├── venunes/VenueCard.tsx  # 주의: 폴더명 오타 venunes (추후 수정)
-│   ├── price/PriceValue.tsx
-│   └── location/LocationLabel.tsx
-├── lib/supabase/client.ts
-├── queries/venues.ts
-└── types/database.ts
-```
-
-### packages/ui 추가 컴포넌트
-- `blocks/MembersValue.tsx` — 인원 표시 (Users 아이콘 + 숫자)
-- `ui/aspect-ratio.tsx` — shadcn AspectRatio
-
-### 진행 현황
-- [x] 브랜치 feat/classbook 생성
-- [x] 스캐폴딩 (package.json, tsconfig, next.config, postcss, globals.css)
-- [x] Supabase 프로젝트 + 테이블 4개 + seed 12개
-- [x] 환경변수 + Google OAuth (localhost:3003 리디렉션 URI 추가)
-- [x] auth.ts + Providers.tsx + supabase client
-- [x] types/database.ts (User, Venue, Reservation, Favorite, Categories, Statuses)
-- [x] queries/venues.ts (getVenues 필터 파라미터 포함, getVenueById)
-- [x] venues/page.tsx — searchParams 기반 서버 필터링
-- [x] VenueCard.tsx — grid/list 뷰, padding-bottom 이미지 비율, Badge overlay
-- [x] VenueList.tsx — grid/list 토글
-- [x] VenueListFetcher (async 서버 컴포넌트) + Suspense 구조
-- [x] VenueListSkeleton / VenueCardSkeleton
-- [x] FilterBar — 카테고리 Select + 가격 범위 Popover, URL searchParams 연동
-- [x] venues/[id]/page.tsx — Bento 갤러리 레이아웃 (좌: 메인, 우: 2x2 그리드)
-- [x] VenuGallery, VenuGalleryDialog 스캐폴딩
-- [x] venues 테이블 images text[] 컬럼 추가 + seed 4장씩
-- [ ] VenuGalleryDialog — Carousel 연결, 더보기 오버레이
-- [ ] venues/[id] 상세 정보 섹션 (공간 정보, amenities, 카카오맵)
-- [ ] 예약 사이드바 + 예약 폼 + 슬롯 로직 (핵심)
-- [ ] 찜 기능
-- [ ] 내 페이지 (간소화)
-- [ ] 로그인 페이지
-- [ ] Vercel 배포
-
-### 일정 목표 (6/29 기준 재조정 — 7/29 시점 지연, 재조정 필요)
-| 날짜 | 작업 | 상태 |
-|------|------|------|
-| 월 6/29 | 가격 필터 + venues/[id] 갤러리 스캐폴딩 | ✅ |
-| 화 7/1 | VenuGalleryDialog + 상세 정보 섹션 + 카카오맵 | 지연 |
-| 수 7/2 | 예약 폼 + 슬롯 로직 (핵심) | 지연 |
-| 목 7/3 | 찜 + 내 페이지 (간소화) | 지연 |
-| 금 7/4 | 로그인 + Vercel 배포 | 지연 (배포는 별도로 진행된 상태 — 실제 배포본과 브랜치 상태 재확인 필요) |
+### 7/30 세션 작업 내역 (스타일링 + 배포 안정화)
+- **venues 목록/상세 반응형 스타일링**: `Container` 컴포넌트 도입(max-w-1276px), 카드 grid `md:2열 lg:3열`, 모바일 list 뷰 강제 + 토글 숨김, list 카드 정사각 썸네일 + `self-stretch` 레이아웃, PriceValue pill 배지 스타일
+- **FilterBar/Popover 반응형**: 카테고리 Select·가격범위 Popover 모바일 폭 조정, 팝오버 레이아웃 정리
+- **venues/[id] 데스크탑 2단 그리드**: `lg` 이상에서 상세정보(2/3) + 예약폼(1/3, sticky) 레이아웃
+- **버그 수정**: 카드 `href` 빈 문자열이라 상세 페이지 이동 안 되던 문제, `/my` 찜 목록이 `flex-col`이라 그리드 안 먹던 문제, 예약 폼 날짜 버튼 placeholder 누락, `/login` 페이지에 전역 헤더 중복 노출
+- **`packages/ui/src/index.ts` export 누락 수정**: `AspectRatio`, `Select*`, `Carousel*`, `AlertDialog*`, `Progress`, `Tabs*`, `MembersValue`가 파일은 있었지만 export가 안 돼 있어 classbook 상세 페이지가 빌드 에러로 렌더링 안 되던 문제
+- **Vercel Preview 배포 실패 원인 및 해결**: `turbo-portfolio-classbook` 프로젝트에 `NEXT_PUBLIC_SUPABASE_URL`/`NEXT_PUBLIC_SUPABASE_ANON_KEY`가 Production 환경에만 등록돼 있고 Preview에는 없어서 PR 빌드가 `supabaseUrl is required`로 계속 실패. 대시보드 UI에서 Environment 드롭다운이 비활성화되어 있어 `vercel env add <key> preview` CLI로 우회 등록 후 대시보드에서 Redeploy
+- **main ↔ feat/classbook 머지 컨플릭트**: main에도 별도 커밋(`c5be1e7a`)으로 동일한 `packages/ui` export가 이미 추가돼 있어 `index.ts`에서 텍스트 충돌 — 두 버전 모두 같은 export 세트라 중복 제거 후 병합, PR #19 머지 완료
 
 ### 주의사항
-- `globals.css` `@source` glob 패턴 없이 디렉토리만: `@source "../../../../packages/ui/src"`
-- `components/venunes/` — 폴더명 오타 있음 (venunes), 추후 venues로 수정 필요
-- `.mcp.json` project-ref: classbook(`ncpmoqgqhpqupagzeeyw`) / reviews(`aynbwrurevrfmrfxplsd`) 전환 필요
+- `packages/ui/src/index.ts`에 새 shadcn 컴포넌트 추가 후 **export까지 했는지 항상 확인** — 파일만 만들고 export 누락하면 프로덕션 빌드에서만 터짐 (로컬 dev 서버는 이 문제를 못 잡음)
+- Vercel 프로젝트 환경변수는 Production/Preview 둘 다 등록됐는지 대시보드에서 주기적으로 확인 — 하나만 등록돼 있으면 PR 프리뷰 빌드만 조용히 계속 실패함
+- 브랜치 작업 시작 전 `git fetch` + `git log origin/<branch>..<branch>`로 로컬이 원격보다 뒤처지지 않았는지 확인할 것 (이번 세션에서 로컬이 12개 커밋 뒤처진 상태로 시작했던 적 있음)

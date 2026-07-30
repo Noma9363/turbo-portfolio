@@ -1,0 +1,145 @@
+import { auth } from "@/auth";
+import { supabase } from "@/lib/supabase/client"
+import { Categories, CreateReservation, Favorite, Reservation, ReservationWithVenue, Venue } from "@/types/database"
+
+interface GetVenuesParam {
+    category?: Categories;
+    minPrc?: number;
+    maxPrc?: number;
+}
+
+// 모든 강의실 조회
+export const getVenues = async (params?: GetVenuesParam): Promise<Venue[] | null> => {
+    let query = supabase.from("venues").select('*');
+    if (params?.category) query = query.eq('category', params.category);
+    if (params?.minPrc) query = query.gte('price', params.minPrc);
+    if (params?.maxPrc) query = query.lte('price', params.maxPrc);
+    const { data, error } = await query;
+
+    if (!data) {
+        console.error(error, `error! : ${error}`);
+        return null;
+    }
+
+
+    return data;
+}
+
+// 카테고리별로 강의실 조회
+export const getVenuesByCategory = async (category: Categories): Promise<Venue[] | null> => {
+    const { data, error } = await supabase.from('venues').select('*').eq('category', category);
+
+    if (!data) {
+        console.error(error, `error! : ${error}`);
+        return null;
+    }
+    return data;
+}
+
+// 아이디로 단일 강의실 조회
+export const getVenueById = async (id: string): Promise<Venue | null> => {
+    const { data, error } = await supabase.from('venues').select('*').eq('id', id).single();
+
+    if (!data) {
+        console.error(error, `error! : ${error}`);
+        return null;
+    }
+    return data;
+}
+
+// 예약 생성
+export const createReservation = async (ipt: CreateReservation): Promise<Reservation | null> => {
+    const { data, error } = await supabase.from('reservations').insert(ipt).select().single();
+
+
+    if (!data) {
+        console.error(JSON.stringify(error));
+        return null;
+    }
+    return data;
+}
+
+export const getReservationByVenueAndUser = async (venue_id: string, user_id: string): Promise<Reservation | null> => {
+    const { data, error } = await supabase.from('reservations').select('*').eq('venue_id', venue_id).eq('user_id', user_id).maybeSingle();
+
+    if (error) {
+        console.error(JSON.stringify(error));
+        return null;
+    }
+    return data;
+}
+
+export const removeReservationById = async (reservation_id: string, user_id: string): Promise<boolean | null> => {
+    const { error } = await supabase
+        .from('reservations')
+        .delete()
+        .eq('id', reservation_id)
+        .eq('user_id', user_id);
+    return !error
+
+}
+
+// favorites icons
+export const getFavoritesByUser = async (user_id: string): Promise<string[] | null> => {
+    const { data, error } = await supabase
+        .from('favorites')
+        .select('venue_id')
+        .eq('user_id', user_id);
+
+    if (!data) {
+        console.error(error, `error : ${error}`);
+        return null;
+    }
+
+    return data.map(f => f.venue_id);
+}
+
+// apps/my/page
+export const getFavoriteVenuesByUser = async (user_id: string): Promise<Venue[]| null> => {
+    const {data, error} = await supabase
+        .from('favorites')
+        .select('venues(*)')
+        .eq('user_id',user_id);
+    if(!data){
+        console.error(error, `error: ${error}`);
+        return  null;
+    }
+    return data.flatMap(fv => fv.venues ?? []) as Venue[];
+}
+
+export const addFavorite = async (user_id: string, venue_id: string): Promise<Favorite | null> => {
+    const { data, error } = await supabase
+        .from('favorites')
+        .insert({ 'user_id': user_id, 'venue_id': venue_id })
+        .select()
+        .single();
+    if (!data) {
+        console.error(JSON.stringify(error));
+        return null;
+    }
+
+    return data;
+}
+
+export const removeFavorite = async (user_id: string, venue_id: string): Promise<boolean | null> => {
+    const { error } = await supabase
+        .from('favorites')
+        .delete()
+        .eq('user_id', user_id)
+        .eq('venue_id', venue_id);
+    return !error;
+}
+
+export const getReservationsByUser = async (user_id: string): Promise<ReservationWithVenue[]|null > => {
+    const {data, error} = await supabase
+        .from('reservations')
+        .select('*, venues(*)')
+        .eq('user_id', user_id);
+
+    if(!data){
+        console.error(JSON.stringify(error));
+        return null;
+    }
+
+    return data;
+}

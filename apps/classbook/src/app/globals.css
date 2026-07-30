@@ -1,0 +1,110 @@
+@import "tailwindcss";
+@import "react-day-picker/style.css";
+
+@source "../../../../packages/ui/src";
+
+@theme {
+  /* Dark Minimal Color Palette */
+  --color-background: #09090b;
+  --color-foreground: #fafafa;
+
+  --color-card: #0f0f11;
+  --color-card-foreground: #fafafa;
+
+  --color-muted: #18181b;
+  --color-muted-foreground: #71717a;
+
+  --color-border: #27272a;
+  --color-input: #18181b;
+  --color-ring: #52525b;
+
+  --color-primary: #fafafa;
+  --color-primary-foreground: #09090b;
+
+  --color-secondary: #18181b;
+  --color-secondary-foreground: #fafafa;
+
+  --color-accent: #27272a;
+  --color-accent-foreground: #fafafa;
+
+  --color-popover: #18181b;
+  --color-popover-foreground: #fafafa;
+
+  --color-destructive: #7f1d1d;
+  --color-destructive-foreground: #fafafa;
+
+  /* Border Radius */
+  --radius: 0.5rem;
+
+  /* Font */
+  --font-sans: var(--font-geist), var(--font-noto-sans-kr), sans-serif;
+
+}
+
+.rdp-root {
+  --rdp-accent-color: var(--color-primary);
+  --rdp-accent-background-color: var(--color-accent);
+  color: var(--color-foreground);
+  background: transparent;
+}
+
+.rdp-day_button {
+  border-radius: calc(var(--radius) - 2px);
+  color: inherit;
+}
+
+.rdp-selected .rdp-day_button,
+.rdp-selected:focus-visible .rdp-day_button {
+  border-radius: calc(var(--radius) - 2px);
+  background-color: var(--color-primary);
+  color: var(--color-primary-foreground);
+}
+
+.rdp-today:not(.rdp-selected) .rdp-day_button {
+  border-radius: calc(var(--radius) - 2px);
+  background-color: var(--color-accent);
+  color: var(--color-accent-foreground);
+}
+
+.rdp-outside .rdp-day_button {
+  color: var(--color-muted-foreground);
+  opacity: 0.5;
+}
+
+.rdp-chevron {
+  fill: var(--color-muted-foreground);
+}
+
+@layer base {
+  :root {
+    --cell-size: 2rem;
+  }
+
+  * {
+    box-sizing: border-box;
+    border-color: var(--color-border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-geist), var(--font-noto-sans-kr), sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-background);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 3px;
+  }
+}
