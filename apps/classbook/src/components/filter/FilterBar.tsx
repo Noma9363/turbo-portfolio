@@ -38,15 +38,16 @@ export function FilterBar({currentCategory, view}:FilterBarProps){
         categories.push({value: c, name: c});
     })
     return(
-        <div className="flex flex-row z-10 items-center gap-3 sticky top-14 bg-background/80 backdrop-blur-sm py-2 px-4">
-            <SelectBlock 
-                placeholder="유형" 
-                label="강의실 유형을 선택해주세요" 
-                value={currentCategory} 
-                onValueChange={handleCategory} 
-                items={categories} 
+        <div className="flex flex-row z-10 items-center gap-2 sticky top-14 bg-background/80 backdrop-blur-sm py-2">
+            <SelectBlock
+                placeholder="유형"
+                label="선택"
+                value={currentCategory}
+                onValueChange={handleCategory}
+                items={categories}
+                className="flex-1 md:flex-none"
             />
-            <PopoverFilterBlock onApply={handlePrice}/>
+            <PopoverFilterBlock onApply={handlePrice} triggerClassName="w-fit" />
         </div>
     )
 }

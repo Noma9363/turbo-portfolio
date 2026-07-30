@@ -101,8 +101,8 @@ export function VenueReserveForm({ venue, existingReservation }: Props) {
                                     </FieldLabel>
                                     <Popover open={open} onOpenChange={setOpen}>
                                         <PopoverTrigger asChild>
-                                            <Button variant="outline" disabled={!!existingReservation}>
-                                                {date?.toLocaleDateString('ko-KR')}
+                                            <Button variant="outline" className="w-full justify-start font-normal" disabled={!!existingReservation}>
+                                                {date ? date.toLocaleDateString('ko-KR') : "날짜를 선택해주세요"}
                                             </Button>
                                         </PopoverTrigger>
                                         <PopoverContent className="w-auto overflow-hidden p-0">
