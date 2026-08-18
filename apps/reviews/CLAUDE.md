@@ -6,8 +6,14 @@
 > `/clear` 후 새 세션에서 이 블록을 먼저 읽고 핵심 상황을 파악할 것
 
 - **브랜치**: `main` (feat/audioreview 머지 완료) / **포트**: `localhost:3002`
-- **현재 단계**: ✅ 배포 완료 → 다음은 **기술 학습 정리 (옵시디언)**
+- **현재 단계**: 🚨 배포 빌드 실패 (2026-08-11) → **createReviewAction 타입 에러부터 수정 필요**
 - **오늘 완료 (6/22)**: 전체 스타일링 + Vercel 배포 + dialog 중앙 정렬 수정
+
+### 🔴 다음 작업 (2026-08-11 발견, main 빌드 실패 중)
+- [ ] `src/actions/reviews.ts`의 `createReviewAction`을 `useActionState` 패턴으로 전환
+  - 현재 `(formData) => {error} | undefined` 반환 → `<form action={...}>`이 요구하는 `void | Promise<void>`와 타입 불일치로 Vercel 빌드 타입체크 실패
+  - `(prevState, formData) => state` 시그니처로 변경, `ReviewForm.tsx`에서 `useActionState`로 받아서 에러 메시지 렌더
+  - 관련 TODO가 `actions/reviews.ts:9`에 이미 있었음 (검증 차단 이후 처리 예정이라고 적어둠)
 - **다음 작업**: 옵시디언에 기술 학습 정리 문서 작성 (아래 목차 참고)
 - **협업 원칙**: 구현 전 항상 "어떻게 만들려고 해?" 먼저 물을 것. 코드 대신 방향/키워드만. 파일 전체 작성 금지.
 

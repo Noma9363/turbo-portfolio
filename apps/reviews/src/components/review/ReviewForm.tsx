@@ -2,7 +2,7 @@
 
 import { createReviewAction } from "@/actions/reviews";
 import { Button, Card, Field, FieldDescription, FieldGroup, FieldLabel, FieldLegend, FieldSet, Input, Rating, Textarea } from "@repo/ui";
-import { useState } from "react";
+import { useActionState, useState } from "react";
 export interface ReviewFormProps {
     productId: string;
     onCancel?: ()=>void;
@@ -10,11 +10,12 @@ export interface ReviewFormProps {
 export function ReviewForm({ productId, onCancel }: ReviewFormProps) {
 
     const [starCount, setStartCount] = useState(3);
+    const [state, formAction] = useActionState(createReviewAction, undefined);
 
     return (
 
         <Card className="bg-card p-8">
-            <form action={createReviewAction}>
+            <form action={formAction}>
                 <input type="hidden" name="product_id" value={productId} />
                 <FieldGroup className="flex flex-col gap-4">
                     <FieldSet>
@@ -24,6 +25,9 @@ export function ReviewForm({ productId, onCancel }: ReviewFormProps) {
                         <FieldDescription className="mb-4">
                             음향기기 사용 경험을 공유해주세요.
                         </FieldDescription>
+                        {state?.error && (
+                            <p className="text-sm text-destructive mb-4">{state.error}</p>
+                        )}
                         <FieldGroup>
                             <Field>
                                 <FieldLabel htmlFor="form_title">

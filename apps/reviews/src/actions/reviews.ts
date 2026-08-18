@@ -6,8 +6,7 @@ import { CreateReviewInput } from "@/types/database"
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-// TODO: createReviewAction 검증 차단 이후 useActionState로 반환값을 받아 표시하는 게 표준 패턴 — 처리 예정
-export const createReviewAction = async (formData : FormData) => {
+export const createReviewAction = async (_prevState: {error: string} | undefined, formData : FormData) => {
     // get get session info of current logged from server
     const session = await auth();
     const user_id = session?.user?.id;
@@ -24,6 +23,7 @@ export const createReviewAction = async (formData : FormData) => {
     const input:CreateReviewInput = {user_id, product_id, rating, title, body}
 
     await createReview(input);
+    revalidatePath('/reviews');
     revalidatePath(`/reviews/${product_id}`);
     redirect(`/reviews/${product_id}`);
 }
@@ -32,8 +32,10 @@ export const deleteReviewAction = async (formData: FormData) => {
     const session = await auth();
     const user_id = session?.user?.id as string;
     const current_id = formData.get('id') as string;
+    const product_id = formData.get('product_id') as string;
     if(!user_id) return;
-    
+
     await deleteReview(current_id, user_id);
     revalidatePath('/reviews');
+    revalidatePath(`/reviews/${product_id}`);
 }

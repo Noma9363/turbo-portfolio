@@ -1,8 +1,9 @@
 import { products } from "@/types/database";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, Badge, cn } from "@repo/ui";
 import Link from "next/link";
+import Image from "next/image";
 
-export function ProductCard({ product }: { product: products }) {
+export function ProductCard({ product, priority }: { product: products; priority?: boolean }) {
     return (
         <Link href={`reviews/${product.id}`} className="block">
         <Card className={cn("bg-card rounded-xl border-border text-card-foreground hover:border-zinc-600 transition-colors duration-300 h-full flex flex-col")}>
@@ -16,8 +17,15 @@ export function ProductCard({ product }: { product: products }) {
             </CardHeader>
             <CardContent className="flex flex-col px-4 pb-4 flex-1">
                 {product.image_url &&
-                <div className="w-full aspect-square bg-background overflow-hidden rounded-md ring-1 ring-border">
-                    <img className="w-full h-full object-contain" src={product.image_url} alt={product.name} />
+                <div className="relative w-full aspect-square bg-background overflow-hidden rounded-md ring-1 ring-border">
+                    <Image
+                        className="object-contain"
+                        src={product.image_url}
+                        alt={product.name}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        priority={priority}
+                    />
                 </div>
                 }
                 <p className="pt-4 text-sm text-muted-foreground line-clamp-3">{product.description}</p>

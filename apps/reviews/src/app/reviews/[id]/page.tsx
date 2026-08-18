@@ -6,6 +6,7 @@ import { reviewAvg } from "@/lib/reviews";
 import { getProductById } from "@/queries/products";
 import { getReviewsByProductId } from "@/queries/reviews";
 import { Badge, Card, Separator } from "@repo/ui";
+import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -64,7 +65,16 @@ export default async function Page({ params }: { params: Promise<Params> }) {
                     <StarRating showLgn size="md" rating={reviewAvg(reviews)} reviews={reviews?.length} />
                 </div>
                 <Card className="bg-card rounded-xl border-border text-card-foreground hover:border-zinc-600 transition-colors duration-300 aspect-square overflow-hidden relative">
-                    <img src={product.image_url} alt={`${product.name} name`} />
+                    {product.image_url &&
+                        <Image
+                            className="object-contain"
+                            src={product.image_url}
+                            alt={`${product.name} name`}
+                            fill
+                            sizes="(max-width: 768px) 100vw, 448px"
+                            priority
+                        />
+                    }
                 </Card>
                 {product.label &&
                     <div className="flex flex-row flex-wrap gap-2 mt-3">

@@ -28,9 +28,9 @@ export default async function Page({ searchParams }: { searchParams: Promise<Sea
             <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 mt-4">
                 {
                     (!category)
-                    ? products.map(r=>(<ProductCard product={r} key={r.id}/>))
+                    ? products.map((r, i)=>(<ProductCard product={r} key={r.id} priority={i === 0}/>))
                     :
-                    products.filter(f => (f.category == category)).map(r => (<ProductCard product={r} key={r.id}/>))
+                    products.filter(f => (f.category == category)).map((r, i) => (<ProductCard product={r} key={r.id} priority={i === 0}/>))
                 }
             </div>
         </div>
