@@ -149,7 +149,8 @@ apps/classbook/src/
 - [x] Supabase RLS 정책 상태 확인 (2026-09-14) — 점검 시점에 `users`/`venues`/`reservations`/`favorites` 4개 테이블 전부 RLS 꺼져있고 anon key로 전체 read/write 가능한 상태였음 (프로젝트가 INACTIVE로 pause돼있어 restore 후 확인). 4개 테이블 전부 RLS 활성화 + `venues`에만 anon SELECT 정책(`anon can read venues`, `qual: true`) 추가. `users`/`reservations`/`favorites`는 정책 0개로 anon 완전 차단 — service_role만 접근 가능
 - [x] `SUPABASE_SERVICE_ROLE_KEY` 사용처 정리 — `queries/venues.ts`의 `reservations`/`favorites` 관련 함수 8개(createReservation, getReservationByVenueAndUser, removeReservationById, getFavoritesByUser, getFavoriteVenuesByUser, addFavorite, removeFavorite, getReservationsByUser)가 원래 anon key(`supabase`)로 직접 write하고 있어서 RLS를 켜면 전부 깨지는 구조였음. `@/lib/supabase/admin.ts` 신설(auth.ts 인라인 클라이언트 통합) 후 이 함수들을 전부 service_role(`supabaseAdmin`)로 교체. `venues` 조회 3개(getVenues/getVenuesByCategory/getVenueById)는 공개 데이터라 anon 유지
 - [x] 예약/찜 권한 체크 — RLS가 아니라 Server Action의 `auth()` 세션 체크 + 쿼리의 `.eq('user_id', user_id)` where절이 소유자 검증을 담당하는 구조 확인 (reviews의 deleteReview와 동일 패턴). 이 구조는 NextAuth 세션이라 Supabase RLS의 `auth.uid()`를 못 쓰기 때문에 필연적 — RLS는 "anon key로 DB 직접 접근하는 경로 자체를 차단"하는 역할만 담당
-- [ ] 예약 충돌 방지 로직 실제 동작 재검증 — 같은 시간대 중복 예약이 DB 레벨/애플리케이션 레벨 중 어디서 막히는지, 실제로 막히는지 테스트
+- [x] 예약 충돌 방지 로직 실제 동작 재검증 (2026-09-14) — 재검증 결과 애플리케이션/DB 레벨 어디에도 겹침 방지 로직이 없었음. DB에서 직접 같은 venue_id/같은 시간대로 다른 두 user_id 예약을 insert해서 재현 — 둘 다 성공 (더블 부킹 가능 상태였음, 테스트 데이터는 삭제 완료)
+- [ ] 예약 충돌 방지 구현 — 애플리케이션 레벨(즉각 UX 피드백용, createReserveAction에서 insert 전 겹침 조회) + DB 레벨(exclusion constraint, 레이스 컨디션 최종 방어선) 둘 다 적용 예정. 하나만 쓰면: 애플리케이션만 있으면 동시 요청 시 레이스 컨디션으로 뚫릴 수 있고, DB만 있으면 유저가 제출 후에야 에러를 보게 됨 → 실무 표준 패턴대로 두 레벨 병행
 - [ ] 위 점검 내용을 옵시디언에 기술 학습 정리 문서로 작성 (reviews 앱과 동일한 형식 — 아키텍처/RLS/인증 흐름 등)
 
 ## 일정 목표 (7/8 기준 재조정, 마감 7/10 금요일)
