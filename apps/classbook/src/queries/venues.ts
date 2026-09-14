@@ -1,5 +1,5 @@
-import { auth } from "@/auth";
 import { supabase } from "@/lib/supabase/client"
+import { supabaseAdmin } from "@/lib/supabase/admin"
 import { Categories, CreateReservation, Favorite, Reservation, ReservationWithVenue, Venue } from "@/types/database"
 
 interface GetVenuesParam {
@@ -49,7 +49,7 @@ export const getVenueById = async (id: string): Promise<Venue | null> => {
 
 // 예약 생성
 export const createReservation = async (ipt: CreateReservation): Promise<Reservation | null> => {
-    const { data, error } = await supabase.from('reservations').insert(ipt).select().single();
+    const { data, error } = await supabaseAdmin.from('reservations').insert(ipt).select().single();
 
 
     if (!data) {
@@ -60,7 +60,7 @@ export const createReservation = async (ipt: CreateReservation): Promise<Reserva
 }
 
 export const getReservationByVenueAndUser = async (venue_id: string, user_id: string): Promise<Reservation | null> => {
-    const { data, error } = await supabase.from('reservations').select('*').eq('venue_id', venue_id).eq('user_id', user_id).maybeSingle();
+    const { data, error } = await supabaseAdmin.from('reservations').select('*').eq('venue_id', venue_id).eq('user_id', user_id).maybeSingle();
 
     if (error) {
         console.error(JSON.stringify(error));
@@ -70,7 +70,7 @@ export const getReservationByVenueAndUser = async (venue_id: string, user_id: st
 }
 
 export const removeReservationById = async (reservation_id: string, user_id: string): Promise<boolean | null> => {
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
         .from('reservations')
         .delete()
         .eq('id', reservation_id)
@@ -81,7 +81,7 @@ export const removeReservationById = async (reservation_id: string, user_id: str
 
 // favorites icons
 export const getFavoritesByUser = async (user_id: string): Promise<string[] | null> => {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
         .from('favorites')
         .select('venue_id')
         .eq('user_id', user_id);
@@ -96,7 +96,7 @@ export const getFavoritesByUser = async (user_id: string): Promise<string[] | nu
 
 // apps/my/page
 export const getFavoriteVenuesByUser = async (user_id: string): Promise<Venue[]| null> => {
-    const {data, error} = await supabase
+    const {data, error} = await supabaseAdmin
         .from('favorites')
         .select('venues(*)')
         .eq('user_id',user_id);
@@ -108,7 +108,7 @@ export const getFavoriteVenuesByUser = async (user_id: string): Promise<Venue[]|
 }
 
 export const addFavorite = async (user_id: string, venue_id: string): Promise<Favorite | null> => {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
         .from('favorites')
         .insert({ 'user_id': user_id, 'venue_id': venue_id })
         .select()
@@ -122,7 +122,7 @@ export const addFavorite = async (user_id: string, venue_id: string): Promise<Fa
 }
 
 export const removeFavorite = async (user_id: string, venue_id: string): Promise<boolean | null> => {
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
         .from('favorites')
         .delete()
         .eq('user_id', user_id)
@@ -131,7 +131,7 @@ export const removeFavorite = async (user_id: string, venue_id: string): Promise
 }
 
 export const getReservationsByUser = async (user_id: string): Promise<ReservationWithVenue[]|null > => {
-    const {data, error} = await supabase
+    const {data, error} = await supabaseAdmin
         .from('reservations')
         .select('*, venues(*)')
         .eq('user_id', user_id);

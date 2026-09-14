@@ -146,10 +146,9 @@ apps/classbook/src/
 - [ ] TODO: 탭 스크롤 싱크 (IntersectionObserver) — VenueDetailContent.tsx 참고
 
 ## TODO — RLS/보안/로직 에러 점검 + 옵시디언 정리
-- [ ] Supabase RLS 정책 상태 확인 — `venues`/`reservations`/`favorites`/`users` 테이블별로 RLS on/off 여부와 정책 내용을 문서화 (현재 CLAUDE.md에 미기재 상태)
-- [ ] `SUPABASE_SERVICE_ROLE_KEY` 사용처(`auth.ts` upsert) 외에 service_role 키 노출 경로 점검
-- [ ] 예약(`createReserveAction`/`cancelReservationAction`) 권한 체크 — 본인 예약만 취소 가능한지 서버에서 검증하는지
-- [ ] 찜(`createFavoritAction`/`removeFavoritAction`) 권한 체크 — 비로그인/타인 계정으로 조작 가능한 틈 없는지
+- [x] Supabase RLS 정책 상태 확인 (2026-09-14) — 점검 시점에 `users`/`venues`/`reservations`/`favorites` 4개 테이블 전부 RLS 꺼져있고 anon key로 전체 read/write 가능한 상태였음 (프로젝트가 INACTIVE로 pause돼있어 restore 후 확인). 4개 테이블 전부 RLS 활성화 + `venues`에만 anon SELECT 정책(`anon can read venues`, `qual: true`) 추가. `users`/`reservations`/`favorites`는 정책 0개로 anon 완전 차단 — service_role만 접근 가능
+- [x] `SUPABASE_SERVICE_ROLE_KEY` 사용처 정리 — `queries/venues.ts`의 `reservations`/`favorites` 관련 함수 8개(createReservation, getReservationByVenueAndUser, removeReservationById, getFavoritesByUser, getFavoriteVenuesByUser, addFavorite, removeFavorite, getReservationsByUser)가 원래 anon key(`supabase`)로 직접 write하고 있어서 RLS를 켜면 전부 깨지는 구조였음. `@/lib/supabase/admin.ts` 신설(auth.ts 인라인 클라이언트 통합) 후 이 함수들을 전부 service_role(`supabaseAdmin`)로 교체. `venues` 조회 3개(getVenues/getVenuesByCategory/getVenueById)는 공개 데이터라 anon 유지
+- [x] 예약/찜 권한 체크 — RLS가 아니라 Server Action의 `auth()` 세션 체크 + 쿼리의 `.eq('user_id', user_id)` where절이 소유자 검증을 담당하는 구조 확인 (reviews의 deleteReview와 동일 패턴). 이 구조는 NextAuth 세션이라 Supabase RLS의 `auth.uid()`를 못 쓰기 때문에 필연적 — RLS는 "anon key로 DB 직접 접근하는 경로 자체를 차단"하는 역할만 담당
 - [ ] 예약 충돌 방지 로직 실제 동작 재검증 — 같은 시간대 중복 예약이 DB 레벨/애플리케이션 레벨 중 어디서 막히는지, 실제로 막히는지 테스트
 - [ ] 위 점검 내용을 옵시디언에 기술 학습 정리 문서로 작성 (reviews 앱과 동일한 형식 — 아키텍처/RLS/인증 흐름 등)
 
@@ -170,6 +169,8 @@ apps/classbook/src/
 - `globals.css` `@source` glob 패턴 없이 디렉토리만: `@source "../../../../packages/ui/src"`
 - `components/venunes/` — 폴더명 오타 있음 (venunes), 추후 venues로 수정 필요
 - `.mcp.json` project-ref: classbook(`ncpmoqgqhpqupagzeeyw`) / reviews(`aynbwrurevrfmrfxplsd`) 전환 필요
+- `lib/supabase/admin.ts` (service_role) — `queries/venues.ts`의 reservations/favorites 쓰기·조회 전부 이걸 씀. `venues` 조회만 `lib/supabase/client.ts`(anon) 사용
+- Supabase 무료 플랜은 장기 미사용 시 프로젝트가 자동 pause(`INACTIVE`)됨 — MCP 쿼리가 타임아웃 나면 `get_project`로 status 확인 후 `restore_project` 필요 (재개까지 1~2분 소요)
 
 ---
 
