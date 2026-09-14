@@ -3,7 +3,6 @@ import { ProductCard } from "@/components/product/ProductCard";
 import { getProducts } from "@/queries/products";
 import { categories, CATEGORIES } from "@/types/database";
 
-
 interface SearchParamsInterface {
     category?: string;
     sort?: string;

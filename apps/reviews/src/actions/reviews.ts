@@ -32,10 +32,11 @@ export const deleteReviewAction = async (formData: FormData) => {
     const session = await auth();
     const user_id = session?.user?.id as string;
     const current_id = formData.get('id') as string;
-    const product_id = formData.get('product_id') as string;
     if(!user_id) return;
 
-    await deleteReview(current_id, user_id);
+    const deleted = await deleteReview(current_id, user_id);
+    if (!deleted) return;
+
     revalidatePath('/reviews');
-    revalidatePath(`/reviews/${product_id}`);
+    revalidatePath(`/reviews/${deleted.product_id}`);
 }

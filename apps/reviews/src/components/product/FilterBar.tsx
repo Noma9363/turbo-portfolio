@@ -1,6 +1,6 @@
 "use client"
 
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { categories, CATEGORIES } from "@/types/database";
 import { Button } from "@repo/ui";
 
@@ -9,35 +9,29 @@ interface FilterBarProps {
 }
 
 export function FilterBar({ currentCategory }: FilterBarProps) {
-    const router = useRouter();
-
     return (
         <div className="flex flex-row gap-1.5 overflow-x-auto">
             <Button
-                onClick={() => {
-                    router.push(`/reviews`)
-                }}
+                asChild
                 variant={
                     !currentCategory ? "default" : "outline"
                 }
                 size="sm"
                 className={!currentCategory ? "" : "bg-zinc-900"}
             >
-                All
+                <Link href="/reviews">All</Link>
             </Button>
             {CATEGORIES.map((category) => (
                 <Button
                     key={category}
-                    onClick={() => {
-                        router.push(`/reviews?category=${category}`)
-                    }}
+                    asChild
                     variant={
                         currentCategory === category ? "default" : "outline"
                     }
                     size="sm"
                     className={currentCategory === category ? "" : "bg-zinc-900"}
                 >
-                    {category}
+                    <Link href={`/reviews?category=${category}`}>{category}</Link>
                 </Button>
             ))}
         </div>

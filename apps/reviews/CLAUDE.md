@@ -196,10 +196,10 @@ pnpm build            # Next.js 빌드
 3. **Vercel 배포** — 환경변수 설정 포함
 
 ## TODO — RLS/보안/로직 에러 점검 + 옵시디언 정리
-- [ ] Supabase RLS 재점검 — 현재 `products`/`reviews`/`users` RLS 비활성화 상태(위 "중요 결정" 참고). 실제 운영 기준으로 RLS 정책을 켜야 하는지, anon key로 접근 가능한 범위가 의도한 대로인지 확인
+- [x] Supabase RLS 재점검 (2026-09-14) — 문서와 달리 실제로는 `users`/`products`/`reviews`/`likes` 전부 RLS 켜져 있었음. `users`에 email까지 anon 전체 공개된 게 문제라 정책 삭제 + `public_users` 뷰(id, name만) 생성해서 anon read를 뷰로 이전. `queries/reviews.ts`의 `users(name)` FK 임베디드 조인 제거하고 `attachUserNames` 헬퍼로 대체 (뷰는 FK 없어서 임베디드 조인 불가)
 - [ ] `SUPABASE_SERVICE_ROLE_KEY` 사용처(`auth.ts`의 `getOrCreateUser`) 외에 service_role 키가 클라이언트 번들에 노출되는 경로가 없는지 점검
-- [ ] Server Action(`createReviewAction`, `deleteReviewAction` 등) 권한 체크 — 요청자가 실제 리소스 소유자인지 서버에서 검증하는지, 클라이언트 값만 믿고 처리하는 부분 없는지
-- [ ] 카테고리 필터 등 로직 에러 재점검 — 이미 알려진 "카테고리 필터 미동작" 수정 이후 회귀 없는지
+- [ ] Server Action(`createReviewAction`, `deleteReviewAction` 등) 권한 체크 — 요청자가 실제 리소스 소유자인지 서버에서 검증하는지, 클라이언트 값만 믿고 처리하는 부분 없는지 (1차 확인: `deleteReview`는 `.eq('user_id', user_id)`로 DB단 검증됨, `revalidatePath`에 쓰는 product_id는 클라이언트 값 그대로 신뢰 — 캐시 미스만 유발, 데이터 유출 아님)
+- [x] 카테고리 필터 재점검 (2026-09-14) — 회귀 없음 확인. `FilterBar`의 `router.push` onClick을 `Link`(`asChild`) 기반으로 리팩터 (정공법 — 실제 `<a>` 렌더, prefetch/접근성 이점)
 - [ ] 위 점검 내용을 옵시디언 기술 학습 정리 문서(위 목차 2번 "Supabase 테이블 설계 — RLS 비활성화 이유")에 반영
 
 ### 레이아웃 결정 (6/18)
@@ -209,6 +209,7 @@ pnpm build            # Next.js 빌드
 
 ### 중요 결정 (6/18)
 - `getOrCreateUser`: NextAuth `signIn` 콜백에서 `supabaseAdmin`(service_role 키)으로 upsert — anon key는 RLS 때문에 insert 불가
+- `public_users` 뷰(id, name만): `users` 테이블 anon SELECT를 막고 email 노출을 방지하기 위해 도입 (2026-09-14). 리뷰 작성자 이름 표시는 이 뷰를 거침
 - `ReviewWithUser` vs `ReviewWithProduct`: 상세 페이지에서 products는 별도 fetch하므로 ReviewCard는 users(name)만 필요
 - Tailwind v4 + shadcn Dialog 포지셔닝 버그 — `translate-x-[-50%]` 미적용 → fullscreen 방식 유지
 
