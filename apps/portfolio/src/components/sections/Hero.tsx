@@ -60,7 +60,7 @@ export function Hero() {
         <motion.div variants={item}>
           <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-border bg-muted text-muted-foreground text-xs font-medium tracking-wider uppercase mb-8">
             <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-            Ver 0.0.1
+            Frontend · 신입
           </span>
         </motion.div>
 
@@ -116,7 +116,7 @@ export function Hero() {
           className="flex items-center justify-start gap-4"
         >
           <a
-            href="https://github.com"
+            href="https://github.com/Noma9363"
             target="_blank"
             rel="noopener noreferrer"
             className="text-muted-foreground hover:text-foreground transition-colors"

@@ -6,12 +6,14 @@ import { Mail, Github, Linkedin, Twitter, ArrowRight } from "lucide-react";
 import { Container } from "@/components/Container";
 import {SectionLabel} from "@/components/SectionLabel";
 
+const EMAIL = "noma9363@gmail.com";
+
 const socialLinks = [
   {
     icon: Mail,
     label: "Email",
-    href: "mailto:noma9363@gmail.com",
-    value: "noma9363@gmail.com",
+    href: `mailto:${EMAIL}`,
+    value: EMAIL,
   },
   {
     icon: Github,
@@ -64,7 +66,7 @@ export function Contact() {
             className="mb-16"
           >
             <Button size="lg" asChild>
-              <a href="mailto:hello@yourname.dev">
+              <a href={`mailto:${EMAIL}`}>
                 연락하기
                 <ArrowRight size={16} className="ml-2" />
               </a>
@@ -129,7 +131,7 @@ export function Contact() {
           className="mt-24 pt-8 border-t border-border"
         >
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} Joy Han. Built with Next.js,
+            © {new Date().getFullYear()} Cho Lee Han. Built with Next.js,
             Turborepo & Tailwind CSS.
           </p>
         </motion.div>
