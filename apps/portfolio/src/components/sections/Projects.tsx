@@ -147,7 +147,7 @@ export function Projects() {
         >
           <Button variant="outline" size="lg" asChild>
             <a
-              href="https://github.com"
+              href="https://github.com/Noma9363"
               target="_blank"
               rel="noopener noreferrer"
             >
