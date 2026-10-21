@@ -76,7 +76,7 @@ export function Hero() {
           </span>
           <br />
           <span className="bg-gradient-to-br from-white to-zinc-300 bg-clip-text text-transparent">
-            I&apos;m Joy Han
+            I&apos;m Cho Lee Han
           </span>
         </motion.h1>
 
