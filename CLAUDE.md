@@ -3,10 +3,24 @@
 ## 🔖 세션 시작 시 Claude가 읽어야 할 현황 요약
 > `/clear` 후 새 세션에서 이 블록을 먼저 읽고 핵심 상황을 파악할 것
 
-- **현재 단계**: classbook 앱 배포 완료 → 다음 프로젝트 준비 중
+- **현재 단계**: classbook 앱 배포 완료 → portfolio 앱 점검·보완 중 (아래 "portfolio 보완 이정표" 참고)
 - **완료된 앱**: portfolio (localhost:3000) · taski (localhost:3001) · reviews (localhost:3002) · classbook (localhost:3003)
 - **라이브**: [portfolio](https://turbo-portfolio-portfolio.vercel.app/) · [taski](https://turbo-portfolio-taski.vercel.app) · [reviews](https://turbo-portfolio-reviews.vercel.app/reviews) · [classbook](https://turbo-portfolio-classbook.vercel.app)
 - **협업 원칙**: 구현 전 항상 "어떻게 만들려고 해?" 먼저 물을 것. 코드 대신 방향/키워드만. 파일 전체 작성 금지. **반말로 대화.**
+
+### portfolio 보완 이정표 (10/21 기준)
+브랜치는 `main`에서 분기해 `main`으로 PR (develop은 main보다 50커밋 뒤처져 있어 사용 안 함). 머지는 머지 커밋 방식.
+
+- [x] PR #21 `fix/portfolio-links` 머지 — Contact CTA 메일 상수화, GitHub 링크 `Noma9363`, 푸터 이름, Hero 배지 `Frontend · 신입`, Nav `Home`
+- [ ] PR #22 `feat/portfolio-seo` — `layout.tsx` 메타데이터·OG, `opengraph-image.png`, Hero 이름 `Cho Lee Han` 통일 (CI 확인 후 머지)
+  - 머지 후: 프로덕션 URL에서 `og:image` 확인, 카톡 미리보기 확인 (안 바뀌면 카카오 공유 디버거로 캐시 삭제)
+- [ ] favicon (`src/app/icon.png`)
+- [ ] `sitemap.ts` / `robots.ts` / `not-found.tsx`
+- [ ] 모바일 네비 로고 줄바꿈 수정 (375px에서 `Cho/Lee/Han` 3줄) + 대문 `I'm Cho Lee / Han` 줄바꿈 확인
+- [ ] 프로젝트 카드 스크린샷 — `public/projects/*.png` + `Projects.tsx`에 `image` 필드, 데스크탑 뷰 기준 16:10 통일, 개인정보 노출 확인
+- [ ] 접근성: 아이콘 링크 `aria-label`, `Contact.tsx`의 미사용 `Twitter` import 제거
+- [ ] About Tech Stack에 Supabase·NextAuth·Zustand·TanStack Query 추가
+- [ ] 미사용 `public/resume.html`, `public/photo.png` 정리 여부 결정
 
 ---
 
