@@ -12,11 +12,11 @@
 브랜치는 `main`에서 분기해 `main`으로 PR (develop은 main보다 50커밋 뒤처져 있어 사용 안 함). 머지는 머지 커밋 방식.
 
 - [x] PR #21 `fix/portfolio-links` 머지 — Contact CTA 메일 상수화, GitHub 링크 `Noma9363`, 푸터 이름, Hero 배지 `Frontend · 신입`, Nav `Home`
-- [ ] PR #22 `feat/portfolio-seo` — `layout.tsx` 메타데이터·OG, `opengraph-image.png`, Hero 이름 `Cho Lee Han` 통일 (CI 확인 후 머지)
-  - 머지 후: 프로덕션 URL에서 `og:image` 확인, 카톡 미리보기 확인 (안 바뀌면 카카오 공유 디버거로 캐시 삭제)
+- [x] PR #22 `feat/portfolio-seo` 머지 — `layout.tsx` 메타데이터·OG, `opengraph-image.png`, Hero 이름 `Cho Lee Han` 통일 (프로덕션 og 태그 + 카카오 디버거 확인 완료)
 - [ ] favicon (`src/app/icon.png`)
 - [ ] `sitemap.ts` / `robots.ts` / `not-found.tsx`
-- [ ] 모바일 네비 로고 줄바꿈 수정 (375px에서 `Cho/Lee/Han` 3줄) + 대문 `I'm Cho Lee / Han` 줄바꿈 확인
+- [x] 모바일 네비 로고 `CLH`로 축약 + 링크 `px-2` (390px 실측 OK, 360px 이하는 계산만 — 실기기 확인 필요)
+- [ ] 대문 `I'm Cho Lee / Han` 모바일 줄바꿈 (`Han`만 떨어짐) 처리 여부 결정
 - [ ] 프로젝트 카드 스크린샷 — `public/projects/*.png` + `Projects.tsx`에 `image` 필드, 데스크탑 뷰 기준 16:10 통일, 개인정보 노출 확인
 - [ ] 접근성: 아이콘 링크 `aria-label`, `Contact.tsx`의 미사용 `Twitter` import 제거
 - [ ] About Tech Stack에 Supabase·NextAuth·Zustand·TanStack Query 추가
