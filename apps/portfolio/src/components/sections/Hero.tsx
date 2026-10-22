@@ -69,13 +69,13 @@ export function Hero() {
           variants={item}
           className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-none mb-6"
         >
-          <span className="bg-gradient-to-br from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent
+          <span className="text-foreground
             scroll-m-20 text-start text-9xl font-extrabold tracking-tight text-balance
           ">
             Hello,
           </span>
           <br />
-          <span className="bg-gradient-to-br from-white to-zinc-300 bg-clip-text text-transparent">
+          <span className="text-foreground">
             I&apos;m Cho Lee Han
           </span>
         </motion.h1>
