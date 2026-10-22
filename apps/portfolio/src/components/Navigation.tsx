@@ -65,10 +65,11 @@ export function Navigation() {
           <motion.a
             href="#hero"
             onClick={(e) => handleNavClick(e, "#hero")}
-            className="text-lg font-bold tracking-tight text-foreground hover:text-muted-foreground transition-colors"
+            aria-label="Cho Lee Han"
+            className="shrink-0 text-lg font-bold tracking-tight text-foreground hover:text-muted-foreground transition-colors"
             whileHover={{ scale: 1.02 }}
           >
-            Cho Lee Han
+            CLH
           </motion.a>
 
           <ul className="flex items-center gap-1">
@@ -77,7 +78,7 @@ export function Navigation() {
                 <a
                   href={item.href}
                   onClick={(e) => handleNavClick(e, item.href)}
-                  className={`relative px-3 py-1.5 text-sm rounded-md transition-colors ${
+                  className={`relative px-2 py-1.5 text-sm rounded-md transition-colors ${
                     activeSection === item.href.slice(1)
                       ? "text-foreground"
                       : "text-muted-foreground hover:text-foreground"
