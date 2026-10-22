@@ -18,8 +18,9 @@
 - [ ] `sitemap.ts` / `robots.ts` / `not-found.tsx`
 - [x] 모바일 네비 로고 `CLH`로 축약 + 링크 `px-2` (390px 실측 OK, 360px 이하는 계산만 — 실기기 확인 필요)
 - [ ] 대문 `I'm Cho Lee / Han` 모바일 줄바꿈 (`Han`만 떨어짐) 처리 여부 결정
-- [ ] 프로젝트 카드 스크린샷 — `public/projects/*.png` + `Projects.tsx`에 `image` 필드, 데스크탑 뷰 기준 16:10 통일, 개인정보 노출 확인
-- [ ] 접근성: 아이콘 링크 `aria-label`, `Contact.tsx`의 미사용 `Twitter` import 제거
+- [x] 프로젝트 카드 이미지 (PR 진행 중) — `public/projects/*.jpg`(2400×1600) + `imageAlt`, 16:10 `AspectRatio` + 아래쪽 페이드 오버레이, `xl:grid-cols-3`, 아이콘 링크 `aria-label`, `opengraph-image.alt.txt`
+  - 남은 확인: 아이폰 프리뷰에서 페이드(`in oklab` 그라데이션)·모바일 1열 모양, `sizes`에 `(min-width: 1280px) 33vw` 추가 검토, `Image`의 무효 클래스 `aspect-video h-70` 정리
+- [ ] `Contact.tsx`의 미사용 `Twitter` import 제거
 - [ ] About Tech Stack에 Supabase·NextAuth·Zustand·TanStack Query 추가
 - [ ] 미사용 `public/resume.html`, `public/photo.png` 정리 여부 결정
 

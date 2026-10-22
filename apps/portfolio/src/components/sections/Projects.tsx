@@ -1,7 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, Badge, Button } from "@repo/ui";
+import {Card, CardContent, CardHeader, CardTitle, CardDescription, Badge, Button, AspectRatio} from "@repo/ui";
 import { Github, ExternalLink } from "lucide-react";
 import { Container } from "@/components/Container";
 import {SectionLabel} from "@/components/SectionLabel";
@@ -16,6 +17,8 @@ const projects = [
     github: "https://github.com/Noma9363/turbo-portfolio/tree/main/apps/taski",
     live: "https://turbo-portfolio-taski.vercel.app",
     featured: true,
+    image: "/projects/taski.jpg",
+    imageAlt: "왼쪽에 카테고리 목록, 오른쪽에 할 일·진행 중·완료 상태별로 나뉜 일정 목록이 보이는 화면",
   },
   {
     title: "AUDIO REVIEW",
@@ -26,6 +29,8 @@ const projects = [
     github: "https://github.com/Noma9363/turbo-portfolio/tree/main/apps/reviews",
     live: "https://turbo-portfolio-reviews.vercel.app/reviews",
     featured: false,
+    image: "/projects/reviews.jpg",
+    imageAlt: "상단 카테고리 필터 아래로 헤드폰 제품 카드가 3열 격자로 나열된 화면",
   },
   {
     title: "CLASSBOOK",
@@ -36,6 +41,8 @@ const projects = [
     github: "https://github.com/Noma9363/turbo-portfolio/tree/main/apps/classbook",
     live: "https://turbo-portfolio-classbook.vercel.app",
     featured: false,
+    image: "/projects/classbook.jpg",
+    imageAlt: "유형·가격 필터 아래로 회의실과 작업실 카드가 3열 격자로 나열된 화면",
   },
 ];
 
@@ -70,7 +77,7 @@ export function Projects() {
               transition: { staggerChildren: 0.1 },
             },
           }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-4"
+          className="grid grid-cols-1 md:grid-cols-2 gap-4 xl:grid-cols-3"
         >
           {projects.map((project) => (
             <motion.div
@@ -84,7 +91,23 @@ export function Projects() {
                 },
               }}
             >
-              <Card className="h-full group hover:border-zinc-600 transition-colors duration-300">
+              <Card className="h-full group overflow-hidden hover:border-zinc-600 transition-colors duration-300">
+                <CardContent className="p-0">
+                  <AspectRatio ratio={16 / 10} className="w-full">
+                    <Image
+                      src={project.image}
+                      alt={project.imageAlt}
+                      fill
+                      sizes="(min-width: 768px) 50vw, 100vw"
+                      className="object-cover aspect-video h-70 rounded-t-xl"
+                    />
+                    {/* 이미지 아래쪽을 카드 배경색으로 이어주는 페이드 (장식용) */}
+                    <div
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-card to-transparent"
+                    />
+                  </AspectRatio>
+                </CardContent>
                 <CardHeader>
                   <div className="flex items-start justify-between gap-4">
                     <div>
@@ -101,6 +124,7 @@ export function Projects() {
                     <div className="flex items-center gap-2 shrink-0">
                       <a
                         href={project.github}
+                        aria-label={`${project.title} GitHub 저장소`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-muted-foreground hover:text-foreground transition-colors"
@@ -110,6 +134,7 @@ export function Projects() {
                       {project.live && (
                         <a
                           href={project.live}
+                          aria-label={`${project.title} 라이브 사이트`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-muted-foreground hover:text-foreground transition-colors"
