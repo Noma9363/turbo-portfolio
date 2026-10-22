@@ -117,6 +117,7 @@ export function Hero() {
         >
           <a
             href="https://github.com/Noma9363"
+            aria-label="GitHub 프로필"
             target="_blank"
             rel="noopener noreferrer"
             className="text-muted-foreground hover:text-foreground transition-colors"
