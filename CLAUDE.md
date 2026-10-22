@@ -13,7 +13,8 @@
 
 - [x] PR #21 `fix/portfolio-links` 머지 — Contact CTA 메일 상수화, GitHub 링크 `Noma9363`, 푸터 이름, Hero 배지 `Frontend · 신입`, Nav `Home`
 - [x] PR #22 `feat/portfolio-seo` 머지 — `layout.tsx` 메타데이터·OG, `opengraph-image.png`, Hero 이름 `Cho Lee Han` 통일 (프로덕션 og 태그 + 카카오 디버거 확인 완료)
-- [ ] favicon (`src/app/icon.png`)
+- [x] PR #24 머지 — Hero 대문 그라데이션 글자(`bg-clip-text`)를 단색으로 변경 (iOS Brave에서 대문이 안 보이던 문제, 실기기 확인 완료)
+- [x] favicon — `src/app/icon.tsx`(`next/og`로 `CLH` 생성, 내장 폰트가 400뿐이라 `WebkitTextStroke`로 굵게)
 - [ ] `sitemap.ts` / `robots.ts` / `not-found.tsx`
 - [x] 모바일 네비 로고 `CLH`로 축약 + 링크 `px-2` (390px 실측 OK, 360px 이하는 계산만 — 실기기 확인 필요)
 - [ ] 대문 `I'm Cho Lee / Han` 모바일 줄바꿈 (`Han`만 떨어짐) 처리 여부 결정
